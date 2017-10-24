@@ -6,8 +6,10 @@ describe Valve do
                         "sense_open" => "P8_9", "sense_closed" => "P8_10"} }
 
   context "is a NC valve" do
+    let (:nc_valve) { Valve.new(nc_params) }
+
     it "validates its parameters" do
-      expect {Valve.new(nc_params)}.not_to raise_error
+      expect {nc_valve}.not_to raise_error
     end
   
     it "verifies its required parameters" do
@@ -17,7 +19,12 @@ describe Valve do
     end
 
     it "activates its pin" do
-      expect(Valve.new(nc_params).send(:pins)["open"]).to be_an_instance_of(GPIOPin)
+      expect(nc_valve.send(:pins)["open"]).to be_an_instance_of(GPIOPin)
+    end
+
+    it "sets its state" do
+      nc_valve.set_state(:open)
+      expect(nc_valve.current_status).to eq(:open)
     end
   end
     

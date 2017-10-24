@@ -2,7 +2,8 @@ require 'beaglebone'
 include Beaglebone
 
 class Valve
-	attr_accessor :id, :name, :action, :open, :close, :sense_open, :sense_closed
+	attr_accessor :status
+	attr_reader :type
 
 	VALID_TYPES 		= ["NC", "powered"]
 	VALID_PINS  		= { "NC" 		 => ["open"],
@@ -11,14 +12,13 @@ class Valve
 
 	def initialize(params)
 		validate!(params)
+
+		@id = params["id"]
+		@name = params["name"]
+		@type = params["type"]
+		@status = :closed #to do: write code to ensure this
+		
 		activate_pins(params)
-		#@id = id
-		#@name = name
-		#@action = action
-		#@open = open
-		#@close = close
-		#@sense_open = sense_open
-		#@sense_closed = sense_closed
 	end
 
 	def validate!(params)
@@ -32,13 +32,37 @@ class Valve
 	end
 
 	def activate_pins(params)
-		VALID_PINS[params["type"]].each do | key |
+		VALID_PINS[type].each do | key |
 			mode = pin_mode(key)
 			pins[key] = GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
 		end
 	end
 
+	def set_state(state)
+		case state
+		when :open
+			open
+		when :close
+			close
+		end
+		@status = state
+	end
+
+	def current_status
+		status
+	end
+
 	private
+	def open
+		set_high(pins["open"])
+		set_low(pins["close"]) unless type == "NC"
+	end
+
+	def close
+		set_high(pins["close"]) unless type == "NC"
+		set_low(pins["open"])
+	end
+
 	def pins
 		@pins ||= {}
 	end
@@ -54,5 +78,13 @@ class Valve
 
 	def pullmode(mode)
 		mode == :IN ? :PULLDOWN : nil
+	end
+
+	def set_high(pin)
+		pin.digital_write(:HIGH)
+	end
+
+	def set_low(pin)
+		pin.digital_write(:LOW)
 	end
 end
