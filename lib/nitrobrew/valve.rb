@@ -39,12 +39,7 @@ class Valve
 	end
 
 	def set_state(state)
-		case state
-		when :open
-			open
-		when :close
-			close
-		end
+		send(state)
 		@status = state
 	end
 
@@ -53,14 +48,34 @@ class Valve
 	end
 
 	private
+	def nc_open
+		set_pin("open", :HIGH)
+	end
+
+	def nc_close
+		set_pin("open", :LOW)
+	end
+
+	def powered_open
+		set_pin("close", :LOW)
+		set_pin("open", :HIGH)
+	end
+
+	def powered_close
+		set_pin("open", :LOW)
+		set_pin("close", :HIGH)
+	end
+
+	def set_pin(key, value)
+		pins[key].digital_write(value)
+	end
+
 	def open
-		set_high(pins["open"])
-		set_low(pins["close"]) unless type == "NC"
+		type = "NC" ? nc_open : powered_open
 	end
 
 	def close
-		set_high(pins["close"]) unless type == "NC"
-		set_low(pins["open"])
+		type = "NC" ? nc_close : powered_close
 	end
 
 	def pins
@@ -80,9 +95,7 @@ class Valve
 		mode == :IN ? :PULLDOWN : nil
 	end
 
-	def set_high(pin)
-		pin.digital_write(:HIGH)
-	end
+	
 
 	def set_low(pin)
 		pin.digital_write(:LOW)
