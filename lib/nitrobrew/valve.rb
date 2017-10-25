@@ -2,13 +2,14 @@ require 'beaglebone'
 include Beaglebone
 
 class Valve
-	attr_accessor :status
+	attr_accessor :status, :set_time
 	attr_reader :type
 
 	VALID_TYPES 		= ["NC", "powered"]
 	VALID_PINS  		= { "NC" 		 => ["open"],
 								 		 "powered" => ["open", "close", "sense_open", "sense_closed"] }
 	REQUIRED_PARAMS = ["name", "id"]
+	TIMEOUT = 3 #seconds
 
 	def initialize(params)
 		validate!(params)
@@ -17,10 +18,26 @@ class Valve
 		@name = params["name"]
 		@type = params["type"]
 		@status = :closed #to do: write code to ensure this
-		
+
 		activate_pins(params)
 	end
 
+	#legal states are :open and :closed
+	def set_state(state)
+		send(state)
+		@status = state
+		@set_time = Time.now
+	end
+
+	def current_status
+		status
+	end
+
+	def in_position?
+		get_pin("sense_#{current_status}") == :HIGH or timed_out!
+	end
+
+	private
 	def validate!(params)
 		raise("Invalid type") unless VALID_TYPES.include?(params["type"])
 
@@ -37,17 +54,11 @@ class Valve
 			pins[key] = GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
 		end
 	end
-
-	def set_state(state)
-		send(state)
-		@status = state
+	
+	def timed_out!
+		(Time.now - set_time) > TIMEOUT ? raise("Valve has timed out") : false 
 	end
 
-	def current_status
-		status
-	end
-
-	private
 	def nc_open
 		set_pin("open", :HIGH)
 	end
@@ -70,12 +81,20 @@ class Valve
 		pins[key].digital_write(value)
 	end
 
-	def open
-		type = "NC" ? nc_open : powered_open
+	def get_pin(key)
+		pins[key].digital_read
 	end
 
-	def close
-		type = "NC" ? nc_close : powered_close
+	def open
+		type == "NC" ? nc_open : powered_open
+	end
+
+	def closed
+		type == "NC" ? nc_close : powered_close
+	end
+
+	def is_open?
+		get_pin("sense_open") == :HIGH ? :open : nil
 	end
 
 	def pins
@@ -93,11 +112,5 @@ class Valve
 
 	def pullmode(mode)
 		mode == :IN ? :PULLDOWN : nil
-	end
-
-	
-
-	def set_low(pin)
-		pin.digital_write(:LOW)
 	end
 end
