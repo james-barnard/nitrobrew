@@ -6,6 +6,7 @@ class Machine
   def initialize
     @config = Configuration.new
     @status = "offline"
+    activate_valves
   end
 
   def id
@@ -18,5 +19,16 @@ class Machine
 
   def set_ready
     @status = "ready"
+  end
+
+  private
+  def activate_valves
+    config.valves.each do | valve |
+      valves[valve["id"]] = Valve.new(valve)
+    end
+  end
+
+  def valves
+    @valves ||= {}
   end
 end

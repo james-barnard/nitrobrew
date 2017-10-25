@@ -24,8 +24,11 @@ describe Machine do
     expect(machine.status).to eq("ready")
   end
 
-  it "creates a hash of valve objects"
+  it "creates a hash of valve objects" do
+    key = machine.send(:valves).keys.first
+    expect(machine.send(:valves)[key]).to be_a_kind_of(Valve)
+  end
 
-
+  it "validates its config"
 
 end
