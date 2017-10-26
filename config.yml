@@ -18,9 +18,9 @@ valves:
       name: Brew Out
       type: powered
       open: P8_11
-      close: P8_8
-      sense_open: P8_9
-      sense_closed: P8_10
+      close: P8_12
+      sense_open: P8_13
+      sense_closed: P8_14
    -  id: v4
       name: Filter purge Out
       type: powered

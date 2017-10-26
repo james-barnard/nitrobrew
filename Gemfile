@@ -13,4 +13,5 @@ group :development do
 	gem 'beaglebone', :path => '/Users/zac/workspace/bbb_projects/bbbtesting/beaglebonegem/beaglebone'
 	gem 'rspec'
 	gem 'debugger'
+  gem 'sqlite3'
 end
