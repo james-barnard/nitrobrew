@@ -58,17 +58,8 @@
       expect{Configuration.new}.to raise_error("Duplicate valve id")
     end
 
-
     it "raises an exception if any names are repeated" do
       allow(File).to receive(:open).and_return(duplicate_name)
       expect{Configuration.new}.to raise_error("Duplicate valve name")
     end
-
-
-    #could not create an invalid yaml string...
-    #it "raises an exception if the yaml is invalid" do
-    #  allow(File).to receive(:open).and_return("invalid\n\t :yaml")
-    #  expect{Configuration.new}.to raise_error(ArgumentError)
-    #end
-
   end
