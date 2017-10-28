@@ -40,7 +40,7 @@ class Machine
     last_status = nil
     action = nil
     while !action do
-      action = check_action(:halt)
+      action = :halt if check_action(:halt)
       step_status = stepper.step
       log("run", "step_status", step_status) if step_status != last_status
       last_status = step_status
@@ -57,11 +57,11 @@ class Machine
   private
   def check_action(button)
     result = check_action(button)
-    if last_check == result
-      last_check = nil
+    if @last_button_check == result
+      @last_button_check = nil
       return true
     else
-    @last_check = result
+    @last_button_check = result
     end
   end
 
