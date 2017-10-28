@@ -33,6 +33,9 @@ class Machine
   end
 
   #verifies that we have a program to run,
+  # if halted, run resumes by starting at current step
+  # select pgm increments run counter, so run naturally starts with step one
+  # therefore, press halt/reset to start over and halt/run to resume
   def run
     @status = "busy"
     verify_program
