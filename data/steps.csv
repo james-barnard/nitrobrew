@@ -1,0 +1,12 @@
+id,name,duration
+1,all closed,5
+2,cip circulate upper,0
+3,cip circulate pump,60
+4,cip circulate lower,0
+5,cip circulate pump,30
+6,cip purge filter,5
+7,rinse filter,15
+8,rinse lower,10
+9,N2 purge,30
+10,vacuum dry,120
+11,N2 charge,5
