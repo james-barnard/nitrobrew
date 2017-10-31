@@ -32,19 +32,18 @@ class Machine
     send action
   end
 
-  #verifies that we have a program to run,
+  # verifies that we have a program to run,
   # if halted, run resumes by starting at current step
   # select pgm increments run counter, so run naturally starts with step one
   # therefore, press halt/reset to start over and halt/run to resume
   def run
     @status = "busy"
     verify_program
-    stepper = Stepper.new(program)
     last_status = nil
     action = nil
     while !action do
       action = :halt if check_action(:halt)
-      step_status = stepper.step
+      step_status = Stepper.step
       log("run", "step_status", step_status) if step_status != last_status
       last_status = step_status
       action = :done if step_status == :done
@@ -57,15 +56,37 @@ class Machine
     ID
   end
 
-  private
+  def halt
+    ready
+  end
+
+  def done
+    start
+  end
+
+  def check_set_program
+  end
+
+  def verify_program
+  end
+
+  def log(method, label, value)
+  end
+
+   private
   def check_action(button)
-    result = check_action(button)
+    result = check_button(button)
     if @last_button_check == result
       @last_button_check = nil
       return true
     else
-    @last_button_check = result
+      @last_button_check = result
     end
+    false
+  end
+
+  # checks the button and returns the name of the button if it is pressed, or nil.
+  def check_button(button)
   end
 
   def activate_valves
