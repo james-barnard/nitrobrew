@@ -33,7 +33,6 @@ describe Machine do
   describe "#start" do
     it "loops until it gets a program" do
       allow(machine).to receive(:ready)
-      first_time = true
       allow(machine).to receive(:check_set_program).and_return(nil, "a program")
 
       machine.start
@@ -72,7 +71,7 @@ describe Machine do
 
     it "loops until it finishes its program" do
       allow(machine).to receive(:done)
-      allow(Stepper).to receive(:step).and_return(:soaking, :done)
+      allow(machine.stepper).to receive(:step).and_return(:soaking, :done)
 
       machine.run
       expect(machine).to have_received(:done)

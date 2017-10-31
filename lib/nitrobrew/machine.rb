@@ -26,7 +26,7 @@ class Machine
     while !action do
       action = :run if check_action(:run)
       #action ||= :resume if check_action(:resume)
-      action ||= :start if check_action(:reset)
+      action ||= :reset if check_action(:reset)
       sleep 1
     end
     send action
@@ -43,7 +43,7 @@ class Machine
     action = nil
     while !action do
       action = :halt if check_action(:halt)
-      step_status = Stepper.step
+      step_status = stepper.step
       log("run", "step_status", step_status) if step_status != last_status
       last_status = step_status
       action = :done if step_status == :done
@@ -56,13 +56,26 @@ class Machine
     ID
   end
 
+  def database
+    "test.db"
+  end
+
   def halt
     ready
   end
 
   def done
+    # todo log that the test_run is done
+    # todo deletes the stepper
     start
   end
+
+  def reset
+    # todo log that the test_run has been reset
+    # todo deletes the stepper
+    start
+  end
+
 
   def check_set_program
   end
@@ -71,6 +84,10 @@ class Machine
   end
 
   def log(method, label, value)
+  end
+
+  def stepper
+    @stepper ||= Stepper.new(database, program, self)
   end
 
    private
