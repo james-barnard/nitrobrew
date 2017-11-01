@@ -93,7 +93,11 @@ class Machine
     @stepper ||= Stepper.new(database, program, self)
   end
 
-   private
+  def set_component_state(id, state)
+    valve[id].set_state state
+  end
+
+  private
   def check_action(button)
     result = check_button(button)
     if @last_button_check == result
@@ -118,7 +122,7 @@ class Machine
   def valves
     @valves ||= {}
   end
-   def logger
-     @logger ||= Logger.new('log/run.log', 10, 1024)
-   end
+  def logger
+    @logger ||= Logger.new('log/run.log', 10, 1024)
+  end
 end

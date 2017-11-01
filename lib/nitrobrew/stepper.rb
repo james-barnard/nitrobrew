@@ -1,21 +1,28 @@
 require "sqlite3"
 
 class Stepper
-    FINAL_STEP_SQL = <<-SQL
-      select sequence_number
-      from steps
-      where program_id = ?
-      order by sequence_number desc
-      limit 1
-    SQL
-    COMPLETED_STEP_SQL = <<-SQL
-      select sequence_number
-      from step_statuses
-      where status = 'completed'
-      and test_run_id = ?
-      order by id desc
-      limit 1
-    SQL
+  attr_accessor :machine
+  COMPONENT_STATES_SQL = <<-SQL
+    select *
+    from component_states
+    where step_id = ?
+    order by sequence_number
+  SQL
+  FINAL_STEP_SQL = <<-SQL
+    select sequence_number
+    from steps
+    where program_id = ?
+    order by sequence_number desc
+    limit 1
+  SQL
+  COMPLETED_STEP_SQL = <<-SQL
+    select sequence_number
+    from step_statuses
+    where status = 'completed'
+    and test_run_id = ?
+    order by id desc
+    limit 1
+  SQL
 
   def initialize(database, program, machine)
     @machine = machine
@@ -31,7 +38,19 @@ class Stepper
   def step
   end
 
-  def get_component_states
+  def component_states
+    db.execute COMPONENT_STATES_SQL, current_step
+  end
+
+  def set_component_states
+    component_states.each do |state|
+      set_state(*state)
+    end
+  end
+
+  def set_state(id, component_id, step_id, state, sequence_number)
+    puts "set_state: #{id}: #{component_id}: #{step_id}: #{state}: #{sequence_number}"
+    machine.set_component_state(component_id, state.to_sym)
   end
 
   def current_step
