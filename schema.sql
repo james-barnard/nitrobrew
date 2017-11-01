@@ -36,9 +36,9 @@ CREATE TABLE IF NOT EXISTS steps (
     duration int,
     sequence_number int
   );
-CREATE TABLE IF NOT EXISTS step_status (
+CREATE TABLE IF NOT EXISTS step_statuses (
     id int,
-    step_id int,
+    sequence_number int,
     test_run_id int,
     status varchar(10),
     started_at int,

@@ -59,9 +59,9 @@ db.execute <<-SQL
 SQL
 
 db.execute <<-SQL
-  create table step_status (
+  create table step_statuses (
     id int,
-    step_id int,
+    sequence_number int,
     test_run_id int,
     status varchar(10),
     started_at int,
