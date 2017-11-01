@@ -14,6 +14,9 @@ class Stepper
   def step
   end
 
+  def get_component_states
+  end
+
   def current_step
     last_step = last_completed_step || 0
     if last_step < final_step

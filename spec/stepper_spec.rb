@@ -11,9 +11,17 @@ describe Stepper do
     @db.execute("delete from step_statuses")
     @db.execute("delete from steps")
     @db.execute("delete from test_runs")
+    @db.execute("delete from components")
+    @db.execute("delete from component_states")
     @db.execute("insert into programs values(1, 'clean')")
     @db.execute("insert into steps values(1, 1, 'first step', 0, 1)")
     @db.execute("insert into steps values(2, 1, 'second step', 0, 2)")
+    @db.execute("insert into components values(1, 1, 'component1')")
+    @db.execute("insert into components values(2, 1, 'component2')")
+    @db.execute("insert into component_states values(1, 1, 1, 'open', 1)")
+    @db.execute("insert into component_states values(2, 2, 1, 'closed', 1)")
+    @db.execute("insert into component_states values(3, 1, 2, 'closed', 1)")
+    @db.execute("insert into component_states values(4, 2, 2, 'open', 1)")
   end
   let (:machine) { Machine.new }
 
@@ -40,7 +48,7 @@ describe Stepper do
       expect(stepper.current_step).to eq(1)
     end
     
-    it "gets the current step number from the database" do
+    it "gets the current step number" do
       stepper.save_step_status(1, 1, :started)
       expect(stepper.current_step).to eq(1)
     end
@@ -54,6 +62,10 @@ describe Stepper do
       stepper.save_step_status(1, 1, :completed)
       stepper.save_step_status(2, 1, :completed)
       expect(stepper.current_step).to eq(nil)
+    end
+
+    it "gets the component states for a step" do
+      #expect(stepper.component_states.length).to eq(2)
     end
 
     it "sets the component states"
