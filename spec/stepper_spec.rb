@@ -42,7 +42,7 @@ describe Stepper do
   end
 
   let (:stepper) { Stepper.new("stepper.db", :clean, machine) }
-  describe "#step" do
+  describe "stepper" do
     before(:each) { allow(stepper).to receive(:test_run_id).and_return(1) }
     it "returns 1 if the step hasn't started" do
       expect(stepper.current_step).to eq(1)
@@ -70,10 +70,18 @@ describe Stepper do
     end
 
     it "sets the component states" do
+      allow(stepper).to receive(:current_step).and_return(1)
       allow(machine).to receive(:set_component_state)
       stepper.set_component_states
       expect(machine).to have_received(:set_component_state).with(1, :opened).once
       expect(machine).to have_received(:set_component_state).with(2, :closed).once
+    end
+  end
+
+  describe "#step" do
+    it "sets the step status in the database when setting states" do
+      #allow(machine).to receive(:set_component_state)
+      #stepper.step
     end
 
     it "checks the component states"
