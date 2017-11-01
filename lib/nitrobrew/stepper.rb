@@ -1,6 +1,21 @@
 require "sqlite3"
 
 class Stepper
+    FINAL_STEP_SQL = <<-SQL
+      select sequence_number
+      from steps
+      where program_id = ?
+      order by sequence_number desc
+      limit 1
+    SQL
+    COMPLETED_STEP_SQL = <<-SQL
+      select sequence_number
+      from step_statuses
+      where status = 'completed'
+      and test_run_id = ?
+      order by id desc
+      limit 1
+    SQL
 
   def initialize(database, program, machine)
     @machine = machine
@@ -23,30 +38,15 @@ class Stepper
       last_step + 1
     else
       nil
-    end     
+    end
   end
 
   def last_completed_step
-    sql = <<-SQL
-      select sequence_number
-      from step_statuses
-      where status = 'completed'
-      and test_run_id = #{test_run_id}
-      order by id desc
-      limit 1
-    SQL
-    single_value { db.execute sql }
+    single_value { db.execute COMPLETED_STEP_SQL, test_run_id }
   end
 
   def final_step
-    sql = <<-SQL
-      select sequence_number
-      from steps
-      where program_id = #{program_id}
-      order by sequence_number desc
-      limit 1
-    SQL
-    @final_step ||= single_value { db.execute sql }
+    @final_step ||= single_value { db.execute FINAL_STEP_SQL, program_id }
   end
 
   def save_step_status(sequence_number, test_run_id, status, started_at = Time.now.to_i)
