@@ -7,7 +7,7 @@ class Machine
 
   def initialize
     @config = Configuration.new
-    activate_valves
+    #activate_valves
   end
 
   def start

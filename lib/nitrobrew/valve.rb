@@ -41,10 +41,10 @@ class Valve
 	def validate!(params)
 		raise("Invalid type") unless VALID_TYPES.include?(params["type"])
 
-		(VALID_PINS[params["type"]] + REQUIRED_PARAMS).each do | param | 
+		(VALID_PINS[params["type"]] + REQUIRED_PARAMS).each do | param |
 			raise("Invalid #{param}") if params[param].nil?
 		end
-		
+
 		return true
 	end
 
@@ -54,7 +54,7 @@ class Valve
 			pins[key] = GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
 		end
 	end
-	
+
 	def timed_out!
 		(Time.now - set_time) > TIMEOUT ? raise("Valve has timed out") : false 
 	end
