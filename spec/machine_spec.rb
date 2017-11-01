@@ -61,8 +61,11 @@ describe Machine do
   end
 
   describe "#run" do
+    let(:fake_stepper) { double() }
     it "loops until it gets a halt command" do
       allow(machine).to receive(:halt)
+      allow(machine).to receive(:stepper).and_return(fake_stepper)
+      allow(fake_stepper).to receive(:step).and_return(:started)
       allow(machine).to receive(:check_action).with(:halt).and_return(nil, true)
 
       machine.run
@@ -71,7 +74,8 @@ describe Machine do
 
     it "loops until it finishes its program" do
       allow(machine).to receive(:done)
-      allow(machine.stepper).to receive(:step).and_return(:soaking, :done)
+      allow(machine).to receive(:stepper).and_return(fake_stepper)
+      allow(fake_stepper).to receive(:step).and_return(:soaking, :done)
 
       machine.run
       expect(machine).to have_received(:done)

@@ -3,10 +3,9 @@ describe Stepper do
 
   before(:all) do
     @db = SQLite3::Database.new("stepper.db")
-    schema = File.open("schema.db").read
+    schema = File.open("schema.sql").read
     schema.split(/\;\n/).each { |stmt|
       if stmt =~ /CREATE/
-        puts "executing statement: #{stmt};"
         @db.execute("#{stmt};")
       end
     }
@@ -21,7 +20,7 @@ describe Stepper do
     end
 
     it "validates its program parameter" do
-      expect {Stepper.new("test.db", :not_a_program, machine)}.to raise_error("Invalid program")
+      expect {Stepper.new("stepper.db", :not_a_program, machine)}.to raise_error("Invalid program")
     end
 
     it "creates the test_run in the database" do

@@ -1,22 +1,22 @@
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE test_cells (
+CREATE TABLE IF NOT EXISTS test_cells (
     id int,
     name varchar(30)
   );
-CREATE TABLE components (
+CREATE TABLE IF NOT EXISTS components (
     id int,
     test_cell_id int,
     name varchar(30)
   );
-CREATE TABLE component_states (
+CREATE TABLE IF NOT EXISTS component_states (
     id int,
     component_id int,
     step_id int,
     state varchar(10),
     sequence_number int
   );
-CREATE TABLE test_runs (
+CREATE TABLE IF NOT EXISTS test_runs (
     id int,
     test_cell_id int,
     program_id int,
@@ -25,18 +25,18 @@ CREATE TABLE test_runs (
     completed_at int,
     status_final varchar(15)
   );
-CREATE TABLE programs (
+CREATE TABLE IF NOT EXISTS programs (
     id int,
     purpose varchar(30)
   );
-CREATE TABLE steps (
+CREATE TABLE IF NOT EXISTS steps (
     id int,
     program_id int,
     description varchar(30),
     duration int,
     sequence_number int
   );
-CREATE TABLE step_status (
+CREATE TABLE IF NOT EXISTS step_status (
     id int,
     step_id int,
     test_run_id int,

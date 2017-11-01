@@ -32,7 +32,6 @@ class Stepper
   end
 
   def single_value
-    debugger
     result_set = yield
     return nil if result_set.empty?
     row = result_set.flatten.first
