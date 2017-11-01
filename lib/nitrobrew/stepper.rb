@@ -26,6 +26,8 @@ class Stepper
     create_test_run
   end
 
+  # returns step_status as #{step_sequence_number}:#{status}" or :done when complete
+  # so we can log it and/or move on
   def step
   end
 

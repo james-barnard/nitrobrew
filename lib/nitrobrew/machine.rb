@@ -1,4 +1,5 @@
 require_relative 'configuration.rb'
+require 'logger'
 
 class Machine
   ID = 1001
@@ -6,6 +7,7 @@ class Machine
   attr_accessor :program
 
   def initialize
+    logger.level = Logger::DEBUG
     @config = Configuration.new
     #activate_valves
   end
@@ -44,7 +46,7 @@ class Machine
     while !action do
       action = :halt if check_action(:halt)
       step_status = stepper.step
-      log("run", "step_status", step_status) if step_status != last_status
+      log("stepper:run", "step_status", step_status) if step_status != last_status
       last_status = step_status
       action = :done if step_status == :done
       sleep 1
@@ -84,6 +86,7 @@ class Machine
   end
 
   def log(method, label, value)
+    logger.info { "#{method}:#{label}: #{value}" }
   end
 
   def stepper
@@ -115,4 +118,7 @@ class Machine
   def valves
     @valves ||= {}
   end
+   def logger
+     @logger ||= Logger.new('log/run.log', 10, 1024)
+   end
 end
