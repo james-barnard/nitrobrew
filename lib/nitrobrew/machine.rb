@@ -3,22 +3,25 @@ require 'logger'
 
 class Machine
   ID = 1001
-  attr_reader :config, :status
-  attr_accessor :program
+  attr_reader :config, :status, :program
+  attr_writer :program
 
   def initialize
     logger.level = Logger::DEBUG
     @config = Configuration.new
-    activate_valves
+    #activate_valves
+    activate_switches
   end
 
   def start
     @status = "offline"
-    program = nil
-    while !program do
-      program = check_set_program
+    prog = nil
+    while prog.nil? do
+      prog = check_set_program
       sleep 1
     end
+    @program = prog
+    log("stepper:start", "program selected", program)
     ready
   end
 
@@ -27,20 +30,18 @@ class Machine
     action = nil
     while !action do
       action = :run if check_action(:run)
-      #action ||= :resume if check_action(:resume)
       action ||= :reset if check_action(:reset)
       sleep 1
     end
     send action
   end
 
-  # verifies that we have a program to run,
+  # stepper verifies that we have a program to run, for now
   # if halted, run resumes by starting at current step
   # select pgm increments run counter, so run naturally starts with step one
   # therefore, press halt/reset to start over and halt/run to resume
   def run
     @status = "busy"
-    verify_program
     last_status = nil
     action = nil
     while !action do
@@ -118,16 +119,34 @@ class Machine
   def check_button(button)
   end
 
+  def activate_switches
+    config.switches.each do | switch |
+      switches[switch["id"]] = symbolize_keys(switch)
+    end
+  end
+
   def activate_valves
     config.valves.each do | valve |
       valves[valve["id"]] = Valve.new(valve)
     end
   end
 
+  def switches
+    @switches ||= {}
+  end
+
   def valves
     @valves ||= {}
   end
+
   def logger
     @logger ||= Logger.new('log/run.log', 10, 1024)
+  end
+
+  def symbolize_keys(hash)
+    hash.inject({}) do | memo,(k,v) |
+      memo[k.to_sym] = v
+      memo
+    end
   end
 end

@@ -1,4 +1,6 @@
 describe Stepper do
+  let (:machine) { Machine.new }
+
   before(:all) do
     @db = SQLite3::Database.new("stepper.db")
     schema = File.open("schema.sql").read
@@ -7,23 +9,11 @@ describe Stepper do
         @db.execute("#{stmt};")
       end
     }
-    @db.execute("delete from programs")
-    @db.execute("delete from step_statuses")
-    @db.execute("delete from steps")
-    @db.execute("delete from test_runs")
-    @db.execute("delete from components")
-    @db.execute("delete from component_states")
-    @db.execute("insert into programs values(1, 'clean')")
-    @db.execute("insert into steps values(1, 1, 'first step', 0, 1)")
-    @db.execute("insert into steps values(2, 1, 'second step', 0, 2)")
-    @db.execute("insert into components values(1, 1, 'component1')")
-    @db.execute("insert into components values(2, 1, 'component2')")
-    @db.execute("insert into component_states values(1, 1, 1, 'open', 1)")
-    @db.execute("insert into component_states values(2, 2, 1, 'closed', 1)")
-    @db.execute("insert into component_states values(3, 1, 2, 'closed', 1)")
-    @db.execute("insert into component_states values(4, 2, 2, 'open', 1)")
   end
-  let (:machine) { Machine.new }
+
+  before(:each) do
+    clean_database
+  end
 
   describe "#initialize" do
     it "validates its database parameter" do
@@ -80,7 +70,6 @@ describe Stepper do
 
   describe "#current_status" do
     it "returns nil when not started" do
-      @db.execute("delete from step_statuses")
       expect(stepper.current_status).to eq(nil)
     end
   end
@@ -88,11 +77,10 @@ describe Stepper do
   describe "#step" do
     before(:each) { allow(stepper).to receive(:test_run_id).and_return(1) }
     it "sets the step status in the database when the state changes" do
-      @db.execute("delete from step_statuses")
       allow(stepper).to receive(:current_step).and_return(1)
       allow(machine).to receive(:set_component_state)
       allow(machine).to receive(:check_component_state).and_return(false)
-      
+
       stepper.step
       expect(stepper.send(:single_value) { @db.execute("select status from step_statuses") }
       ).to eq("pending")
@@ -102,7 +90,7 @@ describe Stepper do
       stepper.save_step_status(1, 1, :completed)
       allow(machine).to receive(:set_component_state)
       allow(machine).to receive(:check_component_state).and_return(false)
-      
+
       expect(stepper.step).to eq("2:pending")
     end
 
@@ -169,5 +157,22 @@ describe Stepper do
         stepper.send(:single_value) { @db.execute("select count(*) from step_statuses") }
       }.by(1)
     end
+  end
+  def clean_database
+    @db.execute("delete from programs")
+    @db.execute("delete from step_statuses")
+    @db.execute("delete from steps")
+    @db.execute("delete from test_runs")
+    @db.execute("delete from components")
+    @db.execute("delete from component_states")
+    @db.execute("insert into programs values(1, 'clean')")
+    @db.execute("insert into steps values(1, 1, 'first step', 0, 1)")
+    @db.execute("insert into steps values(2, 1, 'second step', 0, 2)")
+    @db.execute("insert into components values(1, 1, 'component1')")
+    @db.execute("insert into components values(2, 1, 'component2')")
+    @db.execute("insert into component_states values(1, 1, 1, 'open', 1)")
+    @db.execute("insert into component_states values(2, 2, 1, 'closed', 1)")
+    @db.execute("insert into component_states values(3, 1, 2, 'closed', 1)")
+    @db.execute("insert into component_states values(4, 2, 2, 'open', 1)")
   end
 end
