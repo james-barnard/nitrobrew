@@ -17,7 +17,7 @@ class Valve
 		@id = params["id"]
 		@name = params["name"]
 		@type = params["type"]
-		@status = :closed #to do: write code to ensure this
+		@status = :closed #todo: write code to ensure this
 
 		activate_pins(params)
 	end

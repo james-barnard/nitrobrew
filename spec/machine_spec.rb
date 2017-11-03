@@ -1,6 +1,8 @@
 describe Machine do 
 
-  let(:machine) {Machine.new}
+  let(:machine) { Machine.new }
+  let(:nc_params) { {"name" => "ncName", "id" => "v2", "type" => "NC", "open" => "P8_7"} }
+  let(:valve_v2) { machine.send(:valves)["v2"] }
 
   it "configures itself" do
     expect(machine.config).to be_a_kind_of(Configuration)
@@ -14,8 +16,6 @@ describe Machine do
     key = machine.send(:valves).keys.first
     expect(machine.send(:valves)[key]).to be_a_kind_of(Valve)
   end
-
-  it "verifies its program"
 
   describe "#check_button"
     it "recognizes a button push"
@@ -79,6 +79,15 @@ describe Machine do
 
       machine.run
       expect(machine).to have_received(:done)
+    end
+  end
+
+  describe "#set_component_state" do
+    it "calls open on the valve" do
+      allow(valve_v2).to receive(:open)
+      machine.set_component_state("v2", "open")
+
+      expect(valve_v2).to have_received(:open)
     end
   end
 end

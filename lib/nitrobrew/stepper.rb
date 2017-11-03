@@ -17,11 +17,37 @@ class Stepper
   SQL
   COMPLETED_STEP_SQL = <<-SQL
     select sequence_number
+    from step_statuses ss, steps s
+    where s.id = ss.step_id
+    and status = 'completed'
+    and test_run_id = ?
+    order by ss.id desc
+    limit 1
+  SQL
+  CURRENT_STATUS_SQL = <<-SQL
+    select status
     from step_statuses
-    where status = 'completed'
+    where step_id = ?
     and test_run_id = ?
     order by id desc
     limit 1
+  SQL
+  STEP_SQL = <<-SQL
+    select id
+    from steps
+    where sequence_number = ?
+    and program_id = ?
+  SQL
+  DURATION_SQL = <<-SQL
+    select duration
+    from steps
+    where step_id = ?
+  SQL
+  STARTED_AT_SQL = <<-SQL
+    select started_at
+    from step_statuses
+    where status = 'soaking'
+    where step_id = ?
   SQL
 
   def initialize(database, program, machine)
@@ -33,13 +59,42 @@ class Stepper
     create_test_run
   end
 
-  # returns step_status as #{step_sequence_number}:#{status}" or :done when complete
+  # returns step_status as #{current_step}:#{status}" or :done when complete
   # so we can log it and/or move on
   def step
+    if current_status.nil?
+      set_component_states
+      status = check_component_states
+    elsif current_status == :pending
+      status = check_component_states
+    elsif current_status == :soaking
+      status = check_soak_time
+    elsif current_status == :completed
+      status = :done
+    else
+      debugger
+      raise("Unknown current status in step: #{current_status}")
+    end
+    set_current_status(status) if current_status != status
+    "#{current_step}:#{status}"
+  end
+
+  def check_soak_time
+    started_at = single_value { db.execute STARTED_AT_SQL, step_id }
+    soak_duration = single_value { db.execute DURATION_SQL, step_id }
+    if Time.now.to_i - started_at < soak_duration
+      :soaking
+    else
+      :completed
+    end
+  end
+
+  def set_current_status(status)
+    save_step_status(current_step, test_run_id, status)
   end
 
   def component_states
-    db.execute COMPONENT_STATES_SQL, current_step
+    db.execute COMPONENT_STATES_SQL, step_id(current_step)
   end
 
   def set_component_states
@@ -48,8 +103,18 @@ class Stepper
     end
   end
 
+  def check_component_states
+    component_states.each do |state|
+      return :pending unless check_state(*state)
+    end
+    :soaking
+  end
+
+  def check_state(id, component_id, step_id, state, sequence_number)
+    machine.check_component_state(component_id)
+  end
+
   def set_state(id, component_id, step_id, state, sequence_number)
-    puts "set_state: #{id}: #{component_id}: #{step_id}: #{state}: #{sequence_number}"
     machine.set_component_state(component_id, state.to_sym)
   end
 
@@ -58,8 +123,13 @@ class Stepper
     if last_step < final_step
       last_step + 1
     else
-      nil
+      final_step
     end
+  end
+
+  def current_status
+    status = single_value { db.execute CURRENT_STATUS_SQL, step_id(current_step), test_run_id }
+    status.nil? ? nil : status.to_sym
   end
 
   def last_completed_step
@@ -74,10 +144,14 @@ class Stepper
     prev_id = single_value { db.execute("select id from step_statuses order by id desc limit 1") }
     sql = <<-SQL
       insert into step_statuses
-        (id, sequence_number, test_run_id, status, started_at)
-      values (#{(prev_id || 0) + 1 }, #{sequence_number}, #{test_run_id}, '#{status.to_s}', #{started_at})
+        (id, step_id, test_run_id, status, started_at)
+      values (#{(prev_id || 0) + 1 }, #{step_id(sequence_number)}, #{test_run_id}, '#{status.to_s}', #{started_at})
     SQL
     db.execute sql
+  end
+
+  def step_id(sequence_number)
+    single_value { db.execute STEP_SQL, sequence_number, program_id }
   end
 
   private
@@ -90,7 +164,7 @@ class Stepper
   end
 
   def program_id
-    single_value { db.execute("select id from programs where purpose = ?", @program.to_s) }
+    @program_id ||= single_value { db.execute("select id from programs where purpose = ?", @program.to_s) }
   end
 
   def db
@@ -114,5 +188,4 @@ class Stepper
   def test_run_id
     @test_run_id ||= (last_test_run || 0) + 1
   end
-
 end

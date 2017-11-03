@@ -9,7 +9,7 @@ class Machine
   def initialize
     logger.level = Logger::DEBUG
     @config = Configuration.new
-    #activate_valves
+    activate_valves
   end
 
   def start
@@ -63,6 +63,7 @@ class Machine
   end
 
   def halt
+    # todo log halt first
     ready
   end
 
@@ -94,7 +95,11 @@ class Machine
   end
 
   def set_component_state(id, state)
-    valve[id].set_state state
+    valves[id].set_state(state)
+  end
+
+  def check_component_state(id)
+    valves[id].in_position?
   end
 
   private
