@@ -77,3 +77,24 @@ valves:
       name: Burp
       type: NC
       open: P8_40
+switches:
+   -  id: 1
+      name: clean
+      pin: P9_29
+      pull_down: yes
+   -  id: 2
+      name: brew
+      pin: P9_30
+      pull_down: yes
+   -  id: 3
+      name: run
+      pin: P9_31
+      pull_down: yes
+   -  id: 4
+      name: halt
+      pin: P9_41
+      pull_down: yes
+   -  id: 5
+      name: reset
+      pin: P9_42
+      pull_down: yes
