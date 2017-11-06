@@ -22,7 +22,7 @@ describe Machine do
   end
 
   it "creates a hash for each switch" do
-    expect(first_switch.keys.sort).to eq( [:id, :name, :pin, :pull_down] )
+    expect(first_switch.keys.sort).to eq( [:id, :name, :pin, :pin_obj, :pull_down] )
   end
 
   describe "#check_button" do

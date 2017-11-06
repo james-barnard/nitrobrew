@@ -77,6 +77,8 @@ class Machine
   def reset
     # todo log that the test_run has been reset
     # todo deletes the stepper
+    # check the switch to return to "offline" mode
+    #     both the clean and brew buttons should be off
     start
   end
 
@@ -84,6 +86,7 @@ class Machine
   def check_set_program
   end
 
+  # should this go away?
   def verify_program
   end
 
@@ -121,6 +124,8 @@ class Machine
 
   def activate_switches
     config.switches.each do | switch |
+      temp_hsh = { "pin_obj" => GPIOPin.new(switch["pin"].to_sym, :IN, :PULLDOWN) }
+      switch.merge!(temp_hsh)
       switches[switch["id"]] = symbolize_keys(switch)
     end
   end
@@ -144,7 +149,7 @@ class Machine
   end
 
   def symbolize_keys(hash)
-    hash.inject({}) do | memo,(k,v) |
+    hash.inject({}) do | memo, (k,v) |
       memo[k.to_sym] = v
       memo
     end

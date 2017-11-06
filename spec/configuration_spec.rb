@@ -1,7 +1,7 @@
   RSpec.describe Configuration do
     
     let(:config) {Configuration.new}
-    let(:valid_setup) do
+    let(:valid_valve_setup) do
       "valves:
       -  "
     end
@@ -14,7 +14,14 @@
          sense_open: P8_5
          sense_closed: P8_6"
     end
-    let(:valid_config) { valid_setup + valid_valve }
+    let(:valid_switch) do
+      "switches:
+      -  id: 1
+         name: clean
+         pin: P9_29
+         pull_down: yes\n"
+    end
+    let(:valid_config) { valid_switch + valid_valve_setup + valid_valve }
     let(:duplicate_id) do
       valid_config + "\n      -  id: v2"
     end
