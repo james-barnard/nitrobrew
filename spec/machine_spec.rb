@@ -1,7 +1,7 @@
 describe Machine do
 
   let(:machine) { Machine.new }
-  let(:first_switch) { machine.send(:switches)[1] }
+  let(:run_switch) { machine.send(:switches)[:run] }
   let(:valve_v2) { machine.send(:valves)["v2"] }
 
   it "configures itself" do
@@ -18,14 +18,18 @@ describe Machine do
   end
 
   it "creates a hash of switches" do
-    expect(machine.send(:switches)[1]).to be_a_kind_of(Hash)
+    expect(machine.send(:switches)[:run]).to be_a_kind_of(Hash)
   end
 
   it "creates a hash for each switch" do
-    expect(first_switch.keys.sort).to eq( [:id, :name, :pin, :pin_obj, :pull_down] )
+    expect(run_switch.keys.sort).to eq( [:id, :name, :pin, :pin_id, :pull_down] )
   end
 
-  describe "#check_button" do
+  it "has a pin object that is a GPIOPin" do
+    expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
+  end
+
+  describe "#check_action" do
     it "recognizes a button push" do
       allow(machine).to receive(:check_button).with(:halt).and_return(:halt)
       machine.send(:check_action, :halt)
@@ -36,31 +40,35 @@ describe Machine do
   describe "#check_set_program" do
     it "recognizes a program selection" do
       allow(machine).to receive(:check_set_program).and_return(:clean)
-      allow(machine).to receive(:ready)
-      expect { machine.start }.to change { machine.program }
+      allow(machine).to receive(:run)
+      allow(machine).to receive(:check_action).and_return(:run)
+      expect { machine.ready }.to change { machine.program }
     end
-  end
 
-  describe "#log" do
-    let(:stdout_logger) { log = Logger.new(STDOUT) }
-
-    it "logs select program" do
-      allow(machine).to receive(:check_set_program).and_return(:clean)
-      allow(machine).to receive(:ready)
-      allow(machine).to receive(:logger).and_return(stdout_logger)
-
-      expect { machine.start }.to output.to_stdout_from_any_process
+    it "recognizes a clean program selection" do
+      allow(machine).to receive(:check_button).with(:clean).and_return(:clean)
+      allow(machine).to receive(:check_button).with(:brew).and_return(false)
+      expect(machine.check_set_program).to eq(nil)
+      expect(machine.check_set_program).to eq(:clean)
     end
-  end
 
-  describe "#start" do
-    it "loops until it gets a program" do
-      allow(machine).to receive(:ready)
-      allow(machine).to receive(:check_set_program).and_return(nil, "a program")
-
-      machine.start
-      expect(machine).to have_received(:ready)
+    it "recognizes a brew program selection" do
+      allow(machine).to receive(:check_button).with(:clean).and_return(false)
+      allow(machine).to receive(:check_button).with(:brew).and_return(:brew)
+      expect(machine.check_set_program).to eq(nil)
+      expect(machine.check_set_program).to eq(:brew)
     end
+
+    it "recognizes a load program selection" do
+      allow(machine).to receive(:check_button).with(:clean).and_return(false)
+      allow(machine).to receive(:check_button).with(:brew).and_return(false)
+      expect(machine.check_set_program).to eq(nil)
+      expect(machine.check_set_program).to eq(:load)
+    end
+
+    it "lights up the correct light for the selected program"
+
+    it "deletes the stepper when a new program is selected"
   end
 
   describe "#ready" do
@@ -73,14 +81,8 @@ describe Machine do
       expect(machine).to have_received(:run)
     end
 
-    it "loops until it gets a reset command" do
-      allow(machine).to receive(:start)
-      allow(machine).to receive(:check_action).with(:run).and_return(false)
-      allow(machine).to receive(:check_action).with(:reset).and_return(nil, true)
+    it "lights up the pause light after it receives a halt"
 
-      machine.ready
-      expect(machine).to have_received(:start)
-    end
   end
 
   describe "#run" do
@@ -103,6 +105,9 @@ describe Machine do
       machine.run
       expect(machine).to have_received(:done)
     end
+
+    it "deletes the stepper when it finishes the program"
+
   end
 
   describe "#set_component_state" do

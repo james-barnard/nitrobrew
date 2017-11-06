@@ -9,38 +9,23 @@ class Machine
   def initialize
     logger.level = Logger::DEBUG
     @config = Configuration.new
-    #activate_valves
+    activate_valves
     activate_switches
-  end
-
-  def start
-    @status = "offline"
-    prog = nil
-    while prog.nil? do
-      prog = check_set_program
-      sleep 1
-    end
-    @program = prog
-    log("stepper:start", "program selected", program)
-    ready
   end
 
   def ready
     @status = "ready"
     action = nil
     while !action do
+      @program = check_set_program
       action = :run if check_action(:run)
-      action ||= :reset if check_action(:reset)
       sleep 1
     end
     send action
   end
-
-  # stepper verifies that we have a program to run, for now
-  # if halted, run resumes by starting at current step
-  # select pgm increments run counter, so run naturally starts with step one
-  # therefore, press halt/reset to start over and halt/run to resume
+  
   def run
+    log("stepper:run", "program started", program)
     @status = "busy"
     last_status = nil
     action = nil
@@ -64,30 +49,31 @@ class Machine
   end
 
   def halt
-    # todo log halt first
+    log("stepper:run", "halted", program)
     ready
   end
 
   def done
     # todo log that the test_run is done
     # todo deletes the stepper
-    start
+    ready
   end
-
-  def reset
-    # todo log that the test_run has been reset
-    # todo deletes the stepper
-    # check the switch to return to "offline" mode
-    #     both the clean and brew buttons should be off
-    start
-  end
-
 
   def check_set_program
-  end
+    temp_program = if check_button(:clean)
+      :clean
+    elsif check_button(:brew)
+      :brew
+    else
+      :load
+    end
 
-  # should this go away?
-  def verify_program
+    if temp_program == @last_prog
+      temp_program
+    else
+      @last_prog = temp_program
+      @program
+    end
   end
 
   def log(method, label, value)
@@ -109,6 +95,8 @@ class Machine
   private
   def check_action(button)
     result = check_button(button)
+    return false unless result
+
     if @last_button_check == result
       @last_button_check = nil
       return true
@@ -118,15 +106,16 @@ class Machine
     false
   end
 
-  # checks the button and returns the name of the button if it is pressed, or nil.
   def check_button(button)
+    return button if switches[button][:pin].digital_read == :HIGH
+    
+    false
   end
 
   def activate_switches
     config.switches.each do | switch |
-      temp_hsh = { "pin_obj" => GPIOPin.new(switch["pin"].to_sym, :IN, :PULLDOWN) }
-      switch.merge!(temp_hsh)
-      switches[switch["id"]] = symbolize_keys(switch)
+      switch["pin"] = activate_switch_pin(switch)
+      switches[switch["name"].to_sym] = symbolize_keys(switch)
     end
   end
 
@@ -134,6 +123,15 @@ class Machine
     config.valves.each do | valve |
       valves[valve["id"]] = Valve.new(valve)
     end
+  end
+
+  def activate_switch_pin(switch)
+    switches.each do | k, v |
+      if v[:pin] == switch["pin_id"]
+        return v[:pin_obj]
+      end
+    end
+    GPIOPin.new(switch["pin_id"].to_sym, :IN, :PULLDOWN)
   end
 
   def switches

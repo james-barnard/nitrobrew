@@ -80,21 +80,17 @@ valves:
 switches:
    -  id: 1
       name: clean
-      pin: P9_29
+      pin_id: P9_29
       pull_down: yes
    -  id: 2
       name: brew
-      pin: P9_30
+      pin_id: P9_30
       pull_down: yes
    -  id: 3
       name: run
-      pin: P9_31
+      pin_id: P9_31
       pull_down: yes
    -  id: 4
       name: halt
-      pin: P9_41
-      pull_down: yes
-   -  id: 5
-      name: reset
-      pin: P9_42
+      pin_id: P9_31
       pull_down: yes
