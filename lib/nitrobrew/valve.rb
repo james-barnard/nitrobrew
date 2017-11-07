@@ -56,7 +56,7 @@ class Valve
 	end
 
 	def timed_out!
-		(Time.now - set_time) > TIMEOUT ? raise("Valve has timed out") : false 
+    (Time.now - set_time) > TIMEOUT ? raise("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds") : false 
 	end
 
 	def nc_open

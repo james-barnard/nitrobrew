@@ -41,13 +41,14 @@ class Stepper
   DURATION_SQL = <<-SQL
     select duration
     from steps
-    where sequence_number = ?
+    where step_id = ?
   SQL
   STARTED_AT_SQL = <<-SQL
     select started_at
     from step_statuses
     where status = 'soaking'
     and step_id = ?
+    and test_run_id = ?
   SQL
 
   def initialize(database, program, machine)
@@ -79,7 +80,7 @@ class Stepper
   end
 
   def check_soak_time
-    started_at = single_value { db.execute STARTED_AT_SQL, step_id(current_step) }
+    started_at = single_value { db.execute STARTED_AT_SQL, step_id(current_step), test_run_id }
     soak_duration = single_value { db.execute DURATION_SQL, step_id(current_step) }
     if Time.now.to_i - started_at < soak_duration
       :soaking
