@@ -41,7 +41,7 @@ class Stepper
   DURATION_SQL = <<-SQL
     select duration
     from steps
-    where step_id = ?
+    where sequence_number = ?
   SQL
   STARTED_AT_SQL = <<-SQL
     select started_at
@@ -72,7 +72,6 @@ class Stepper
     elsif current_status == :completed
       status = :done
     else
-      debugger
       raise("Unknown current status in step: #{current_status}")
     end
     set_current_status(status) if current_status != status

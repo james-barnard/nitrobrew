@@ -36,7 +36,7 @@ class Machine
       step_status = stepper.step
       log("machine:run", "status", step_status) if step_status != last_status
       last_status = step_status
-      action = :done if step_status == :done
+      action = :done if step_status =~ /done$/
       sleep 1
     end
     send action
