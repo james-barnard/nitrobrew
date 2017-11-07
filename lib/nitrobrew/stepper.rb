@@ -47,7 +47,7 @@ class Stepper
     select started_at
     from step_statuses
     where status = 'soaking'
-    where step_id = ?
+    and step_id = ?
   SQL
 
   def initialize(database, program, machine)
