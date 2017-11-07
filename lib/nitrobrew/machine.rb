@@ -145,7 +145,7 @@ class Machine
   end
 
   def logger
-    @logger ||= Logger.new('log/run.log', 10, 1024)
+    @logger ||= Logger.new('log/run.log', 10, 10240)
   end
 
   def symbolize_keys(hash)
