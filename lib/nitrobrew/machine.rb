@@ -7,6 +7,7 @@ class Machine
   attr_writer :program
 
   def initialize
+    log("machine:initialize", "start", nil)
     logger.level = Logger::DEBUG
     @config = Configuration.new
     activate_valves
@@ -14,6 +15,7 @@ class Machine
   end
 
   def ready
+    log("machine:ready", "start", nil)
     @status = "ready"
     action = nil
     while !action do
@@ -23,16 +25,16 @@ class Machine
     end
     send action
   end
-  
+
   def run
-    log("stepper:run", "program started", program)
+    log("machine:run", "program starting", @program)
     @status = "busy"
     last_status = nil
     action = nil
     while !action do
       action = :halt if check_action(:halt)
       step_status = stepper.step
-      log("stepper:run", "step_status", step_status) if step_status != last_status
+      log("machine:run", "status", step_status) if step_status != last_status
       last_status = step_status
       action = :done if step_status == :done
       sleep 1
@@ -49,7 +51,7 @@ class Machine
   end
 
   def halt
-    log("stepper:run", "halted", program)
+    log("machine:run", "halted", nil)
     ready
   end
 
@@ -108,20 +110,20 @@ class Machine
 
   def check_button(button)
     return button if switches[button][:pin].digital_read == :HIGH
-    
+
     false
+  end
+
+  def activate_valves
+    config.valves.each do | valve |
+      valves[valve["id"]] = Valve.new(valve)
+    end
   end
 
   def activate_switches
     config.switches.each do | switch |
       switch["pin"] = activate_switch_pin(switch)
       switches[switch["name"].to_sym] = symbolize_keys(switch)
-    end
-  end
-
-  def activate_valves
-    config.valves.each do | valve |
-      valves[valve["id"]] = Valve.new(valve)
     end
   end
 
