@@ -41,7 +41,7 @@ class Stepper
   DURATION_SQL = <<-SQL
     select duration
     from steps
-    where step_id = ?
+    where id = ?
   SQL
   STARTED_AT_SQL = <<-SQL
     select started_at
