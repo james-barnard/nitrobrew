@@ -61,17 +61,21 @@ class Machine
     ready
   end
 
-  def check_set_program
-    temp_program = if check_button(:clean)
+  def program_selector
+    if check_button(:clean)
       :clean
     elsif check_button(:brew)
       :brew
     else
       :load
     end
+  end
+
+  def check_set_program
+    temp_program = program_selector
 
     if temp_program == @last_prog
-      log("machine:ready", "program selected", temp_program)
+      log("machine:ready", "program selected", temp_program) if temp_program != @program
       temp_program
     else
       @last_prog = temp_program
@@ -92,7 +96,12 @@ class Machine
   end
 
   def check_component_state(id)
-    valves[id].in_position?
+    begin
+      valves[id].in_position?
+    rescue RuntimeError => e
+      log("machine:run", "#{e.message}", nil)
+      raise
+    end
   end
 
   private

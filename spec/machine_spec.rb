@@ -2,7 +2,7 @@ describe Machine do
 
   let(:machine) { Machine.new }
   let(:run_switch) { machine.send(:switches)[:run] }
-  let(:valve_v2) { machine.send(:valves)["v2"] }
+  let(:valve_2) { machine.send(:valves)[2] }
 
   it "configures itself" do
     expect(machine.config).to be_a_kind_of(Configuration)
@@ -111,11 +111,19 @@ describe Machine do
   end
 
   describe "#set_component_state" do
-    xit "calls open on the valve" do
-      allow(valve_v2).to receive(:open)
-      machine.set_component_state("v2", "open")
+    it "calls open on the valve" do
+      allow(valve_2).to receive(:open)
+      machine.set_component_state(2, "open")
 
-      expect(valve_v2).to have_received(:open)
+      expect(valve_2).to have_received(:open)
     end
+  end
+  
+  let(:timed_out_error) { "Valve Valve 2 has timed out: 3.00033 seconds" }
+  it "raises an error if the time elapsed has been too long" do
+    allow(valve_2).to receive(:in_position?).and_raise(timed_out_error)
+    allow(machine).to receive(:log)
+    expect { machine.check_component_state(2) }.to raise_error(timed_out_error)
+    expect(machine).to have_received(:log).once
   end
 end
