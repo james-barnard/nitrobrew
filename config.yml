@@ -1,4 +1,3 @@
-# control point    Desc   type   open    close    sense open    sense closed
 valves:
    #-  id: v1
    #   name: Brew Vacuum
