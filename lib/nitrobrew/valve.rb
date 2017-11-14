@@ -34,6 +34,7 @@ class Valve
 	end
 
 	def in_position?
+		return true if @type == "NC"
 		get_pin("sense_#{current_status}") == :HIGH or timed_out!
 	end
 

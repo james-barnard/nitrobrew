@@ -26,6 +26,10 @@ describe Valve do
       nc_valve.set_state(:open)
       expect(nc_valve.current_status).to eq(:open)
     end
+    
+    it "returns true if its position is checked" do
+      expect(nc_valve.in_position?).to be true
+    end
   end
     
   context "it is a powered valve" do 
