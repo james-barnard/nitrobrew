@@ -62,7 +62,7 @@ describe Valve do
       it "raises an error if the time elapsed has been too long" do
         allow(powered_valve.send(:pins)["sense_closed"]).to receive(:digital_read).and_return(:LOW)
         powered_valve.set_time = Time.now - Valve::TIMEOUT
-        expect {powered_valve.in_position?}.to raise_error("Valve has timed out")
+        expect {powered_valve.in_position?}.to raise_error(/^Valve \(\w+\) has timed out: \d+\.\d+ seconds$/)
       end
 
       it "does not raise an error if the time elapsed isn't too long" do
