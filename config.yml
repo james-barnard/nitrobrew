@@ -1,78 +1,78 @@
 valves:
-   #-  id: v1
+   #-  id: 1
    #   name: Brew Vacuum
-   #   type: powered
+   #   type: NC
    #   open: P8_3
    #   close: P8_4
    #   sense_open: P8_5
    #   sense_closed: P8_6
-   -  id: v2
+   -  id: 2
       name: Brew In
-      type: powered
+      type: NC
       open: P8_7
       close: P8_8
       sense_open: P8_9
       sense_closed: P8_10
-   -  id: v3
+   -  id: 3
       name: Brew Out
-      type: powered
+      type: NC
       open: P8_11
       close: P8_12
       sense_open: P8_13
       sense_closed: P8_14
-   -  id: v4
+   -  id: 4
       name: Filter purge Out
-      type: powered
+      type: NC
       open: P8_15
       close: P8_16
       sense_open: P8_17
       sense_closed: P8_18
-   #-  id: v5
+   #-  id: 5
    #   name: Bright In
-   #   type: powered
+   #   type: NC
    #   open: P8_19
    #   close: P8_20
    #   sense_open: P8_21
    #   sense_closed: P8_22
-   #-  id: v6
+   #-  id: 6
    #   name: Bright Out
-   #   type: powered
+   #   type: NC
    #   open: P8_23
    #   close: P8_24
    #   sense_open: P8_25
    #   sense_closed: P8_26
-   -  id: v7
+   -  id: 7
       name: Decant
-      type: powered
+      type: NC
       open: P8_27
       close: P8_28
       sense_open: P8_29
       sense_closed: P8_30
-   -  id: v8
+   -  id: 8
       name: Filter H2O
       type: NC
       open: P8_31
-   -  id: v9
+   -  id: 9
       name: Filter Backflush
       type: NC
       open: P8_35
-   -  id: v10
+   -  id: 10
       name: Brew H2O
       type: NC
       open: P8_36
-   -  id: v11
+   -  id: 11
       name: Brew N2
       type: NC
       open: P8_37
-   -  id: v12
+   -  id: 12
       name: process H2O
       type: NC
       open: P8_38
-   -  id: v13
+   -  id: 13
       name: Condition N2
       type: NC
       open: P8_39
-   -  id: v14
+   -  id: 14
       name: Burp
       type: NC
       open: P8_40
