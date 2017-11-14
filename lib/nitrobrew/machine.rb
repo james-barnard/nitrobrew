@@ -71,6 +71,7 @@ class Machine
     end
 
     if temp_program == @last_prog
+      log("machine:ready", "program selected", temp_program)
       temp_program
     else
       @last_prog = temp_program
