@@ -57,8 +57,12 @@ class Machine
 
   def done
     # todo log that the test_run is done
-    # todo deletes the stepper
+    delete_stepper
     ready
+  end
+
+  def delete_stepper
+    @stepper = nil
   end
 
   def program_selector
@@ -75,6 +79,7 @@ class Machine
     temp_program = program_selector
 
     if temp_program == @last_prog
+      delete_stepper
       log("machine:ready", "program selected", temp_program) if temp_program != @program
       temp_program
     else

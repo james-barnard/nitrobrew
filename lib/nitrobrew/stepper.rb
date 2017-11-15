@@ -193,6 +193,7 @@ class Stepper
     single_value { db.execute("select id from test_runs order by id desc limit 1") }
   end
 
+  #todo create a here doc
   def create_test_run
     db.execute("insert into test_runs (id, test_cell_id, program_id, name, started_at) values (#{test_run_id}, #{@machine.id}, #{program_id}, 'test run name', #{Time.now.to_i})")
   end

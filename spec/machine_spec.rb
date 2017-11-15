@@ -3,6 +3,8 @@ describe Machine do
   let(:machine) { Machine.new }
   let(:run_switch) { machine.send(:switches)[:run] }
   let(:valve_2) { machine.send(:valves)[2] }
+  let(:fake_stepper) { double("fs1") }
+  let(:fake_stepper2) { double("fs2") }
 
   it "configures itself" do
     expect(machine.config).to be_a_kind_of(Configuration)
@@ -68,7 +70,6 @@ describe Machine do
 
     it "lights up the correct light for the selected program"
 
-    it "deletes the stepper when a new program is selected"
   end
 
   describe "#ready" do
@@ -83,10 +84,20 @@ describe Machine do
 
     it "lights up the pause light after it receives a halt"
 
+    it "deletes the stepper when a new program is selected" do
+      allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
+      allow(machine).to receive(:ready)
+      allow(machine).to receive(:program_selector).and_return(:brew)
+      stepper = machine.stepper
+      machine.halt
+      machine.check_set_program
+      machine.check_set_program
+      expect(machine.stepper).to_not eq(stepper)
+    end
+
   end
 
   describe "#run" do
-    let(:fake_stepper) { double() }
     it "loops until it gets a halt command" do
       allow(machine).to receive(:halt)
       allow(machine).to receive(:stepper).and_return(fake_stepper)
@@ -105,9 +116,16 @@ describe Machine do
       machine.run
       expect(machine).to have_received(:done)
     end
+  end
 
-    it "deletes the stepper when it finishes the program"
-
+  describe "#done" do
+    it "deletes the stepper when it finishes the program" do
+      allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
+      allow(machine).to receive(:ready)
+      stepper = machine.stepper
+      machine.done
+      expect(machine.stepper).to_not eq(stepper)
+    end
   end
 
   describe "#set_component_state" do
