@@ -24,6 +24,14 @@ class Stepper
     order by ss.id desc
     limit 1
   SQL
+  NEXT_STEP_SQL = <<-SQL
+    select sequence_number
+    from steps
+    where program_id = ?
+    and sequence_number > ?
+    order by sequence_number
+    limit 1
+  SQL
   CURRENT_STATUS_SQL = <<-SQL
     select status
     from step_statuses
@@ -121,10 +129,14 @@ class Stepper
   def current_step
     last_step = last_completed_step || 0
     if last_step < final_step
-      last_step + 1
+      next_step(last_step)
     else
       final_step
     end
+  end
+
+  def next_step(last_step)
+    single_value { db.execute NEXT_STEP_SQL, program_id, last_step }
   end
 
   def current_status
