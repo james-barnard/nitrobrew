@@ -97,7 +97,6 @@ describe Stepper do
     context "reports the step status" do 
       before(:each) { allow(stepper).to receive(:test_run_id).and_return(1) }
       it "one component is not in position" do
-        allow(stepper).to receive(:current_step).and_return(10)
         allow(machine).to receive(:set_component_state)
         allow(machine).to receive(:check_component_state).and_return(false)
 
@@ -107,7 +106,7 @@ describe Stepper do
       end
 
       it "all components are in position" do
-        allow(stepper).to receive(:current_step).and_return(10)
+        stepper.save_step_status(10, 1, :pending)
         allow(machine).to receive(:set_component_state)
         allow(machine).to receive(:check_component_state).and_return(true)
         
@@ -117,8 +116,7 @@ describe Stepper do
       end
 
       it "has not finished soaking" do
-        allow(stepper).to receive(:current_step).and_return(10)
-        allow(stepper).to receive(:current_status).and_return(:soaking)
+        stepper.save_step_status(10, 1, :soaking)
         allow(stepper).to receive(:check_soak_time).and_return(:soaking)
 
         expect(stepper.step).to eq("10:soaking")
@@ -126,25 +124,22 @@ describe Stepper do
 
       context "has finished soaking" do
         it "returns completed" do
-          allow(stepper).to receive(:current_step).and_return(10)
-          allow(stepper).to receive(:current_status).and_return(:soaking)
+          stepper.save_step_status(10, 1, :soaking)
           allow(stepper).to receive(:check_soak_time).and_return(:completed)
 
           expect(stepper.step).to eq("10:completed")
         end
 
         it "moves to the next step when the duration has ended" do
-          allow(stepper).to receive(:current_step).and_return(10)
-          allow(stepper).to receive(:current_status).and_return(:soaking)
+          stepper.save_step_status(10, 1, :soaking)
           allow(stepper).to receive(:check_soak_time).and_return(:completed)
 
           expect(stepper.step).to eq("10:completed")
         end
 
         it "returns done when it finishes the last step" do
-          allow(stepper).to receive(:current_step).and_return(20)
-          allow(stepper).to receive(:current_status).and_return(:completed)
-
+          stepper.save_step_status(20, 1, :completed)
+          
           expect(stepper.step).to eq("20:done")
         end
       end

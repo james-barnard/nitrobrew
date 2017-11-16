@@ -68,22 +68,23 @@ class Stepper
     create_test_run
   end
 
-  # returns step_status as #{current_step}:#{status}" or :done when complete
-  # so we can log it and/or move on
   def step
-    if current_status.nil?
+    @current_step = nil
+    last_reported_status = current_status
+    case last_reported_status
+    when nil
       set_component_states
       status = check_component_states
-    elsif current_status == :pending
+    when :pending
       status = check_component_states
-    elsif current_status == :soaking
+    when :soaking
       status = check_soak_time
-    elsif current_status == :completed
+    when :completed
       status = :done
     else
-      raise("Unknown current status in step: #{current_status}")
+      raise("Unknown current status in step: #{last_reported_status}")
     end
-    set_current_status(status) if current_status != status
+    set_current_status(status) if last_reported_status != status
     "#{current_step}:#{status}"
   end
 
@@ -127,9 +128,8 @@ class Stepper
   end
 
   def current_step
-    last_step = last_completed_step || 0
-    if last_step < final_step
-      next_step(last_step)
+    @current_step ||= if last_completed_step < final_step
+      next_step(last_completed_step)
     else
       final_step
     end
@@ -145,7 +145,7 @@ class Stepper
   end
 
   def last_completed_step
-    single_value { db.execute COMPLETED_STEP_SQL, test_run_id }
+    single_value { db.execute COMPLETED_STEP_SQL, test_run_id } || 0
   end
 
   def final_step
