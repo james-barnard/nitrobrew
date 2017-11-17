@@ -1,4 +1,3 @@
-
 describe Valve do
 
   let (:nc_params) { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7"} }
