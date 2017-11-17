@@ -45,6 +45,11 @@
     it "#new loads valve definitions into an array" do
       expect(config.valves).to be_a_kind_of(Array)
     end
+
+    it "loads light definitions into an array" do 
+      expect(config.lights).to be_a_kind_of(Array)
+      expect(config.lights.first).to be_a_kind_of(Hash)
+    end
   
     it "raises an exception if there are no valves" do
       allow(File).to receive(:open).and_return(invalid_config)

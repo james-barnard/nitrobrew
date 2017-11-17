@@ -7,10 +7,10 @@ class Machine
   attr_writer :program
 
   def initialize
-    # todo initializes a light manager
     log("machine:initialize", "start", nil)
     logger.level = Logger::DEBUG
     @config = Configuration.new
+    LightManager.new(config.lights)
     activate_valves
     activate_switches
   end

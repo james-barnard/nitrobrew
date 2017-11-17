@@ -93,3 +93,14 @@ switches:
       name: halt
       pin_id: P9_31
       pull_down: yes
+lights:
+   -  name: brew
+      pin_id: P8_26
+   -  name: clean
+      pin_id: P8_27
+   -  name: load
+      pin_id: P8_28
+   -  name: ready
+      pin_id: P8_29
+   -  name: run
+      pin_id: P8_30

@@ -25,4 +25,39 @@ class LightManager
       memo
     end
   end
+
+  def all_on
+    lights.each do | light |
+      light[1][:pin].digital_write(:HIGH)
+    end
+  end
+
+  def on_program_change(program)
+    program_lights_off
+    light_on(program)
+  end
+
+  def ready_mode
+    light_off(:run)
+    light_on(:ready)
+  end
+
+  def run_mode
+    light_off(:ready)
+    light_on(:run)
+  end
+
+  def light_on(light)
+    lights[light][:pin].digital_write(:HIGH)
+  end
+
+  def light_off(light)
+    lights[light][:pin].digital_write(:LOW)
+  end
+
+  def program_lights_off
+    lights[:brew][:pin].digital_write(:LOW)
+    lights[:clean][:pin].digital_write(:LOW)
+    lights[:load][:pin].digital_write(:LOW)
+  end
 end
