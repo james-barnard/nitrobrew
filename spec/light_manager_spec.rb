@@ -3,8 +3,14 @@ describe LightManager do
   let (:real_config) { Configuration.new }
   let (:real_manager) { LightManager.new(real_config.lights) }
   let (:test_manager) { LightManager.new(test_params) }
-  let (:test_params) { [{"name" => "brew", "pin_id" => "P8_26"}, {"name" => "clean", "pin_id" => "P8_27"}, {"name" => "load", "pin_id" => "P8_28"}, {"name" => "ready", "pin_id" => "P8_29"}, {"name" => "run", "pin_id" => "P8_30" }] }
-  
+  let (:test_params) do
+    [ {"name" => "brew",  "pin_id" => "P8_26"},
+      {"name" => "clean", "pin_id" => "P8_27"},
+      {"name" => "load",  "pin_id" => "P8_28"},
+      {"name" => "ready", "pin_id" => "P8_29"},
+      {"name" => "run",   "pin_id" => "P8_30"} ]
+  end
+
   describe "#initialize" do
     it "uses the config file" do
       expect(real_manager.send(:lights)[:brew][:pin]).to be_an_instance_of(GPIOPin)

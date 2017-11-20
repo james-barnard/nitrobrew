@@ -1,3 +1,6 @@
+require_relative 'utilities.rb'
+include Utilities
+
 class LightManager
 
   def initialize(params)
@@ -17,18 +20,11 @@ class LightManager
 
   def activate_light_pin(light)
     GPIOPin.new(light["pin_id"].to_sym, :OUT)
-  end
-
-  def symbolize_keys(hash)
-    hash.inject({}) do | memo, (k,v) |
-      memo[k.to_sym] = v
-      memo
-    end
-  end
+  end 
 
   def all_on
-    lights.each do | light |
-      light[1][:pin].digital_write(:HIGH)
+    lights.keys.each do | light_key |
+      light_on(light_key)
     end
   end
 
@@ -47,17 +43,17 @@ class LightManager
     light_on(:run)
   end
 
-  def light_on(light)
-    lights[light][:pin].digital_write(:HIGH)
+  def light_on(light_key)
+    lights[light_key][:pin].digital_write(:HIGH)
   end
 
-  def light_off(light)
-    lights[light][:pin].digital_write(:LOW)
+  def light_off(light_key)
+    lights[light_key][:pin].digital_write(:LOW)
   end
 
   def program_lights_off
-    lights[:brew][:pin].digital_write(:LOW)
-    lights[:clean][:pin].digital_write(:LOW)
-    lights[:load][:pin].digital_write(:LOW)
+    light_off(:brew)
+    light_off(:clean)
+    light_off(:load)
   end
 end

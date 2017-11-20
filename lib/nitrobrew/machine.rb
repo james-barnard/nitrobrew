@@ -1,5 +1,7 @@
 require_relative 'configuration.rb'
+require_relative 'utilities.rb'
 require 'logger'
+include Utilities
 
 class Machine
   ID = 1001
@@ -35,12 +37,19 @@ class Machine
     while !action do
       action = :halt if check_action(:halt)
       step_status = stepper.step
-      log("machine:run", "status", step_status) if step_status != last_status
-      last_status = step_status
+      on_change(:step_status, step_status) { log("machine:run", "status", step_status) }
       action = :done if step_status =~ /done$/
       sleep 1
     end
     send action
+  end
+
+  def on_change(key, value)
+    @remember_these ||= {}
+    if @remember_these[key] != value
+      @remember_these[key] = value
+      yield
+    end
   end
 
   def id
@@ -162,12 +171,5 @@ class Machine
 
   def logger
     @logger ||= Logger.new('log/run.log', 10, 10240)
-  end
-
-  def symbolize_keys(hash)
-    hash.inject({}) do | memo, (k,v) |
-      memo[k.to_sym] = v
-      memo
-    end
   end
 end

@@ -14,7 +14,7 @@ describe Machine do
     expect(machine.id).to_not be_nil
   end
 
-  xit "creates a hash of valve objects" do
+  it "creates a hash of valve objects" do
     key = machine.send(:valves).keys.first
     expect(machine.send(:valves)[key]).to be_a_kind_of(Valve)
   end
@@ -29,6 +29,27 @@ describe Machine do
 
   it "has a pin object that is a GPIOPin" do
     expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
+  end
+
+  describe "#on_change" do
+    it "logs the step status when it changes" do
+      allow(machine).to receive(:log)
+      allow(machine).to receive(:done)
+      allow(machine).to receive(:stepper).and_return(fake_stepper)
+      allow(fake_stepper).to receive(:step).and_return("2:soaking", "2:soaking", "2:done")
+
+      machine.run
+
+      expect(machine).to have_received(:log).with("machine:run", "program starting", nil).once
+      expect(machine).to have_received(:log).with("machine:run", "status", "2:soaking").once
+      expect(machine).to have_received(:log).with("machine:run", "status", "2:done").once
+    end
+
+
+    it "logs the program when a new program is selected"
+    it "calls the light manager when a program is selected"
+    it "calls the light manager when the mode changes"
+
   end
 
   describe "#check_action" do
@@ -68,8 +89,9 @@ describe Machine do
       expect(machine.check_set_program).to eq(:load)
     end
 
-    it "lights up the correct light for the selected program"
-
+    it "lights up the brew light when brew is selected"
+    it "lights up the clean light when clean is selected"
+    it "lights up the load light when load is selected"
   end
 
   describe "#ready" do
@@ -82,7 +104,9 @@ describe Machine do
       expect(machine).to have_received(:run)
     end
 
-    it "lights up the pause light after it receives a halt"
+    it "lights up the ready light when in ready mode"
+
+    it "lights up both mode lights when it receives a halt"
 
     it "deletes the stepper when a new program is selected" do
       allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
@@ -94,6 +118,8 @@ describe Machine do
       machine.check_set_program
       expect(machine.stepper).to_not eq(stepper)
     end
+
+    it "turns off the run light when a new program is selected"
 
   end
 
@@ -116,6 +142,8 @@ describe Machine do
       machine.run
       expect(machine).to have_received(:done)
     end
+
+    it "lights up the run light when it is running"
   end
 
   describe "#done" do
