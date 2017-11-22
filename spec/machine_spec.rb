@@ -4,7 +4,13 @@ describe Machine do
   let(:run_switch) { machine.send(:switches)[:run] }
   let(:valve_2) { machine.send(:valves)[2] }
   let(:fake_stepper) { double("fs1") }
-  let(:fake_stepper2) { double("fs2") }
+  let(:fake_stepper2) { double("fs2", :step => "2:done") }
+  let(:light_manager) do
+    double("light_manager",
+      :on_program_change => nil,
+      :ready_mode => nil,
+      :run_mode => nil)
+  end
 
   it "configures itself" do
     expect(machine.config).to be_a_kind_of(Configuration)
@@ -31,6 +37,29 @@ describe Machine do
     expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
   end
 
+  describe "#debounce" do
+    it "doesn't call the block the first time" do
+      @count = 0
+      machine.debounce(:key, "value") { @count += 1 }
+      expect(@count).to eq(0)
+    end
+
+    it "calls the block the second time" do
+      @count = 0
+      machine.debounce(:key, "value") { @count += 1 }
+      machine.debounce(:key, "value") { @count += 1 }
+      expect(@count).to eq(1)
+    end
+
+    it "doesn't call the block the third time" do
+      @count = 0
+      machine.debounce(:key, "value") { @count += 1 }
+      machine.debounce(:key, "value") { @count += 1 }
+      machine.debounce(:key, "value") { @count += 1 }
+      expect(@count).to eq(1)
+    end
+  end
+
   describe "#on_change" do
     it "logs the step status when it changes" do
       allow(machine).to receive(:log)
@@ -44,12 +73,6 @@ describe Machine do
       expect(machine).to have_received(:log).with("machine:run", "status", "2:soaking").once
       expect(machine).to have_received(:log).with("machine:run", "status", "2:done").once
     end
-
-
-    it "logs the program when a new program is selected"
-    it "calls the light manager when a program is selected"
-    it "calls the light manager when the mode changes"
-
   end
 
   describe "#check_action" do
@@ -58,40 +81,59 @@ describe Machine do
       machine.send(:check_action, :halt)
       expect(machine.send(:check_action, :halt)).to be_truthy
     end
+
+    it "ignores the first button press" do
+      allow(machine).to receive(:check_button).with(:run).and_return(:run)
+      expect(machine.send(:check_action, :run)).to be_falsey
+    end
   end
 
   describe "#check_set_program" do
     it "recognizes a program selection" do
-      allow(machine).to receive(:check_set_program).and_return(:clean)
       allow(machine).to receive(:run)
-      allow(machine).to receive(:check_action).and_return(:run)
+      allow(machine).to receive(:program_selector).and_return(:clean)
+      allow(machine).to receive(:check_action).and_return(false, true)
       expect { machine.ready }.to change { machine.program }
     end
 
     it "recognizes a clean program selection" do
       allow(machine).to receive(:check_button).with(:clean).and_return(:clean)
       allow(machine).to receive(:check_button).with(:brew).and_return(false)
-      expect(machine.check_set_program).to eq(nil)
-      expect(machine.check_set_program).to eq(:clean)
+      machine.program = nil
+
+      machine.check_set_program
+      expect(machine.program).to eq(nil)
+      machine.check_set_program
+      expect(machine.program).to eq(:clean)
     end
 
     it "recognizes a brew program selection" do
       allow(machine).to receive(:check_button).with(:clean).and_return(false)
       allow(machine).to receive(:check_button).with(:brew).and_return(:brew)
-      expect(machine.check_set_program).to eq(nil)
-      expect(machine.check_set_program).to eq(:brew)
+      machine.program = nil
+
+      machine.check_set_program
+      expect(machine.program).to eq(nil)
+      machine.check_set_program
+      expect(machine.program).to eq(:brew)
     end
 
     it "recognizes a load program selection" do
       allow(machine).to receive(:check_button).with(:clean).and_return(false)
       allow(machine).to receive(:check_button).with(:brew).and_return(false)
-      expect(machine.check_set_program).to eq(nil)
-      expect(machine.check_set_program).to eq(:load)
+      machine.program = nil
+
+      machine.check_set_program
+      expect(machine.program).to eq(nil)
+      machine.check_set_program
+      expect(machine.program).to eq(:load)
     end
 
-    it "lights up the brew light when brew is selected"
-    it "lights up the clean light when clean is selected"
-    it "lights up the load light when load is selected"
+    it "calls the light manager when a program is selected" do
+      allow(machine).to receive(:light_manager).and_return(light_manager)
+      machine.change_program(:load)
+      expect(light_manager).to have_received(:on_program_change).with(:load)
+    end
   end
 
   describe "#ready" do
@@ -104,9 +146,22 @@ describe Machine do
       expect(machine).to have_received(:run)
     end
 
-    it "lights up the ready light when in ready mode"
+    it "tells the light manager we are in ready mode" do
+      allow(machine).to receive(:run)
+      allow(machine).to receive(:light_manager).and_return(light_manager)
+      allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
+      machine.ready
 
-    it "lights up both mode lights when it receives a halt"
+      expect(light_manager).to have_received(:ready_mode)
+    end
+
+    it "tells the light manager we are paused" do
+      allow(machine).to receive(:run)
+      allow(machine).to receive(:light_manager).and_return(light_manager)
+      allow(machine).to receive(:check_action).with(:run).and_return(true)
+      machine.halt
+      expect(light_manager).to have_received(:ready_mode).with(:paused)
+    end
 
     it "deletes the stepper when a new program is selected" do
       allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
@@ -118,9 +173,6 @@ describe Machine do
       machine.check_set_program
       expect(machine.stepper).to_not eq(stepper)
     end
-
-    it "turns off the run light when a new program is selected"
-
   end
 
   describe "#run" do
@@ -143,7 +195,15 @@ describe Machine do
       expect(machine).to have_received(:done)
     end
 
-    it "lights up the run light when it is running"
+    it "lights up the run light when it is running" do
+      allow(machine).to receive(:ready)
+      allow(machine).to receive(:light_manager).and_return(light_manager)
+      allow(machine).to receive(:stepper).and_return(fake_stepper2)
+      allow(machine).to receive(:check_action).with(:halt).and_return(nil, true)
+      machine.run
+
+      expect(light_manager).to have_received(:run_mode)
+    end
   end
 
   describe "#done" do

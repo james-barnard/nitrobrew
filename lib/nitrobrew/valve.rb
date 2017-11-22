@@ -9,23 +9,23 @@ class Valve
 	VALID_PINS  		= { "NC" 		 => ["open"],
 								 		 "powered" => ["open", "close", "sense_open", "sense_closed"] }
 	REQUIRED_PARAMS = ["name", "id"]
-	TIMEOUT = 3 #seconds
+	TIMEOUT = 3 # seconds
 
 	def initialize(params)
 		validate!(params)
 
-		@id = params["id"]
-		@name = params["name"]
-		@type = params["type"]
-		@status = :closed #todo: write code to ensure this
+		@id     = params["id"]
+		@name   = params["name"]
+		@type   = params["type"]
+		@status = :closed
 
 		activate_pins(params)
 	end
 
-	#legal states are :open and :closed
+	# legal states are :open and :closed
 	def set_state(state)
 		send(state)
-		@status = state
+		@status   = state
 		@set_time = Time.now
 	end
 

@@ -43,7 +43,7 @@ describe LightManager do
   end
 
   describe "#on_program_change" do
-    it "turns all the lights off" do 
+    it "turns all the program lights off" do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:load][:pin]).to receive(:digital_write)
@@ -97,7 +97,7 @@ describe LightManager do
       allow(test_manager.lights[:ready][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:run][:pin]).to receive(:digital_write)
 
-      test_manager.ready_mode
+      test_manager.ready_mode(:start)
 
       expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH)
       expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW)      
@@ -110,6 +110,16 @@ describe LightManager do
       test_manager.run_mode
 
       expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:LOW)
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH)
+    end
+
+    it "lights up both run and ready lights when we are paused" do
+      allow(test_manager.lights[:ready][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:run][:pin]).to receive(:digital_write)
+
+      test_manager.ready_mode(:paused)
+
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH)
       expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH)
     end
   end

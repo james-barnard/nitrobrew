@@ -33,8 +33,8 @@ class LightManager
     light_on(program)
   end
 
-  def ready_mode
-    light_off(:run)
+  def ready_mode(status)
+    status == :paused ? light_on(:run) : light_off(:run)
     light_on(:ready)
   end
 
@@ -48,12 +48,10 @@ class LightManager
   end
 
   def light_off(light_key)
-    lights[light_key][:pin].digital_write(:LOW)
+   lights[light_key][:pin].digital_write(:LOW)
   end
 
   def program_lights_off
-    light_off(:brew)
-    light_off(:clean)
-    light_off(:load)
+    [:brew, :clean, :load].each { | light_key | light_off(light_key) }
   end
 end

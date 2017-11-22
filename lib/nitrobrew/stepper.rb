@@ -58,6 +58,12 @@ class Stepper
     and step_id = ?
     and test_run_id = ?
   SQL
+  TEST_RUN_SQL = <<-SQL
+    insert into test_runs
+    (id, test_cell_id, program_id, name, started_at)
+    values (?, ?, ?, ?, ?)
+  SQL
+
 
   def initialize(database, program, machine)
     @machine = machine
@@ -193,9 +199,8 @@ class Stepper
     single_value { db.execute("select id from test_runs order by id desc limit 1") }
   end
 
-  #todo create a here doc
   def create_test_run
-    db.execute("insert into test_runs (id, test_cell_id, program_id, name, started_at) values (#{test_run_id}, #{@machine.id}, #{program_id}, 'test run name', #{Time.now.to_i})")
+    db.execute TEST_RUN_SQL, test_run_id, @machine.id, program_id, 'test run name', Time.now.to_i
   end
 
   def test_run_id

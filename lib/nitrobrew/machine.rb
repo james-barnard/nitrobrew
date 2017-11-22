@@ -5,24 +5,25 @@ include Utilities
 
 class Machine
   ID = 1001
-  attr_reader :config, :status, :program
+  attr_reader :config, :program
   attr_writer :program
 
   def initialize
     log("machine:initialize", "start", nil)
     logger.level = Logger::DEBUG
     @config = Configuration.new
-    LightManager.new(config.lights)
+    light_manager.all_on
     activate_valves
     activate_switches
   end
 
-  def ready
-    log("machine:ready", "start", nil)
-    @status = "ready"
+  def ready(status = :start)
+    log("machine:ready", status, nil)
+    light_manager.ready_mode(status)
+
     action = nil
     while !action do
-      @program = check_set_program
+      check_set_program
       action = :run if check_action(:run)
       sleep 1
     end
@@ -31,8 +32,8 @@ class Machine
 
   def run
     log("machine:run", "program starting", @program)
-    @status = "busy"
-    last_status = nil
+    light_manager.run_mode
+
     action = nil
     while !action do
       action = :halt if check_action(:halt)
@@ -44,14 +45,6 @@ class Machine
     send action
   end
 
-  def on_change(key, value)
-    @remember_these ||= {}
-    if @remember_these[key] != value
-      @remember_these[key] = value
-      yield
-    end
-  end
-
   def id
     ID
   end
@@ -61,12 +54,11 @@ class Machine
   end
 
   def halt
-    log("machine:run", "halted", nil)
-    ready
+    ready(:paused)
   end
 
   def done
-    # todo log that the test_run is done
+    log("machine:done", "done", nil)
     delete_stepper
     ready
   end
@@ -87,15 +79,31 @@ class Machine
 
   def check_set_program
     temp_program = program_selector
+    debounce(:program, temp_program) { change_program(temp_program) }
+  end
 
-    if temp_program == @last_prog
-      delete_stepper
-      log("machine:ready", "program selected", temp_program) if temp_program != @program
-      temp_program
+  def debounce(key, value, &block)
+    @debounce_these ||= {}
+    if @debounce_these[key] == value
+      on_change(key, value, &block)
     else
-      @last_prog = temp_program
-      @program
+      @debounce_these[key] = value
     end
+  end
+
+  def on_change(key, value, &block)
+    @remember_these ||= {}
+    if @remember_these[key] != value
+      @remember_these[key] = value
+      block.call
+    end
+  end
+
+  def change_program(program)
+    delete_stepper
+    log("machine:change_program", "program selected", program)
+    light_manager.on_program_change(program)
+    @program = program
   end
 
   def log(method, label, value)
@@ -124,12 +132,7 @@ class Machine
     result = check_button(button)
     return false unless result
 
-    if @last_button_check == result
-      @last_button_check = nil
-      return true
-    else
-      @last_button_check = result
-    end
+    debounce(:button, result) { return true }
     false
   end
 
@@ -171,5 +174,9 @@ class Machine
 
   def logger
     @logger ||= Logger.new('log/run.log', 10, 10240)
+  end
+
+  def light_manager
+    @light_manager ||= LightManager.new(config.lights)
   end
 end
