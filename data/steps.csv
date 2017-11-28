@@ -1,12 +1,12 @@
-id,name,duration
-1,all closed,5
-2,cip circulate upper,0
-3,cip circulate pump,60
-4,cip circulate lower,0
-5,cip circulate pump,30
-6,cip purge filter,5
-7,rinse filter,15
-8,rinse lower,10
-9,N2 purge,30
-10,vacuum dry,120
-11,N2 charge,5
+id,pgm_id name,duration seq
+1,1,all closed,5,1
+2,1,cip circulate upper,0,2
+3,1,cip circulate pump,60,3
+4,1,cip circulate lower,0,4
+5,1,cip circulate pump,30,5
+6,1,cip purge filter,5,6
+7,1,rinse filter,15,7
+8,1,rinse lower,10,8
+9,1,N2 purge,30,9
+10,1,vacuum dry,120,10
+11,1,N2 charge,5,11

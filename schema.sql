@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS components (
   );
 CREATE TABLE IF NOT EXISTS component_states (
     id int,
-    component_id int,
     step_id int,
+    component_id int,
     state varchar(10),
     sequence_number int
   );
