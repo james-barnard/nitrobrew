@@ -178,6 +178,7 @@ class Stepper
   end
 
   def validate_program!(program)
+	  puts "validate_program: #{program}: #{@program}"
     raise("Invalid program") unless program_id
   end
 

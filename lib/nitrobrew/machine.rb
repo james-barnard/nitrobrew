@@ -31,7 +31,7 @@ class Machine
   end
 
   def run
-    log("machine:run", "program starting", @program)
+    log("machine:run", "program starting", program)
     light_manager.run_mode
 
     action = nil
@@ -115,14 +115,20 @@ class Machine
   end
 
   def set_component_state(id, state)
-    valves[id].set_state(state)
+    begin
+      valves[id].set_state(state) unless valves[id].nil?
+    rescue => e
+      log("machine:set_component_state", "#{e.message}", nil)
+      raise
+    end
   end
 
   def check_component_state(id)
+      return false if valves[id].nil?
     begin
       valves[id].in_position?
     rescue RuntimeError => e
-      log("machine:run", "#{e.message}", nil)
+      log("machine:check_component_state", "#{e.message}", nil)
       raise
     end
   end
@@ -161,6 +167,7 @@ class Machine
         return v[:pin_obj]
       end
     end
+    puts "activating switch: #{switch['pin_id']}"
     GPIOPin.new(switch["pin_id"].to_sym, :IN, :PULLDOWN)
   end
 

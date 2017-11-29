@@ -1,6 +1,6 @@
-#!/usr/bin/env ruby
+#!/usr/local/bin/ruby
 
-require 'lib/nitrobrew'
+require_relative '../lib/nitrobrew'
 
 machine = Machine.new
 machine.ready

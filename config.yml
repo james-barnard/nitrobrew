@@ -79,19 +79,19 @@ valves:
 switches:
    -  id: 1
       name: clean
-      pin_id: P9_29
+      pin_id: P9_30
       pull_down: yes
    -  id: 2
       name: brew
-      pin_id: P9_30
+      pin_id: P9_42
       pull_down: yes
    -  id: 3
       name: run
-      pin_id: P9_31
+      pin_id: P9_41
       pull_down: yes
    -  id: 4
       name: halt
-      pin_id: P9_31
+      pin_id: P9_41
       pull_down: yes
 lights:
    -  name: brew
