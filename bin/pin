@@ -1,0 +1,6 @@
+#!/usr/bin/env ruby
+#
+letters = ('A'..'Z').to_a.map { |a| [a, "#{a}+"] }.flatten
+i = ARGV[0].to_i - 1
+puts "#{ARGV[0]}: #{letters[i]}"
+

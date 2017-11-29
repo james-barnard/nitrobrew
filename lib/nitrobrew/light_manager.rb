@@ -20,7 +20,13 @@ class LightManager
 
   def activate_light_pin(light)
     GPIOPin.new(light["pin_id"].to_sym, :OUT)
-  end 
+  end
+
+  def all_off
+    lights.keys.each do | light_key |
+      light_off(light_key)
+    end
+  end
 
   def all_on
     lights.keys.each do | light_key |

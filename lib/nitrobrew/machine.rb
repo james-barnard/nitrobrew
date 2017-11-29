@@ -12,6 +12,7 @@ class Machine
     log("machine:initialize", "start", nil)
     logger.level = Logger::DEBUG
     @config = Configuration.new
+    light_manager.all_off
     light_manager.all_on
     activate_valves
     activate_switches

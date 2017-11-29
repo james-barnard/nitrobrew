@@ -36,8 +36,24 @@ describe LightManager do
       expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH).once
       expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).once
     end
+
+    it "can turn off all the lights" do
+      allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:load][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:ready][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:run][:pin]).to receive(:digital_write)
+
+      test_manager.all_off
+
+      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:LOW).once
+      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:LOW).once
+      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:LOW).once
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:LOW).once
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW).once
+    end
   end
-  
+
   it "has a hash containing its lights" do
     expect(test_manager.send(:lights).keys.sort).to eq([:brew, :clean, :load, :ready, :run])
   end
@@ -60,7 +76,7 @@ describe LightManager do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:load][:pin]).to receive(:digital_write)
-      
+
       test_manager.on_program_change(:brew)
 
       expect(test_manager).to have_received(:program_lights_off)
@@ -72,7 +88,7 @@ describe LightManager do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:load][:pin]).to receive(:digital_write)
-      
+
       test_manager.on_program_change(:clean)
 
       expect(test_manager).to have_received(:program_lights_off)
@@ -84,7 +100,7 @@ describe LightManager do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:load][:pin]).to receive(:digital_write)
-      
+
       test_manager.on_program_change(:load)
 
       expect(test_manager).to have_received(:program_lights_off)
@@ -100,7 +116,7 @@ describe LightManager do
       test_manager.ready_mode(:start)
 
       expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH)
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW)      
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW)
     end
 
     it "lights up the run light when running" do
