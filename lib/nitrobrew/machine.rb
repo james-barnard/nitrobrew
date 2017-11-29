@@ -13,7 +13,9 @@ class Machine
     logger.level = Logger::DEBUG
     @config = Configuration.new
     light_manager.all_off
+    sleep 10
     light_manager.all_on
+    sleep 5
     activate_valves
     activate_switches
   end
