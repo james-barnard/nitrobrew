@@ -14,7 +14,7 @@ puts "PINS"
 system "cat #{PINS}/pinmux-pins | grep #{pin}"
 
 puts "Pin Info"
-info = Beaglebone::PINS[pin]
+info = Beaglebone::PINS[pin.to_s]
 puts info
 puts "done"
 
