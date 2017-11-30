@@ -16,5 +16,12 @@ system "cat #{PINS}/pinmux-pins | grep #{pin}"
 puts "Pin Info"
 info = Beaglebone::PINS[pin.to_sym]
 puts info
+
+pin_number = info[:gpio]
+gpio_base_dir = "/sys/class/gpio/"
+gpio_dir = "#{gpio_base_dir}gpio#{pin_number}/"
+system %Q(cat "#{gpio_dir}direction")
+system %Q(cat "#{gpio_dir}value")
+system %Q(cat "#{gpio_dir}active_low")
 puts "done"
 
