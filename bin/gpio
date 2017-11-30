@@ -11,7 +11,7 @@ puts   CONFIG_PIN
 system CONFIG_PIN
 
 puts "PINS"
-system "#{PINS} | grep #{pin}"
+system "cat #{PINS}/pinmux-pins | grep #{pin}"
 
 puts "done"
 
