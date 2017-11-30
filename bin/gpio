@@ -26,5 +26,8 @@ puts 'value'
 system %Q(cat "#{gpio_dir}value")
 puts 'active_low'
 system %Q(cat "#{gpio_dir}active_low")
+system %Q(cat /sys/devices/platform/bone_capemgr/slots)
+
+system
 puts "done"
 

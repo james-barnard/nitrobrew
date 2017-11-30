@@ -1,97 +1,97 @@
 valves:
-   #-  id: 1
-   #   name: Brew Vacuum
-   #   type: NC
-   #   open: P8_3
-   #   close: P8_4
-   #   sense_open: P8_5
-   #   sense_closed: P8_6
-   -  id: 2
-      name: Brew In
+   -  id: 1
+      name: Brew Vacuum
       type: NC
       open: P8_7
       close: P8_8
-      sense_open: P8_9
+      sense_closed: P9_11
+      sense_open: P9_12
+   -  id: 2
+      name: Brew In
+      type: NC
+      open: P8_9
+      close: P8_10
       sense_closed: P8_10
+      sense_open: P8_9
    -  id: 3
       name: Brew Out
       type: NC
       open: P8_11
       close: P8_12
-      sense_open: P8_13
       sense_closed: P8_14
+      sense_open: P8_13
    -  id: 4
       name: Filter purge Out
       type: NC
-      open: P8_15
-      close: P8_16
-      sense_open: P8_17
+      open: P8_13
+      close: P8_14
       sense_closed: P8_18
-   #-  id: 5
-   #   name: Bright In
-   #   type: NC
-   #   open: P8_19
-   #   close: P8_20
-   #   sense_open: P8_21
-   #   sense_closed: P8_22
-   #-  id: 6
-   #   name: Bright Out
-   #   type: NC
-   #   open: P8_23
-   #   close: P8_24
-   #   sense_open: P8_25
-   #   sense_closed: P8_26
+      sense_open: P8_17
+   -  id: 5
+      name: Bright In
+      type: NC
+      open: P8_31
+      close: P8_32
+      sense_open: P8_21
+      sense_closed: P8_22
+   -  id: 6
+      name: Bright Out
+      type: NC
+      open: P8_33
+      close: P8_34
+      sense_open: P8_25
+      sense_closed: P8_26
    -  id: 7
       name: Decant
       type: NC
-      open: P8_27
-      close: P8_28
+      open: P8_35
+      close: P8_36
       sense_open: P8_29
       sense_closed: P8_30
-   -  id: 8
+   -  id: 9
       name: Filter H2O
       type: NC
-      open: P8_31
-   -  id: 9
+      open: P8_39
+   -  id: 10
       name: Filter Backflush
       type: NC
-      open: P8_35
-   -  id: 10
+      open: P8_40
+   -  id: 11
       name: Brew H2O
       type: NC
-      open: P8_36
-   -  id: 11
+      open: P8_41
+   -  id: 12
       name: Brew N2
       type: NC
-      open: P8_37
-   -  id: 12
+      open: P8_42
+   -  id: 13
       name: process H2O
       type: NC
-      open: P8_38
-   -  id: 13
+      open: P8_43
+   -  id: 14
       name: Condition N2
       type: NC
-      open: P8_39
-   -  id: 14
+      open: P8_44
+   -  id: 15
       name: Burp
       type: NC
-      open: P8_40
+      open: P8_45
 switches:
    -  id: 1
       name: clean
-      pin_id: P9_30
+      pin_id: P9_29
       pull_down: yes
    -  id: 2
       name: brew
-      pin_id: P9_42
+      pin_id: P9_30
       pull_down: yes
    -  id: 3
       name: run
-      pin_id: P9_41
+      pin_id: P9_31
       pull_down: yes
    -  id: 4
       name: halt
-      pin_id: P9_41
+      pin_id: P9_31
       pull_down: yes
 lights:
    -  name: brew
