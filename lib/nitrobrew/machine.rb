@@ -118,6 +118,7 @@ class Machine
   end
 
   def set_component_state(id, state)
+    log("machine:set_component_state", "component_id: #{id.to_s}", state.to_s)
     begin
       valves[id].set_state(state) unless valves[id].nil?
     rescue => e
