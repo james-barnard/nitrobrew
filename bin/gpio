@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+require 'beaglebone'
+
+PINS       = "/sys/kernel/debug/pinctrl/44e10800.pinmux"
+CONFIG_PIN = "config-pin -q #{pin}"
+
+pin = ARGV[0]
+puts "GPIOPin #{pin}"
+
+puts   CONFIG_PIN
+system CONFIG_PIN
+
+puts "PINS"
+system "#{PINS} | grep #{pin}"
+
+puts "done"
+
