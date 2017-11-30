@@ -20,8 +20,11 @@ puts info
 pin_number = info[:gpio]
 gpio_base_dir = "/sys/class/gpio/"
 gpio_dir = "#{gpio_base_dir}gpio#{pin_number}/"
+puts 'direction'
 system %Q(cat "#{gpio_dir}direction")
+puts 'value'
 system %Q(cat "#{gpio_dir}value")
+puts 'active_low'
 system %Q(cat "#{gpio_dir}active_low")
 puts "done"
 
