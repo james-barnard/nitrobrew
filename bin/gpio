@@ -13,5 +13,8 @@ system CONFIG_PIN
 puts "PINS"
 system "cat #{PINS}/pinmux-pins | grep #{pin}"
 
+puts "Pin Info"
+info = Beaglebone::PINS[pin]
+puts info
 puts "done"
 
