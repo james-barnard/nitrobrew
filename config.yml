@@ -6,6 +6,7 @@ valves:
       close: P8_8
       sense_closed: P9_11
       sense_open: P9_12
+      trigger: low
    -  id: 2
       name: Brew In
       type: NC
@@ -13,6 +14,7 @@ valves:
       close: P8_10
       sense_closed: P8_10
       sense_open: P8_9
+      trigger: low
    -  id: 3
       name: Brew Out
       type: NC
@@ -20,6 +22,7 @@ valves:
       close: P8_12
       sense_closed: P8_14
       sense_open: P8_13
+      trigger: low
    -  id: 4
       name: Filter purge Out
       type: NC
@@ -27,6 +30,7 @@ valves:
       close: P8_14
       sense_closed: P8_18
       sense_open: P8_17
+      trigger: low
    -  id: 5
       name: Bright In
       type: NC
@@ -34,6 +38,7 @@ valves:
       close: P8_32
       sense_open: P8_21
       sense_closed: P8_22
+      trigger: low
    -  id: 6
       name: Bright Out
       type: NC
@@ -41,6 +46,7 @@ valves:
       close: P8_34
       sense_open: P8_25
       sense_closed: P8_26
+      trigger: low
    -  id: 7
       name: Decant
       type: NC
@@ -48,34 +54,42 @@ valves:
       close: P8_36
       sense_open: P8_29
       sense_closed: P8_30
+      trigger: low
    -  id: 9
       name: Filter H2O
       type: NC
       open: P8_39
+      trigger: high
    -  id: 10
       name: Filter Backflush
       type: NC
       open: P8_40
+      trigger: high
    -  id: 11
       name: Brew H2O
       type: NC
       open: P8_41
+      trigger: high
    -  id: 12
       name: Brew N2
       type: NC
       open: P8_42
+      trigger: high
    -  id: 13
       name: process H2O
       type: NC
       open: P8_43
+      trigger: high
    -  id: 14
       name: Condition N2
       type: NC
       open: P8_44
+      trigger: high
    -  id: 15
       name: Burp
       type: NC
       open: P8_45
+      trigger: high
 switches:
    -  id: 1
       name: clean

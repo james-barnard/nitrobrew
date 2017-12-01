@@ -1,16 +1,19 @@
 describe Valve do
 
-  let (:nc_params) { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7"} }
+  let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high"} }
+  let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low"} }
   let (:powered_params) { {"name" => "poweredName", "id" => "v2", "type" => "powered", "open" => "P8_7", "close" => "P8_8",
-                        "sense_open" => "P8_9", "sense_closed" => "P8_10"} }
+                           "sense_open" => "P8_9", "sense_closed" => "P8_10"} }
+  let (:fake_pin)       { double("GPIOPin") }
 
   context "is a NC valve" do
-    let (:nc_valve) { Valve.new(nc_params) }
+    let (:nc_valve)     { Valve.new(nc_params) }
+    let (:nc_valve_low) { Valve.new(nc_params_low) }
 
     it "validates its parameters" do
       expect {nc_valve}.not_to raise_error
     end
-  
+
     it "verifies its required parameters" do
       nc_params.keys.each do | param |
         expect {Valve.new(nc_params.merge(param => nil))}.to raise_error("Invalid #{param}")
@@ -25,13 +28,39 @@ describe Valve do
       nc_valve.set_state(:open)
       expect(nc_valve.current_status).to eq(:open)
     end
-    
+
     it "returns true if its position is checked" do
       expect(nc_valve.in_position?).to be true
     end
+
+    it "writes :LOW to open when trigger is set to low" do
+      allow(GPIOPin).to receive(:new).and_return(fake_pin)
+      allow(nc_valve_low).to receive(:set_pin)
+      nc_valve_low.send(:nc_open)
+      expect(nc_valve_low).to have_received(:set_pin).with("open", :LOW)
+    end
+
+    it "writes :HIGH to open when trigger is set to high" do
+      allow(GPIOPin).to receive(:new).and_return(fake_pin)
+      allow(nc_valve).to receive(:set_pin)
+      nc_valve.send(:nc_open)
+      expect(nc_valve).to have_received(:set_pin).with("open", :HIGH)
+    end
+
+    it "sets the proper pullmode when trigger is high" do
+      allow(GPIOPin).to receive(:new).and_return(fake_pin)
+      Valve.new(nc_params)
+      expect(GPIOPin).to have_received(:new).with(:P8_7, :OUT, :PULLDOWN)
+    end
+
+    it "sets the proper pullmode when trigger is low" do
+      allow(GPIOPin).to receive(:new).and_return(fake_pin)
+      Valve.new(nc_params_low)
+      expect(GPIOPin).to have_received(:new).with(:P8_7, :OUT, :PULLUP)
+    end
   end
-    
-  context "it is a powered valve" do 
+
+  context "it is a powered valve" do
     let (:powered_valve) { Valve.new(powered_params) }
 
     it "it validates its parameters" do
@@ -85,7 +114,7 @@ describe Valve do
       expect(powered_valve.send(:pins)["open"]).to receive(:digital_write).with(:HIGH)
       powered_valve.set_state("open")
     end
-  end  
+  end
 
   context "with invalid type" do
     it "raises an error" do
