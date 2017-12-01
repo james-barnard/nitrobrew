@@ -3,7 +3,7 @@ describe Valve do
   let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high"} }
   let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low"} }
   let (:powered_params) { {"name" => "poweredName", "id" => "v2", "type" => "powered", "open" => "P8_7", "close" => "P8_8",
-                           "sense_open" => "P8_9", "sense_closed" => "P8_10"} }
+                           "sense_open" => "P8_9", "sense_closed" => "P8_10", "trigger" => "high"} }
   let (:fake_pin)       { double("GPIOPin") }
 
   context "is a NC valve" do
