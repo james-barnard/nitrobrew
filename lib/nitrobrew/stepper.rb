@@ -3,7 +3,7 @@ require "sqlite3"
 class Stepper
   attr_accessor :machine
   COMPONENT_STATES_SQL = <<-SQL
-    select *
+    select id, component_id, step_id, state, sequence_number
     from component_states
     where step_id = ?
     order by sequence_number
