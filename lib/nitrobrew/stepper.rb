@@ -115,6 +115,7 @@ class Stepper
 
   def set_component_states
     component_states.each do |state|
+      puts state
       set_state(*state)
     end
   end
