@@ -156,6 +156,7 @@ class Machine
 
   def activate_valves
     config.valves.each do | valve |
+      puts valve
       valves[valve["id"]] = Valve.new(valve)
     end
   end
