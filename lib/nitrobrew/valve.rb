@@ -86,7 +86,7 @@ class Valve
   end
 
   def set_pin(key, value)
-    puts "valve:set_pin:(#{key},#{value})"
+    puts "valve:(#{@id},#{@name}-#{@trigger}):set_pin:(#{key},#{value})"
     pins[key].digital_write(value)
   end
 
