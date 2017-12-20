@@ -1,0 +1,26 @@
+cd $GPIO
+echo 0 > gpio66/value
+echo 0 > gpio67/value
+echo 0 > gpio69/value
+echo 0 > gpio68/value
+echo 0 > gpio45/value
+echo 0 > gpio44/value
+echo 0 > gpio23/value
+echo 0 > gpio26/value
+echo 0 > gpio10/value
+echo 0 > gpio11/value
+echo 0 > gpio9/value
+echo 0 > gpio81/value
+echo 0 > gpio8/value
+echo 0 > gpio80/value
+echo 0 > gpio78/value
+echo 0 > gpio79/value
+echo 1 > gpio76/value
+echo 1 > gpio77/value
+echo 1 > gpio74/value
+echo 1 > gpio75/value
+echo 1 > gpio72/value
+echo 1 > gpio73/value
+echo 1 > gpio70/value
+echo 1 > gpio71/value
+cd -

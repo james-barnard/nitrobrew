@@ -1,0 +1,25 @@
+config-pin p8.7 lo
+config-pin p8.8 lo
+config-pin p8.9 lo
+config-pin p8.10 lo
+config-pin p8.11 lo
+config-pin p8.12 lo
+config-pin p8.13 lo
+config-pin p8.14 lo
+config-pin p8.31 lo
+config-pin p8.32 lo
+config-pin p8.33 lo
+config-pin p8.34 lo
+config-pin p8.35 lo
+config-pin p8.36 lo
+config-pin p8.37 lo
+config-pin p8.38 lo
+config-pin p8.39 hi
+config-pin p8.40 hi
+config-pin p8.41 hi
+config-pin p8.42 hi
+config-pin p8.43 hi
+config-pin p8.44 hi
+config-pin p8.45 hi
+config-pin p8.46 hi
+
