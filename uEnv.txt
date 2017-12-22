@@ -1,15 +1,14 @@
 #Docs: http://elinux.org/Beagleboard:U-boot_partitioning_layout_2.0
 
-uname_r=4.4.91-ti-r133
-enable_uboot_overlays=1
-disable_uboot_overlay_audio=1
-enable_uboot_cape_universal=1
+uname_r=4.4.91-ti-r141
 
-cmdline=coherent_pool=1M quiet
-
-#cape_enable=bone_capemgr.enable_partno=cape-universalh 
-#cmdline=coherent_pool=1M quiet cape_universal=enable 
-#optargs=quiet capemgr.disable_partno=BB-BONELT-HDMI,BB-BONELT-HDMIN
 #dtb=am335x-boneblack-emmc-overlay.dtb
-#dtb=am335x-boneblack-overlay.dtb 
+enable_uboot_overlays=1
+enable_uboot_cape_universal=1
+cmdline=coherent_pool=1M quiet
+cape_enable=bone_capemgr.enable_partno=cape-universalh
+disable_uboot_overlay_audio=1
+disable_uboot_overlay_video=1
+
+#cmdline=coherent_pool=1M quiet cape_universal=enable 
 #cmdline=coherent_pool=1M net.ifnames=0 quiet

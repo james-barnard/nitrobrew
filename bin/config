@@ -6,6 +6,11 @@ config-pin p8.11 lo
 config-pin p8.12 lo
 config-pin p8.13 lo
 config-pin p8.14 lo
+config-pin p8.26 lo
+config-pin p8.27 lo
+config-pin p8.28 lo
+config-pin p8.29 lo
+config-pin p8.30 lo
 config-pin p8.31 lo
 config-pin p8.32 lo
 config-pin p8.33 lo
