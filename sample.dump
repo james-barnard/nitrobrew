@@ -1,0 +1,362 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE test_cells (
+    id int,
+    name varchar(30)
+  );
+CREATE TABLE components (
+    id int,
+    test_cell_id int,
+    name varchar(30)
+  );
+CREATE TABLE test_runs (
+    id int,
+    test_cell_id int,
+    program_id int,
+    name varchar(30),
+    started_at int,
+    completed_at int,
+    status_final varchar(15)
+  );
+INSERT INTO "test_runs" VALUES(1,1001,1,'test run name',1511914590,NULL,NULL);
+INSERT INTO "test_runs" VALUES(2,1001,1,'test run name',1511914785,NULL,NULL);
+INSERT INTO "test_runs" VALUES(3,1001,1,'test run name',1511914918,NULL,NULL);
+INSERT INTO "test_runs" VALUES(4,1001,1,'test run name',1511915280,NULL,NULL);
+INSERT INTO "test_runs" VALUES(5,1001,1,'test run name',1511915358,NULL,NULL);
+INSERT INTO "test_runs" VALUES(6,1001,1,'test run name',1511915429,NULL,NULL);
+INSERT INTO "test_runs" VALUES(7,1001,1,'test run name',1511915603,NULL,NULL);
+INSERT INTO "test_runs" VALUES(8,1001,1,'test run name',1511984786,NULL,NULL);
+INSERT INTO "test_runs" VALUES(9,1001,1,'test run name',1512080051,NULL,NULL);
+INSERT INTO "test_runs" VALUES(10,1001,1,'test run name',1512080387,NULL,NULL);
+INSERT INTO "test_runs" VALUES(11,1001,1,'test run name',1512082321,NULL,NULL);
+INSERT INTO "test_runs" VALUES(12,1001,1,'test run name',1512082333,NULL,NULL);
+INSERT INTO "test_runs" VALUES(13,1001,1,'test run name',1512084173,NULL,NULL);
+INSERT INTO "test_runs" VALUES(14,1001,1,'test run name',1512084471,NULL,NULL);
+INSERT INTO "test_runs" VALUES(15,1001,1,'test run name',1512084693,NULL,NULL);
+INSERT INTO "test_runs" VALUES(16,1001,2,'test run name',1512409571,NULL,NULL);
+INSERT INTO "test_runs" VALUES(17,1001,1,'test run name',1512409686,NULL,NULL);
+INSERT INTO "test_runs" VALUES(18,1001,2,'test run name',1512409774,NULL,NULL);
+INSERT INTO "test_runs" VALUES(19,1001,2,'test run name',1512411595,NULL,NULL);
+INSERT INTO "test_runs" VALUES(20,1001,2,'test run name',1512412241,NULL,NULL);
+INSERT INTO "test_runs" VALUES(21,1001,2,'test run name',1512412978,NULL,NULL);
+INSERT INTO "test_runs" VALUES(22,1001,2,'test run name',1512424646,NULL,NULL);
+INSERT INTO "test_runs" VALUES(23,1001,1,'test run name',1512489912,NULL,NULL);
+INSERT INTO "test_runs" VALUES(24,1001,1,'test run name',1512490684,NULL,NULL);
+INSERT INTO "test_runs" VALUES(25,1001,1,'test run name',1512492081,NULL,NULL);
+INSERT INTO "test_runs" VALUES(26,1001,1,'test run name',1512492345,NULL,NULL);
+CREATE TABLE programs (
+    id int,
+    purpose varchar(30)
+  );
+INSERT INTO "programs" VALUES(1,'clean');
+INSERT INTO "programs" VALUES(2,'brew');
+CREATE TABLE steps (
+    id int,
+    program_id int,
+    description varchar(30),
+    duration int,
+    sequence_number int
+  );
+INSERT INTO "steps" VALUES(1,1,'all closed',5,1);
+INSERT INTO "steps" VALUES(2,1,'cip circulate upper',0,2);
+INSERT INTO "steps" VALUES(3,1,'cip circulate pump',60,3);
+INSERT INTO "steps" VALUES(4,1,'cip circulate lower',0,4);
+INSERT INTO "steps" VALUES(5,1,'cip circulate pump',30,5);
+INSERT INTO "steps" VALUES(6,1,'cip purge filter',5,6);
+INSERT INTO "steps" VALUES(7,1,'rinse filter',15,7);
+INSERT INTO "steps" VALUES(8,1,'rinse lower',10,8);
+INSERT INTO "steps" VALUES(9,1,'N2 purge',30,9);
+INSERT INTO "steps" VALUES(10,1,'vacuum dry',120,10);
+INSERT INTO "steps" VALUES(11,1,'N2 charge',5,11);
+INSERT INTO "steps" VALUES(101,2,'open valve 1',3,1);
+INSERT INTO "steps" VALUES(102,2,'close valve 1',3,2);
+INSERT INTO "steps" VALUES(103,20,'open valve 2',3,3);
+INSERT INTO "steps" VALUES(104,20,'close valve 2',3,4);
+INSERT INTO "steps" VALUES(105,20,'open valve 3',3,5);
+INSERT INTO "steps" VALUES(106,20,'close valve 3',3,6);
+INSERT INTO "steps" VALUES(107,20,'open valve 4',3,7);
+INSERT INTO "steps" VALUES(108,20,'close valve 4',3,8);
+INSERT INTO "steps" VALUES(109,20,'open valve 5',3,9);
+INSERT INTO "steps" VALUES(110,20,'close valve 5',3,10);
+INSERT INTO "steps" VALUES(111,20,'open valve 6',3,11);
+INSERT INTO "steps" VALUES(112,20,'close valve 6',3,12);
+INSERT INTO "steps" VALUES(113,20,'open valve 7',3,13);
+INSERT INTO "steps" VALUES(114,20,'close valve 7',3,14);
+INSERT INTO "steps" VALUES(115,20,'open valve 8',3,15);
+INSERT INTO "steps" VALUES(116,20,'close valve 8',3,16);
+INSERT INTO "steps" VALUES(117,20,'open valve 9',3,17);
+INSERT INTO "steps" VALUES(118,20,'close valve 9',3,18);
+INSERT INTO "steps" VALUES(119,20,'open valve 10',3,19);
+INSERT INTO "steps" VALUES(120,20,'close valve 10',3,20);
+INSERT INTO "steps" VALUES(121,20,'open valve 11',3,21);
+INSERT INTO "steps" VALUES(122,20,'close valve 11',3,22);
+INSERT INTO "steps" VALUES(123,20,'open valve 12',3,23);
+INSERT INTO "steps" VALUES(124,20,'close valve 12',3,24);
+INSERT INTO "steps" VALUES(125,20,'open valve 13',3,25);
+INSERT INTO "steps" VALUES(126,20,'close valve 13',3,26);
+INSERT INTO "steps" VALUES(127,20,'open valve 14',3,27);
+INSERT INTO "steps" VALUES(128,20,'close valve 14',3,28);
+CREATE TABLE step_statuses (
+    id int,
+    step_id int,
+    test_run_id int,
+    status varchar(10),
+    started_at int,
+    soaking_at int,
+    completed_at int
+  );
+INSERT INTO "step_statuses" VALUES(1,1,6,'pending',1511915429,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(2,1,7,'pending',1511915603,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(3,1,8,'pending',1511984786,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(4,1,9,'pending',1512080051,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(5,1,10,'pending',1512080387,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(6,1,11,'pending',1512082321,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(7,1,12,'pending',1512082333,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(8,1,13,'soaking',1512084173,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(9,1,13,'completed',1512084178,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(10,2,13,'soaking',1512084179,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(11,2,13,'completed',1512084180,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(12,3,13,'soaking',1512084181,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(13,3,13,'completed',1512084241,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(14,4,13,'soaking',1512084242,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(15,4,13,'completed',1512084243,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(16,5,13,'soaking',1512084244,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(17,5,13,'completed',1512084274,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(18,6,13,'soaking',1512084275,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(19,6,13,'completed',1512084280,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(20,7,13,'soaking',1512084281,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(21,7,13,'completed',1512084296,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(22,8,13,'soaking',1512084297,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(23,8,13,'completed',1512084307,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(24,9,13,'soaking',1512084308,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(25,9,13,'completed',1512084338,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(26,10,13,'soaking',1512084339,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(27,1,14,'soaking',1512084471,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(28,1,14,'completed',1512084476,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(29,2,14,'soaking',1512084477,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(30,2,14,'completed',1512084478,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(31,3,14,'soaking',1512084479,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(32,3,14,'completed',1512084539,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(33,4,14,'soaking',1512084540,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(34,4,14,'completed',1512084541,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(35,5,14,'soaking',1512084542,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(36,5,14,'completed',1512084572,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(37,6,14,'soaking',1512084573,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(38,6,14,'completed',1512084578,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(39,7,14,'soaking',1512084579,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(40,7,14,'completed',1512084594,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(41,8,14,'soaking',1512084595,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(42,8,14,'completed',1512084605,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(43,9,14,'soaking',1512084606,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(44,1,15,'soaking',1512084693,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(45,1,15,'completed',1512084698,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(46,2,15,'soaking',1512084699,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(47,2,15,'completed',1512084700,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(48,3,15,'soaking',1512084701,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(49,3,15,'completed',1512084761,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(50,4,15,'soaking',1512084762,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(51,4,15,'completed',1512084763,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(52,5,15,'soaking',1512084764,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(53,5,15,'completed',1512084794,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(54,6,15,'soaking',1512084795,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(55,6,15,'completed',1512084800,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(56,7,15,'soaking',1512084801,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(57,7,15,'completed',1512084816,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(58,8,15,'soaking',1512084817,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(59,8,15,'completed',1512084827,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(60,9,15,'soaking',1512084829,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(61,9,15,'completed',1512084859,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(62,10,15,'soaking',1512084860,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(63,10,15,'completed',1512084980,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(64,101,16,'soaking',1512409571,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(65,101,16,'completed',1512409574,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(66,101,16,'done',1512409575,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(67,1,17,'soaking',1512409686,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(68,1,17,'completed',1512409691,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(69,2,17,'soaking',1512409692,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(70,2,17,'completed',1512409693,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(71,3,17,'soaking',1512409694,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(72,101,18,'soaking',1512409774,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(73,101,18,'completed',1512409777,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(74,101,18,'done',1512409778,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(75,101,19,'soaking',1512411595,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(76,101,19,'completed',1512411598,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(77,101,19,'done',1512411599,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(78,101,20,'soaking',1512412241,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(79,101,20,'completed',1512412244,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(80,102,20,'soaking',1512412245,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(81,102,20,'completed',1512412248,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(82,103,20,'soaking',1512412249,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(83,103,20,'completed',1512412252,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(84,104,20,'soaking',1512412253,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(85,104,20,'completed',1512412256,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(86,105,20,'soaking',1512412257,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(87,105,20,'completed',1512412260,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(88,106,20,'soaking',1512412261,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(89,106,20,'completed',1512412264,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(90,107,20,'soaking',1512412265,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(91,107,20,'completed',1512412268,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(92,108,20,'soaking',1512412269,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(93,108,20,'completed',1512412272,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(94,109,20,'soaking',1512412273,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(95,109,20,'completed',1512412276,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(96,110,20,'soaking',1512412277,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(97,110,20,'completed',1512412280,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(98,111,20,'soaking',1512412282,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(99,111,20,'completed',1512412285,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(100,112,20,'soaking',1512412286,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(101,112,20,'completed',1512412289,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(102,113,20,'soaking',1512412290,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(103,113,20,'completed',1512412293,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(104,114,20,'soaking',1512412294,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(105,114,20,'completed',1512412297,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(106,115,20,'soaking',1512412298,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(107,115,20,'completed',1512412301,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(108,116,20,'soaking',1512412302,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(109,116,20,'completed',1512412305,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(110,117,20,'soaking',1512412306,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(111,117,20,'completed',1512412309,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(112,118,20,'soaking',1512412310,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(113,118,20,'completed',1512412313,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(114,119,20,'soaking',1512412314,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(115,119,20,'completed',1512412317,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(116,120,20,'soaking',1512412318,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(117,120,20,'completed',1512412321,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(118,121,20,'soaking',1512412322,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(119,121,20,'completed',1512412325,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(120,122,20,'soaking',1512412326,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(121,122,20,'completed',1512412329,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(122,123,20,'soaking',1512412330,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(123,123,20,'completed',1512412333,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(124,124,20,'soaking',1512412334,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(125,124,20,'completed',1512412337,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(126,125,20,'soaking',1512412338,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(127,125,20,'completed',1512412343,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(128,126,20,'soaking',1512412344,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(129,126,20,'completed',1512412347,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(130,127,20,'soaking',1512412348,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(131,101,21,'soaking',1512412979,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(132,101,21,'completed',1512412982,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(133,102,21,'soaking',1512412983,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(134,102,21,'completed',1512412986,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(135,103,21,'soaking',1512412987,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(136,103,21,'completed',1512412990,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(137,104,21,'soaking',1512412991,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(138,104,21,'completed',1512412994,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(139,105,21,'soaking',1512412995,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(140,105,21,'completed',1512412998,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(141,106,21,'soaking',1512412999,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(142,106,21,'completed',1512413002,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(143,107,21,'soaking',1512413003,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(144,107,21,'completed',1512413006,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(145,108,21,'soaking',1512413007,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(146,108,21,'completed',1512413010,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(147,109,21,'soaking',1512413011,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(148,109,21,'completed',1512413014,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(149,110,21,'soaking',1512413015,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(150,110,21,'completed',1512413018,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(151,111,21,'soaking',1512413019,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(152,111,21,'completed',1512413022,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(153,112,21,'soaking',1512413023,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(154,112,21,'completed',1512413026,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(155,113,21,'soaking',1512413027,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(156,113,21,'completed',1512413030,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(157,114,21,'soaking',1512413032,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(158,114,21,'completed',1512413035,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(159,115,21,'soaking',1512413036,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(160,115,21,'completed',1512413039,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(161,116,21,'soaking',1512413040,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(162,116,21,'completed',1512413043,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(163,117,21,'soaking',1512413044,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(164,117,21,'completed',1512413047,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(165,118,21,'soaking',1512413048,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(166,118,21,'completed',1512413051,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(167,119,21,'soaking',1512413052,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(168,119,21,'completed',1512413055,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(169,120,21,'soaking',1512413056,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(170,120,21,'completed',1512413059,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(171,121,21,'soaking',1512413060,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(172,121,21,'completed',1512413063,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(173,122,21,'soaking',1512413064,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(174,122,21,'completed',1512413067,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(175,123,21,'soaking',1512413068,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(176,123,21,'completed',1512413071,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(177,124,21,'soaking',1512413072,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(178,101,22,'soaking',1512424646,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(179,101,22,'completed',1512424649,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(180,102,22,'soaking',1512424650,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(181,102,22,'completed',1512424653,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(182,102,22,'done',1512424654,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(183,1,23,'soaking',1512489912,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(184,1,23,'completed',1512489917,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(185,2,23,'soaking',1512489918,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(186,2,23,'completed',1512489919,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(187,3,23,'soaking',1512489920,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(188,3,23,'completed',1512489980,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(189,4,23,'pending',1512489981,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(190,1,24,'soaking',1512490684,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(191,1,24,'completed',1512490689,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(192,2,24,'soaking',1512490691,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(193,2,24,'completed',1512490692,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(194,3,24,'soaking',1512490693,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(195,3,24,'completed',1512490753,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(196,4,24,'pending',1512490754,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(197,1,25,'soaking',1512492081,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(198,1,25,'completed',1512492086,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(199,2,25,'soaking',1512492087,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(200,2,25,'completed',1512492088,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(201,1,26,'soaking',1512492345,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(202,1,26,'completed',1512492350,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(203,2,26,'soaking',1512492351,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(204,2,26,'completed',1512492352,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(205,3,26,'soaking',1512492353,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(206,3,26,'completed',1512492413,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(207,4,26,'soaking',1512492414,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(208,4,26,'completed',1512492415,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(209,5,26,'soaking',1512492416,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(210,5,26,'completed',1512492447,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(211,6,26,'soaking',1512492448,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(212,6,26,'completed',1512492453,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(213,7,26,'soaking',1512492454,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(214,7,26,'completed',1512492469,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(215,8,26,'soaking',1512492470,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(216,8,26,'completed',1512492480,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(217,9,26,'soaking',1512492481,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(218,9,26,'completed',1512492511,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(219,10,26,'soaking',1512492512,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(220,10,26,'completed',1512492632,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(221,11,26,'soaking',1512492633,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(222,11,26,'completed',1512492638,NULL,NULL);
+INSERT INTO "step_statuses" VALUES(223,11,26,'done',1512492639,NULL,NULL);
+CREATE TABLE component_states (
+    id int,
+    step_id int,
+    component_id int,
+    state varchar(10),
+    sequence_number int
+  );
+INSERT INTO "component_states" VALUES(1,1,1,'closed',1);
+INSERT INTO "component_states" VALUES(2,1,2,'closed',1);
+INSERT INTO "component_states" VALUES(3,1,3,'closed',1);
+INSERT INTO "component_states" VALUES(4,1,4,'closed',1);
+INSERT INTO "component_states" VALUES(5,1,5,'closed',1);
+INSERT INTO "component_states" VALUES(6,1,6,'closed',1);
+INSERT INTO "component_states" VALUES(7,1,7,'closed',1);
+INSERT INTO "component_states" VALUES(8,1,8,'closed',2);
+INSERT INTO "component_states" VALUES(9,1,9,'closed',2);
+INSERT INTO "component_states" VALUES(10,1,10,'closed',2);
+INSERT INTO "component_states" VALUES(11,1,11,'closed',2);
+INSERT INTO "component_states" VALUES(12,1,12,'closed',2);
+INSERT INTO "component_states" VALUES(13,1,13,'closed',2);
+INSERT INTO "component_states" VALUES(14,1,14,'closed',2);
+INSERT INTO "component_states" VALUES(15,2,2,'open',1);
+INSERT INTO "component_states" VALUES(16,2,3,'open',1);
+INSERT INTO "component_states" VALUES(17,2,6,'open',1);
+INSERT INTO "component_states" VALUES(20,4,2,'closed',2);
+INSERT INTO "component_states" VALUES(21,4,5,'open',2);
+INSERT INTO "component_states" VALUES(23,6,2,'open',1);
+INSERT INTO "component_states" VALUES(24,6,5,'closed',2);
+INSERT INTO "component_states" VALUES(25,6,4,'open',3);
+INSERT INTO "component_states" VALUES(26,6,3,'closed',4);
+INSERT INTO "component_states" VALUES(27,6,12,'open',5);
+COMMIT;

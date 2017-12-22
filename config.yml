@@ -55,37 +55,37 @@ valves:
       sense_open: P8_29
       sense_closed: P8_30
       trigger: low
-   -  id: 9
+   -  id: 8
       name: Filter H2O
       type: NC
       open: P8_39
       trigger: high
-   -  id: 10
+   -  id: 9
       name: Filter Backflush
       type: NC
       open: P8_40
       trigger: high
-   -  id: 11
+   -  id: 10
       name: Brew H2O
       type: NC
       open: P8_41
       trigger: high
-   -  id: 12
+   -  id: 11
       name: Brew N2
       type: NC
       open: P8_42
       trigger: high
-   -  id: 13
+   -  id: 12
       name: process H2O
       type: NC
       open: P8_43
       trigger: high
-   -  id: 14
+   -  id: 13
       name: Condition N2
       type: NC
       open: P8_44
       trigger: high
-   -  id: 15
+   -  id: 14
       name: Burp
       type: NC
       open: P8_45

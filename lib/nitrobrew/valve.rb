@@ -60,7 +60,7 @@ class Valve
   end
 
   def timed_out!
-    (Time.now - set_time) > TIMEOUT ? raise("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds") : false 
+    (Time.now - set_time) > TIMEOUT ? raise("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds") : false
   end
 
   def trigger_value(state)
@@ -121,8 +121,6 @@ class Valve
 
   def pullmode(mode)
     puts "mode: #{mode}"
-    return :PULLDOWN if mode == :IN
-
-    trigger == :high ? :PULLDOWN : :PULLUP
+    mode == :IN ? :PULLDOWN : nil
   end
 end
