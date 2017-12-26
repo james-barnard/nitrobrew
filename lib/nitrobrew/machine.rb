@@ -21,6 +21,7 @@ class Machine
   end
 
   def ready(status = :start)
+    on_change(:run, nil) {}
     log("machine:ready", status, nil)
     light_manager.ready_mode(status)
 
@@ -28,22 +29,24 @@ class Machine
     while !action do
       check_set_program
       action = :run if check_action(:run)
-      sleep 1
+      sleep 0.333
     end
+    sleep 1
     send action
   end
 
   def run
+    on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
 
     action = nil
     while !action do
-      action = :halt if check_action(:halt)
       step_status = stepper.step
       on_change(:step_status, step_status) { log("machine:run", "status", step_status) }
       action = :done if step_status =~ /done$/
-      sleep 1
+      sleep 0.333
+      action = :halt if check_action(:halt)
     end
     send action
   end
@@ -57,6 +60,7 @@ class Machine
   end
 
   def halt
+    sleep 1
     ready(:paused)
   end
 
@@ -144,7 +148,7 @@ class Machine
     result = check_button(button)
     return false unless result
 
-    debounce(:button, result) { return true }
+    debounce(button, result) { return true }
     false
   end
 
@@ -156,7 +160,7 @@ class Machine
 
   def activate_valves
     config.valves.each do | valve |
-      puts valve
+      #puts valve
       valves[valve["id"]] = Valve.new(valve)
     end
   end
@@ -174,7 +178,7 @@ class Machine
         return v[:pin_obj]
       end
     end
-    puts "activating switch: #{switch['pin_id']}"
+    #puts "activating switch: #{switch['pin_id']}"
     GPIOPin.new(switch["pin_id"].to_sym, :IN, :PULLDOWN)
   end
 

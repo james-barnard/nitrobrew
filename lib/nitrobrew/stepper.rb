@@ -97,7 +97,7 @@ class Stepper
   def check_soak_time
     started_at = single_value { db.execute STARTED_AT_SQL, step_id(current_step), test_run_id }
     soak_duration = single_value { db.execute DURATION_SQL, step_id(current_step) }
-    puts "stepper:check_soak_time:elapsed: #{Time.now.to_i - started_at}:target: #{soak_duration}"
+    #puts "stepper:check_soak_time:elapsed: #{Time.now.to_i - started_at}:target: #{soak_duration}"
     if Time.now.to_i - started_at < soak_duration
       :soaking
     else
@@ -114,8 +114,9 @@ class Stepper
   end
 
   def set_component_states
+    #puts "set_component_states: #{component_states.count} states: step = #{step_id(current_step)}"
     component_states.each do |state|
-      puts "stepper:state: #{state}"
+      #puts "stepper:state: #{state}"
       set_state(*state)
     end
   end
@@ -180,7 +181,7 @@ class Stepper
   end
 
   def validate_program!(program)
-	  puts "validate_program: #{program}: #{@program}"
+	  #puts "validate_program: #{program}: #{@program}"
     raise("Invalid program") unless program_id
   end
 
