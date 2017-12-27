@@ -160,8 +160,9 @@ class Machine
 
   def activate_valves
     config.valves.each do | valve |
-      #puts valve
-      valves[valve["id"]] = Valve.new(valve)
+      id = valve["id"]
+      valves[id] = Valve.new(valve)
+      set_component_state(id, :closed)
     end
   end
 
