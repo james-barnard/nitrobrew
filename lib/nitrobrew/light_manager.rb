@@ -36,16 +36,21 @@ class LightManager
 
   def on_program_change(program)
     program_lights_off
+    light_off(:done)
     light_on(program)
   end
 
   def ready_mode(status)
     status == :paused ? light_on(:run) : light_off(:run)
+    if status == :done
+      light_on(:done)
+    end
     light_on(:ready)
   end
 
   def run_mode
     light_off(:ready)
+    light_off(:done)
     light_on(:run)
   end
 

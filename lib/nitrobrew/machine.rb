@@ -67,7 +67,7 @@ class Machine
   def done
     log("machine:done", "done", nil)
     delete_stepper
-    ready
+    ready(:done)
   end
 
   def delete_stepper
