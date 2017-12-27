@@ -108,6 +108,8 @@ switches:
       pin_id: P9_31
       pull_down: yes
 lights:
+   -  name: done
+      pin_id: P8_19
    -  name: brew
       pin_id: P8_26
    -  name: clean
