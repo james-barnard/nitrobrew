@@ -1,5 +1,5 @@
 describe Stepper do
-  let (:machine) { Machine.new }
+  let (:machine) { double("fake machine", id: 1, set_component_state: nil) }
 
   before(:all) do
     @db = SQLite3::Database.new("stepper.db")
@@ -61,7 +61,6 @@ describe Stepper do
 
     it "sets the component states" do
       allow(stepper).to receive(:current_step).and_return(10)
-      allow(machine).to receive(:set_component_state)
       stepper.set_component_states
       expect(machine).to have_received(:set_component_state).with(1, :open).once
       expect(machine).to have_received(:set_component_state).with(2, :closed).once
@@ -78,7 +77,6 @@ describe Stepper do
     before(:each) { allow(stepper).to receive(:test_run_id).and_return(1) }
     it "sets the step status in the database when the state changes" do
       allow(stepper).to receive(:current_step).and_return(10)
-      allow(machine).to receive(:set_component_state)
       allow(machine).to receive(:check_component_state).and_return(false)
 
       stepper.step
@@ -88,16 +86,23 @@ describe Stepper do
 
     it "moves to the next step" do
       stepper.save_step_status(10, 1, :completed)
-      allow(machine).to receive(:set_component_state)
       allow(machine).to receive(:check_component_state).and_return(false)
 
       expect(stepper.step).to eq("20:pending")
     end
 
-    context "reports the step status" do 
+    it "moves to the next step" do
+      stepper.save_step_status(10, 1, :completed)
+      allow(machine).to receive(:check_component_state).and_return(false)
+
+      stepper.step
+      expect(machine).to have_received(:set_component_state).with(1, :closed).once
+      expect(machine).to have_received(:set_component_state).with(2, :open).once
+    end
+
+    context "reports the step status" do
       before(:each) { allow(stepper).to receive(:test_run_id).and_return(1) }
       it "one component is not in position" do
-        allow(machine).to receive(:set_component_state)
         allow(machine).to receive(:check_component_state).and_return(false)
 
         expect(stepper.step).to eq("10:pending")
@@ -107,9 +112,8 @@ describe Stepper do
 
       it "all components are in position" do
         stepper.save_step_status(10, 1, :pending)
-        allow(machine).to receive(:set_component_state)
         allow(machine).to receive(:check_component_state).and_return(true)
-        
+
         expect(stepper.step).to eq("10:soaking")
         expect(machine).to have_received(:check_component_state).with(1).once
         expect(machine).to have_received(:check_component_state).with(2).once
@@ -139,7 +143,7 @@ describe Stepper do
 
         it "returns done when it finishes the last step" do
           stepper.save_step_status(20, 1, :completed)
-          
+
           expect(stepper.step).to eq("20:done")
         end
       end
