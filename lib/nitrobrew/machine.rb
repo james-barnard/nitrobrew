@@ -149,14 +149,14 @@ class Machine
 
   private
   def enable_control_pins
-    control_pins.each do | gpio |
+    control_pins.each do | name, gpio |
       trigger = gpio[:trigger].upcase.to_sym
       gpio[:pin].digital_write(trigger)
     end
   end
 
   def disable_control_pins
-    control_pins.each do | gpio |
+    control_pins.each do | name, gpio |
       trigger = gpio[:trigger] == 'low' ? :HIGH : :LOW
       gpio[:pin].digital_write(trigger)
     end
