@@ -19,11 +19,13 @@ class Machine
     activate_control_pins
     activate_valves
     activate_switches
+    disable_control_pins
   end
 
   def ready(status = :start)
     on_change(:run, nil) {}
     log("machine:ready", status, nil)
+    disable_control_pins
     light_manager.ready_mode(status)
 
     action = nil
@@ -40,7 +42,7 @@ class Machine
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
-    enable_p8_pins
+    enable_control_pins
 
     action = nil
     while !action do
@@ -149,6 +151,13 @@ class Machine
   def enable_control_pins
     control_pins.each do | gpio |
       trigger = gpio[:trigger].upcase.to_sym
+      gpio[:pin].digital_write(trigger)
+    end
+  end
+
+  def disable_control_pins
+    control_pins.each do | gpio |
+      trigger = gpio[:trigger] == 'low' ? :HIGH : :LOW
       gpio[:pin].digital_write(trigger)
     end
   end
