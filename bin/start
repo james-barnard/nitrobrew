@@ -1,0 +1,10 @@
+#!/bin/bash
+export GEM_HOME=/usr/local/rvm/gems/ruby-2.4.1
+export GEM_PATH=/usr/local/rvm/gems/ruby-2.4.1:/usr/local/rvm/gems/ruby-2.4.1@global
+export MY_RUBY_HOME=/usr/local/rvm/rubies/ruby-2.4.1
+export NODE_PATH=/usr/local/lib/node_modules
+export RUBY_VERSION=ruby-2.4.1
+export PATH=/usr/local/rvm/gems/ruby-2.4.1/bin:/usr/local/rvm/gems/ruby-2.4.1@global/bin:/usr/local/rvm/rubies/ruby-2.4.1/bin:/usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+cd /home/niki/nitrobrew
+/usr/local/rvm/gems/ruby-2.4.1/bin/bundle exec bin/nitro.rb
