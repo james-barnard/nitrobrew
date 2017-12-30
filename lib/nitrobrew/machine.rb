@@ -25,7 +25,6 @@ class Machine
   def ready(status = :start)
     on_change(:run, nil) {}
     log("machine:ready", status, nil)
-    disable_control_pins
     light_manager.ready_mode(status)
 
     action = nil
@@ -52,6 +51,7 @@ class Machine
       sleep 0.333
       action = :halt if check_action(:halt)
     end
+    disable_control_pins
     send action
   end
 
