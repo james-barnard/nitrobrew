@@ -170,7 +170,7 @@ class Machine
   def activate_control_pins
     config.control.each do | gpio |
       puts "activating gpio pin: #{gpio['name']}: #{gpio['pin_id']}"
-      gpio["pin"] = GPIOPin.new(gpio["pin_id"], :OUT, nil)
+      gpio["pin"] = GPIOPin.new(gpio["pin_id"].to_sym, :OUT, nil)
       control_pins[gpio["name"].to_sym] = symbolize_keys(gpio)
     end
   end

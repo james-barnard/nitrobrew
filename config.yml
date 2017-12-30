@@ -1,4 +1,4 @@
-control":
+control:
    -  id: 1
       name: p8_enable
       pin_id: P9_42
