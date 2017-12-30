@@ -16,10 +16,12 @@ class Machine
     sleep 1
     light_manager.all_on
     sleep 1
+
     activate_control_pins
+    disable_control_pins
+
     activate_valves
     activate_switches
-    disable_control_pins
   end
 
   def ready(status = :start)
