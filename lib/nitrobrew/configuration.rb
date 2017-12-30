@@ -12,9 +12,10 @@ class Configuration
 		rescue ArgumentError => e
 			puts "Could not parse YAML: #{e.message}"
 		end
+		@control  = data['control'] || raise("Config file doesn't have control features")
 		@valves   = data['valves'] || raise("Config file doesn't have valves")
 		@switches = data['switches'] || raise("Config file doesn't have switches")
-    @lights = data['lights']
+    @lights   = data['lights']
     validate_valves
   end
 

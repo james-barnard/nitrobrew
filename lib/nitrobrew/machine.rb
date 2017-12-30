@@ -16,6 +16,7 @@ class Machine
     sleep 1
     light_manager.all_on
     sleep 1
+    activate_control_pins
     activate_valves
     activate_switches
   end
@@ -39,6 +40,7 @@ class Machine
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
+    enable_p8_pins
 
     action = nil
     while !action do
@@ -144,6 +146,13 @@ class Machine
   end
 
   private
+  def enable_control_pins
+    control_pins.each do | gpio |
+      trigger = gpio[:trigger].upcase.to_sym
+      gpio[:pin].digital_write(trigger)
+    end
+  end
+
   def check_action(button)
     result = check_button(button)
     return false unless result
@@ -156,6 +165,14 @@ class Machine
     return button if switches[button][:pin].digital_read == :HIGH
 
     false
+  end
+
+  def activate_control_pins
+    config.control.each do | gpio |
+      puts "activating gpio pin: #{gpio['name']}: #{gpio['pin_id']}"
+      gpio["pin"] = GPIOPin.new(gpio["pin_id"], :OUT, nil)
+      control_pins[gpio["name"].to_sym] = symbolize_keys(gpio)
+    end
   end
 
   def activate_valves
@@ -181,6 +198,10 @@ class Machine
     end
     #puts "activating switch: #{switch['pin_id']}"
     GPIOPin.new(switch["pin_id"].to_sym, :IN, :PULLDOWN)
+  end
+
+  def control_pins
+    @control_pins ||= {}
   end
 
   def switches

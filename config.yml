@@ -1,3 +1,8 @@
+control:
+   -  id: 1
+      name: p8_enable
+      pin_id: P8_9
+      trigger: low
 valves:
    -  id: 1
       name: Brew Vacuum
