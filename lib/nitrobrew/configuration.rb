@@ -4,7 +4,7 @@ require 'set'
 
 
 class Configuration
-	attr_reader :valves, :switches, :lights
+	attr_reader :valves, :switches, :lights, :control
 
 	def initialize
 		begin
