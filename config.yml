@@ -1,7 +1,7 @@
-control:
+control":
    -  id: 1
       name: p8_enable
-      pin_id: P8_9
+      pin_id: P9_42
       trigger: low
 valves:
    -  id: 1
@@ -17,48 +17,48 @@ valves:
       type: NC
       open: P8_9
       close: P8_10
-      sense_closed: P8_10
-      sense_open: P8_9
+      sense_closed: P9_13
+      sense_open: P9_14
       trigger: low
    -  id: 3
       name: Brew Out
       type: NC
       open: P8_11
       close: P8_12
-      sense_closed: P8_14
-      sense_open: P8_13
+      sense_closed: P9_15
+      sense_open: P9_16
       trigger: low
    -  id: 4
       name: Filter purge Out
       type: NC
       open: P8_13
       close: P8_14
-      sense_closed: P8_18
-      sense_open: P8_17
+      sense_closed: P9_17
+      sense_open: P9_18
       trigger: low
    -  id: 5
       name: Bright In
       type: NC
       open: P8_31
       close: P8_32
-      sense_open: P8_21
-      sense_closed: P8_22
+      sense_closed: P9_21
+      sense_open: P9_22
       trigger: low
    -  id: 6
       name: Bright Out
       type: NC
       open: P8_33
       close: P8_34
-      sense_open: P8_25
-      sense_closed: P8_26
+      sense_closed: P9_23
+      sense_open: P9_24
       trigger: low
    -  id: 7
       name: Decant
       type: NC
       open: P8_35
       close: P8_36
-      sense_open: P8_29
-      sense_closed: P8_30
+      sense_closed: P9_25
+      sense_open: P9_26
       trigger: low
    -  id: 8
       name: Filter H2O
