@@ -21,6 +21,7 @@ class Machine
     disable_control_pins
 
     activate_valves
+    wait_for_valves
     activate_switches
   end
 
@@ -138,7 +139,8 @@ class Machine
   end
 
   def check_component_state(id)
-      return false if valves[id].nil?
+    return false if valves[id].nil?
+
     begin
       rtn_value = valves[id].in_position?
       log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value)
@@ -192,6 +194,15 @@ class Machine
       valves[id] = Valve.new(valve)
       set_component_state(id, :closed)
     end
+  end
+
+  def wait_for_valves
+    do
+      count = 0
+      config.valves.each do | valve |
+        count += 1 unless valves[valve['id']].in_position?
+      end
+    until count == 0
   end
 
   def activate_switches
