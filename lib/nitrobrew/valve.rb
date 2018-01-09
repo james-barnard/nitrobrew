@@ -68,7 +68,12 @@ class Valve
   end
 
   def timed_out!
-    (Time.now - set_time) > TIMEOUT ? raise("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds") : false
+    if (Time.now - set_time) > TIMEOUT
+      neutralize
+      puts("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds")
+    end
+
+    false
   end
 
   def trigger_value(state)
