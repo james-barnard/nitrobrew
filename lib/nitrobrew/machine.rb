@@ -141,8 +141,8 @@ class Machine
       return false if valves[id].nil?
     begin
       rtn_value = valves[id].in_position?
-    log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value)
-    rtn_value
+      log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value)
+      rtn_value
     rescue RuntimeError => e
       log("machine:check_component_state", "#{e.message}", nil)
       raise

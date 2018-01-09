@@ -37,8 +37,11 @@ class Valve
   end
 
   def in_position?
-    return true if @type == "NC"
-    get_pin("sense_#{current_status}") == :HIGH or timed_out!
+    return true if nc?
+    if (get_pin("sense_#{current_status}") == :HIGH) or timed_out!
+      neutralize
+      true
+    end
   end
 
   private
@@ -59,6 +62,11 @@ class Valve
     end
   end
 
+  def neutralize
+    set_pin("close", trigger_value(:close))
+    set_pin("open", trigger_value(:close))
+  end
+
   def timed_out!
     (Time.now - set_time) > TIMEOUT ? raise("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds") : false
   end
@@ -76,12 +84,10 @@ class Valve
   end
 
   def powered_open
-    set_pin("close", trigger_value(:close))
     set_pin("open", trigger_value(:open))
   end
 
   def powered_close
-    set_pin("open", trigger_value(:open))
     set_pin("close", trigger_value(:close))
   end
 
@@ -94,12 +100,20 @@ class Valve
     pins[key].digital_read
   end
 
+  def powered?
+    type == 'powered'
+  end
+
+  def nc?
+    type == 'NC'
+  end
+
   def open
-    type == "NC" ? nc_open : powered_open
+    nc? ? nc_open : powered_open
   end
 
   def closed
-    type == "NC" ? nc_close : powered_close
+    nc? ? nc_close : powered_close
   end
 
   def is_open?
