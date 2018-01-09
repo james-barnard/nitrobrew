@@ -9,7 +9,7 @@ class Valve
   VALID_PINS      = { "NC"     => ["open"],
                      "powered" => ["open", "close", "sense_open", "sense_closed"] }
   REQUIRED_PARAMS = ["name", "id", "trigger"]
-  TIMEOUT = 300 # seconds
+  TIMEOUT = 10 # seconds
   TRIGGER = {:high => {:open => :HIGH, :close => :LOW},
              :low  => {:open => :LOW,  :close => :HIGH}}
 
