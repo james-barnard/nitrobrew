@@ -197,12 +197,13 @@ class Machine
   end
 
   def wait_for_valves
-    do
+    while true
       count = 0
       config.valves.each do | valve |
         count += 1 unless valves[valve['id']].in_position?
       end
-    until count == 0
+      break if count == 0
+    end
   end
 
   def activate_switches
