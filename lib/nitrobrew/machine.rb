@@ -203,6 +203,7 @@ class Machine
         count += 1 unless valves[valve['id']].in_position?
       end
       break if count == 0
+      sleep 5
     end
   end
 
