@@ -8,13 +8,14 @@ describe LightManager do
       {"name" => "clean", "pin_id" => "P8_27"},
       {"name" => "load",  "pin_id" => "P8_28"},
       {"name" => "ready", "pin_id" => "P8_29"},
-      {"name" => "run",   "pin_id" => "P8_30"} ]
+      {"name" => "run",   "pin_id" => "P8_30"},
+      {"name" => "done",  "pin_id" => "P8_31"} ]
   end
 
   describe "#initialize" do
     it "uses the config file" do
       expect(real_manager.send(:lights)[:brew][:pin]).to be_an_instance_of(GPIOPin)
-      expect(real_manager.send(:lights).keys.sort).to eq([:brew, :clean, :load, :ready, :run])
+      expect(real_manager.send(:lights).keys.sort).to eq([:brew, :clean, :done, :load, :ready, :run])
     end
 
     it "activates the GPIOPins for the lights" do
@@ -55,7 +56,7 @@ describe LightManager do
   end
 
   it "has a hash containing its lights" do
-    expect(test_manager.send(:lights).keys.sort).to eq([:brew, :clean, :load, :ready, :run])
+    expect(test_manager.send(:lights).keys.sort).to eq([:brew, :clean, :done, :load, :ready, :run])
   end
 
   describe "#on_program_change" do

@@ -11,225 +11,238 @@ describe Machine do
       :ready_mode => nil,
       :run_mode => nil)
   end
-
-  it "configures itself" do
-    expect(machine.config).to be_a_kind_of(Configuration)
-  end
-
-  it "knows its ID" do
-    expect(machine.id).to_not be_nil
-  end
-
-  it "creates a hash of valve objects" do
-    key = machine.send(:valves).keys.first
-    expect(machine.send(:valves)[key]).to be_a_kind_of(Valve)
-  end
-
-  it "creates a hash of switches" do
-    expect(machine.send(:switches)[:run]).to be_a_kind_of(Hash)
-  end
-
-  it "creates a hash for each switch" do
-    expect(run_switch.keys.sort).to eq( [:id, :name, :pin, :pin_id, :pull_down] )
-  end
-
-  it "has a pin object that is a GPIOPin" do
-    expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
-  end
-
-  describe "#debounce" do
-    it "doesn't call the block the first time" do
-      @count = 0
-      machine.debounce(:key, "value") { @count += 1 }
-      expect(@count).to eq(0)
+  context "with activations" do
+    before(:each) do
+      Machine.any_instance.stub(:wait_for_valves)
     end
 
-    it "calls the block the second time" do
-      @count = 0
-      machine.debounce(:key, "value") { @count += 1 }
-      machine.debounce(:key, "value") { @count += 1 }
-      expect(@count).to eq(1)
+    it "configures itself" do
+      expect(machine.config).to be_a_kind_of(Configuration)
     end
 
-    it "doesn't call the block the third time" do
-      @count = 0
-      machine.debounce(:key, "value") { @count += 1 }
-      machine.debounce(:key, "value") { @count += 1 }
-      machine.debounce(:key, "value") { @count += 1 }
-      expect(@count).to eq(1)
+    it "knows its ID" do
+      expect(machine.id).to_not be_nil
     end
-  end
 
-  describe "#on_change" do
-    it "logs the step status when it changes" do
+    it "creates a hash of valve objects" do
+      key = machine.send(:valves).keys.first
+      expect(machine.send(:valves)[key]).to be_a_kind_of(Valve)
+    end
+
+    it "creates a hash of switches" do
+      expect(machine.send(:switches)[:run]).to be_a_kind_of(Hash)
+    end
+
+    it "creates a hash for each switch" do
+      expect(run_switch.keys.sort).to eq( [:id, :name, :pin, :pin_id, :pull_down] )
+    end
+
+    it "has a pin object that is a GPIOPin" do
+      expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
+    end
+
+    let(:timed_out_error) { "Valve Valve 2 has timed out: 3.00033 seconds" }
+    it "raises an error if the time elapsed has been too long" do
+      allow(valve_2).to receive(:in_position?).and_raise(timed_out_error)
       allow(machine).to receive(:log)
-      allow(machine).to receive(:done)
-      allow(machine).to receive(:stepper).and_return(fake_stepper)
-      allow(fake_stepper).to receive(:step).and_return("2:soaking", "2:soaking", "2:done")
+      expect { machine.check_component_state(2) }.to raise_error(timed_out_error)
+      expect(machine).to have_received(:log).once
+    end
 
-      machine.run
+    describe "#set_component_state" do
+      it "calls open on the valve" do
+        allow(valve_2).to receive(:open)
+        machine.set_component_state(2, "open")
 
-      expect(machine).to have_received(:log).with("machine:run", "program starting", nil).once
-      expect(machine).to have_received(:log).with("machine:run", "status", "2:soaking").once
-      expect(machine).to have_received(:log).with("machine:run", "status", "2:done").once
+        expect(valve_2).to have_received(:open)
+      end
     end
   end
 
-  describe "#check_action" do
-    it "recognizes a button push" do
-      allow(machine).to receive(:check_button).with(:halt).and_return(:halt)
-      machine.send(:check_action, :halt)
-      expect(machine.send(:check_action, :halt)).to be_truthy
+  context "without activations" do 
+    before(:each) do
+      Machine.any_instance.stub(:wait_for_valves)
+      Machine.any_instance.stub(:activate_valves)
+      Machine.any_instance.stub(:activate_control_pins)
     end
 
-    it "ignores the first button press" do
-      allow(machine).to receive(:check_button).with(:run).and_return(:run)
-      expect(machine.send(:check_action, :run)).to be_falsey
-    end
-  end
+    describe "#debounce" do
+      it "doesn't call the block the first time" do
+        @count = 0
+        machine.debounce(:key, "value") { @count += 1 }
+        expect(@count).to eq(0)
+      end
 
-  describe "#check_set_program" do
-    it "recognizes a program selection" do
-      allow(machine).to receive(:run)
-      allow(machine).to receive(:program_selector).and_return(:clean)
-      allow(machine).to receive(:check_action).and_return(false, true)
-      expect { machine.ready }.to change { machine.program }
-    end
+      it "calls the block the second time" do
+        @count = 0
+        machine.debounce(:key, "value") { @count += 1 }
+        machine.debounce(:key, "value") { @count += 1 }
+        expect(@count).to eq(1)
+      end
 
-    it "recognizes a clean program selection" do
-      allow(machine).to receive(:check_button).with(:clean).and_return(:clean)
-      allow(machine).to receive(:check_button).with(:brew).and_return(false)
-      machine.program = nil
-
-      machine.check_set_program
-      expect(machine.program).to eq(nil)
-      machine.check_set_program
-      expect(machine.program).to eq(:clean)
+      it "doesn't call the block the third time" do
+        @count = 0
+        machine.debounce(:key, "value") { @count += 1 }
+        machine.debounce(:key, "value") { @count += 1 }
+        machine.debounce(:key, "value") { @count += 1 }
+        expect(@count).to eq(1)
+      end
     end
 
-    it "recognizes a brew program selection" do
-      allow(machine).to receive(:check_button).with(:clean).and_return(false)
-      allow(machine).to receive(:check_button).with(:brew).and_return(:brew)
-      machine.program = nil
+    describe "#on_change" do
+      it "logs the step status when it changes" do
+        allow(machine).to receive(:log)
+        allow(machine).to receive(:done)
+        allow(machine).to receive(:stepper).and_return(fake_stepper)
+        allow(fake_stepper).to receive(:step).and_return("2:soaking", "2:soaking", "2:done")
 
-      machine.check_set_program
-      expect(machine.program).to eq(nil)
-      machine.check_set_program
-      expect(machine.program).to eq(:brew)
+        machine.run
+
+        expect(machine).to have_received(:log).with("machine:run", "program starting", nil).once
+        expect(machine).to have_received(:log).with("machine:run", "status", "2:soaking").once
+        expect(machine).to have_received(:log).with("machine:run", "status", "2:done").once
+      end
     end
 
-    it "recognizes a load program selection" do
-      allow(machine).to receive(:check_button).with(:clean).and_return(false)
-      allow(machine).to receive(:check_button).with(:brew).and_return(false)
-      machine.program = nil
+    describe "#check_action" do
+      it "recognizes a button push" do
+        allow(machine).to receive(:check_button).with(:halt).and_return(:halt)
+        machine.send(:check_action, :halt)
+        expect(machine.send(:check_action, :halt)).to be_truthy
+      end
 
-      machine.check_set_program
-      expect(machine.program).to eq(nil)
-      machine.check_set_program
-      expect(machine.program).to eq(:load)
+      it "ignores the first button press" do
+        allow(machine).to receive(:check_button).with(:run).and_return(:run)
+        expect(machine.send(:check_action, :run)).to be_falsey
+      end
     end
 
-    it "calls the light manager when a program is selected" do
-      allow(machine).to receive(:light_manager).and_return(light_manager)
-      machine.change_program(:load)
-      expect(light_manager).to have_received(:on_program_change).with(:load)
-    end
-  end
+    describe "#check_set_program" do
+      it "recognizes a program selection" do
+        allow(machine).to receive(:run)
+        allow(machine).to receive(:program_selector).and_return(:clean)
+        allow(machine).to receive(:check_action).and_return(false, true)
+        expect { machine.ready }.to change { machine.program }
+      end
 
-  describe "#ready" do
-    it "loops until it gets a run command" do
-      allow(machine).to receive(:run)
-      allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
-      allow(machine).to receive(:check_action).with(:reset).and_return(false)
+      it "recognizes a clean program selection" do
+        allow(machine).to receive(:check_button).with(:clean).and_return(:clean)
+        allow(machine).to receive(:check_button).with(:brew).and_return(false)
+        machine.program = nil
 
-      machine.ready
-      expect(machine).to have_received(:run)
-    end
+        machine.check_set_program
+        expect(machine.program).to eq(nil)
+        machine.check_set_program
+        expect(machine.program).to eq(:clean)
+      end
 
-    it "tells the light manager we are in ready mode" do
-      allow(machine).to receive(:run)
-      allow(machine).to receive(:light_manager).and_return(light_manager)
-      allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
-      machine.ready
+      it "recognizes a brew program selection" do
+        allow(machine).to receive(:check_button).with(:clean).and_return(false)
+        allow(machine).to receive(:check_button).with(:brew).and_return(:brew)
+        machine.program = nil
 
-      expect(light_manager).to have_received(:ready_mode)
-    end
+        machine.check_set_program
+        expect(machine.program).to eq(nil)
+        machine.check_set_program
+        expect(machine.program).to eq(:brew)
+      end
 
-    it "tells the light manager we are paused" do
-      allow(machine).to receive(:run)
-      allow(machine).to receive(:light_manager).and_return(light_manager)
-      allow(machine).to receive(:check_action).with(:run).and_return(true)
-      machine.halt
-      expect(light_manager).to have_received(:ready_mode).with(:paused)
-    end
+      it "recognizes a load program selection" do
+        allow(machine).to receive(:check_button).with(:clean).and_return(false)
+        allow(machine).to receive(:check_button).with(:brew).and_return(false)
+        machine.program = nil
 
-    it "deletes the stepper when a new program is selected" do
-      allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
-      allow(machine).to receive(:ready)
-      allow(machine).to receive(:program_selector).and_return(:brew)
-      stepper = machine.stepper
-      machine.halt
-      machine.check_set_program
-      machine.check_set_program
-      expect(machine.stepper).to_not eq(stepper)
-    end
-  end
+        machine.check_set_program
+        expect(machine.program).to eq(nil)
+        machine.check_set_program
+        expect(machine.program).to eq(:load)
+      end
 
-  describe "#run" do
-    it "loops until it gets a halt command" do
-      allow(machine).to receive(:halt)
-      allow(machine).to receive(:stepper).and_return(fake_stepper)
-      allow(fake_stepper).to receive(:step).and_return(:started)
-      allow(machine).to receive(:check_action).with(:halt).and_return(nil, true)
-
-      machine.run
-      expect(machine).to have_received(:halt)
+      it "calls the light manager when a program is selected" do
+        allow(machine).to receive(:light_manager).and_return(light_manager)
+        machine.change_program(:load)
+        expect(light_manager).to have_received(:on_program_change).with(:load)
+      end
     end
 
-    it "loops until it finishes its program" do
-      allow(machine).to receive(:done)
-      allow(machine).to receive(:stepper).and_return(fake_stepper)
-      allow(fake_stepper).to receive(:step).and_return(:soaking, :done)
+    describe "#ready" do
+      it "loops until it gets a run command" do
+        allow(machine).to receive(:run)
+        allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
+        allow(machine).to receive(:check_action).with(:reset).and_return(false)
 
-      machine.run
-      expect(machine).to have_received(:done)
+        machine.ready
+        expect(machine).to have_received(:run)
+      end
+
+      it "tells the light manager we are in ready mode" do
+        allow(machine).to receive(:run)
+        allow(machine).to receive(:light_manager).and_return(light_manager)
+        allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
+        machine.ready
+
+        expect(light_manager).to have_received(:ready_mode)
+      end
+
+      it "tells the light manager we are paused" do
+        allow(machine).to receive(:run)
+        allow(machine).to receive(:light_manager).and_return(light_manager)
+        allow(machine).to receive(:check_action).with(:run).and_return(true)
+        machine.halt
+        expect(light_manager).to have_received(:ready_mode).with(:paused)
+      end
+
+      it "deletes the stepper when a new program is selected" do
+        allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
+        allow(machine).to receive(:ready)
+        allow(machine).to receive(:program_selector).and_return(:brew)
+        stepper = machine.stepper
+        machine.halt
+        machine.check_set_program
+        machine.check_set_program
+        expect(machine.stepper).to_not eq(stepper)
+      end
     end
 
-    it "lights up the run light when it is running" do
-      allow(machine).to receive(:ready)
-      allow(machine).to receive(:light_manager).and_return(light_manager)
-      allow(machine).to receive(:stepper).and_return(fake_stepper2)
-      allow(machine).to receive(:check_action).with(:halt).and_return(nil, true)
-      machine.run
+    describe "#run" do
+      it "loops until it gets a halt command" do
+        allow(machine).to receive(:halt)
+        allow(machine).to receive(:stepper).and_return(fake_stepper)
+        allow(fake_stepper).to receive(:step).and_return(:started)
+        allow(machine).to receive(:check_action).with(:halt).and_return(nil, true)
 
-      expect(light_manager).to have_received(:run_mode)
+        machine.run
+        expect(machine).to have_received(:halt)
+      end
+
+      it "loops until it finishes its program" do
+        allow(machine).to receive(:done)
+        allow(machine).to receive(:stepper).and_return(fake_stepper)
+        allow(fake_stepper).to receive(:step).and_return(:soaking, :done)
+
+        machine.run
+        expect(machine).to have_received(:done)
+      end
+
+      it "lights up the run light when it is running" do
+        allow(machine).to receive(:ready)
+        allow(machine).to receive(:light_manager).and_return(light_manager)
+        allow(machine).to receive(:stepper).and_return(fake_stepper2)
+        allow(machine).to receive(:check_action).with(:halt).and_return(nil, true)
+        machine.run
+
+        expect(light_manager).to have_received(:run_mode)
+      end
     end
-  end
 
-  describe "#done" do
-    it "deletes the stepper when it finishes the program" do
-      allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
-      allow(machine).to receive(:ready)
-      stepper = machine.stepper
-      machine.done
-      expect(machine.stepper).to_not eq(stepper)
+    describe "#done" do
+      it "deletes the stepper when it finishes the program" do
+        allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
+        allow(machine).to receive(:ready)
+        stepper = machine.stepper
+        machine.done
+        expect(machine.stepper).to_not eq(stepper)
+      end
     end
-  end
-
-  describe "#set_component_state" do
-    it "calls open on the valve" do
-      allow(valve_2).to receive(:open)
-      machine.set_component_state(2, "open")
-
-      expect(valve_2).to have_received(:open)
-    end
-  end
-
-  let(:timed_out_error) { "Valve Valve 2 has timed out: 3.00033 seconds" }
-  it "raises an error if the time elapsed has been too long" do
-    allow(valve_2).to receive(:in_position?).and_raise(timed_out_error)
-    allow(machine).to receive(:log)
-    expect { machine.check_component_state(2) }.to raise_error(timed_out_error)
-    expect(machine).to have_received(:log).once
   end
 end

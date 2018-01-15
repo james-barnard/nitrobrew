@@ -1,6 +1,13 @@
   RSpec.describe Configuration do
     
     let(:config) {Configuration.new}
+    let(:valid_control) do
+      "control:
+      -  id: 1
+         name: p8_enable
+         pin_id: P9_42
+         trigger: low\n"
+    end
     let(:valid_valve_setup) do
       "valves:
       -  "
@@ -21,7 +28,7 @@
          pin: P9_29
          pull_down: yes\n"
     end
-    let(:valid_config) { valid_switch + valid_valve_setup + valid_valve }
+    let(:valid_config) { valid_control + valid_switch + valid_valve_setup + valid_valve }
     let(:duplicate_id) do
       valid_config + "\n      -  id: v2"
     end
@@ -31,7 +38,8 @@
     let(:duplicate_name) do
       valid_config + "\n      -  name: Brew In"
     end
-    let(:invalid_config) do
+    let(:invalid_valve_config) do
+      valid_control + valid_switch +
       "notvalves:
          -  id: v1
             name: Brew Vacuum
@@ -52,7 +60,7 @@
     end
   
     it "raises an exception if there are no valves" do
-      allow(File).to receive(:open).and_return(invalid_config)
+      allow(File).to receive(:open).and_return(invalid_valve_config)
       expect{Configuration.new}.to raise_error("Config file doesn't have valves")
     end
 

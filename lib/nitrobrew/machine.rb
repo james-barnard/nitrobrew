@@ -21,7 +21,7 @@ class Machine
     disable_control_pins
 
     activate_valves
-    wait_for_valves
+    close_valves
     activate_switches
   end
 
@@ -192,8 +192,15 @@ class Machine
     config.valves.each do | valve |
       id = valve["id"]
       valves[id] = Valve.new(valve)
+    end
+  end
+
+  def close_valves
+    config.valves.each do | valve |
+      id = valve["id"]
       set_component_state(id, :closed)
     end
+    wait_for_valves
   end
 
   def wait_for_valves
