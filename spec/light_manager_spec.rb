@@ -139,5 +139,18 @@ describe LightManager do
       expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH)
       expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH)
     end
+
+    it "can blink a light" do
+      allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
+    
+      test_manager.blink
+      test_manager.add_blink(:brew)
+      test_manager.blink
+      sleep 2
+      test_manager.blink
+
+      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:HIGH).once
+      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:LOW).once
+    end
   end
 end

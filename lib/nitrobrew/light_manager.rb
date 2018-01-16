@@ -5,6 +5,7 @@ class LightManager
 
   def initialize(params)
     activate_lights(params)
+    @toggle = {time: 0, light: nil}
   end
 
   def lights
@@ -52,6 +53,21 @@ class LightManager
     light_off(:ready)
     light_off(:done)
     light_on(:run)
+  end
+
+  def blink
+    return unless @toggle[:light] && (Time.now.to_i - @toggle[:time] > 1)
+    @toggle[:status] = !@toggle[:status]
+    @toggle[:time] = Time.now.to_i
+    @toggle[:status] ? light_on(@toggle[:light]) : light_off(@toggle[:light])
+  end
+
+  def add_blink(light)
+    @toggle[:light] = light
+  end
+
+  def remove_blink
+    @toggle[:light] = nil
   end
 
   def light_on(light_key)

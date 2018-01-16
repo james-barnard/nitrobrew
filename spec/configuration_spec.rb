@@ -82,4 +82,6 @@
       allow(File).to receive(:open).and_return(duplicate_name)
       expect{Configuration.new}.to raise_error("Duplicate valve name")
     end
+
+    it "prints a warning if any pin configurations are in conflict"
   end

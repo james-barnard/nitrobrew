@@ -1,7 +1,9 @@
 require_relative 'configuration.rb'
 require_relative 'utilities.rb'
+require_relative 'validator.rb'
 require 'logger'
 include Utilities
+
 
 class Machine
   ID = 1001
@@ -41,6 +43,7 @@ class Machine
   end
 
   def run
+    close_valves
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode

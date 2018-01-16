@@ -1,0 +1,127 @@
+control:
+   -  id: 1
+      name: p8_enable
+      pin_id: P9_42
+      trigger: low
+valves:
+   -  id: 1
+      name: Decant
+      type: powered
+      open: P8_35
+      close: P8_36
+      sense_closed: P9_27
+      sense_open: P9_28
+      trigger: low
+   -  id: 2
+      name: Bright Out
+      type: powered
+      open: P8_33
+      close: P8_34
+      sense_open: P9_25
+      sense_closed: P9_26
+      trigger: low
+   -  id: 3
+      name: Bright In
+      type: powered
+      open: P8_31
+      close: P8_32
+      sense_open: P9_23
+      sense_closed: P9_24
+      trigger: low
+   -  id: 4
+      name: Filter purge Out
+      type: powered
+      open: P8_13
+      close: P8_14
+      sense_closed: P9_21
+      sense_open: P9_22
+      trigger: low
+   -  id: 5
+      name: Brew Out
+      type: powered
+      open: P8_11
+      close: P8_12
+      sense_closed: P9_18
+      sense_open: P9_17
+      trigger: low
+   -  id: 6
+      name: Brew In
+      type: powered
+      open: P8_9
+      close: P8_10
+      sense_closed: P9_14
+      sense_open: P9_13
+      trigger: low
+   -  id: 7
+      name: Brew Vacuum
+      type: powered
+      open: P8_7
+      close: P8_8
+      sense_closed: P9_11
+      sense_open: P9_12
+      trigger: low
+   -  id: 8
+      name: Filter H2O
+      type: NC
+      open: P8_39
+      trigger: high
+   -  id: 9
+      name: Filter Backflush
+      type: NC
+      open: P8_40
+      trigger: high
+   -  id: 10
+      name: Brew H2O
+      type: NC
+      open: P8_41
+      trigger: high
+   -  id: 11
+      name: Brew N2
+      type: NC
+      open: P8_42
+      trigger: high
+   -  id: 12
+      name: process H2O
+      type: NC
+      open: P8_43
+      trigger: high
+   -  id: 13
+      name: Condition N2
+      type: NC
+      open: P8_44
+      trigger: high
+   -  id: 14
+      name: Burp
+      type: NC
+      open: P8_45
+      trigger: high
+switches:
+   -  id: 1
+      name: clean
+      pin_id: P9_29
+      pull_down: yes
+   -  id: 2
+      name: brew
+      pin_id: P9_30
+      pull_down: yes
+   -  id: 3
+      name: run
+      pin_id: P9_31
+      pull_down: yes
+   -  id: 4
+      name: halt
+      pin_id: P9_31
+      pull_down: yes
+lights:
+   -  name: done
+      pin_id: P8_19
+   -  name: brew
+      pin_id: P8_26
+   -  name: clean
+      pin_id: P8_27
+   -  name: load
+      pin_id: P8_28
+   -  name: ready
+      pin_id: P8_29
+   -  name: run
+      pin_id: P8_30
