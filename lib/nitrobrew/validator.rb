@@ -9,9 +9,21 @@ class Validator
   end
 
   def validate!
-    raise "ERROR: Component has states but is not configured" unless ids_match?(component_ids, valve_ids)
-    puts "WARNING: Component is configured but not used" unless ids_match?(valve_ids, component_ids)
+    configured = ids_match?(component_ids, valve_ids)
+    used = ids_match?(valve_ids, component_ids)
+    if configured && used
+      true
+    else
+      print_messages(configured, used)
+      false
+    end
   end
+
+  def print_messages(configured = false, used = false)
+    print "WARNING: Component has states but is not configured" unless configured
+    print "WARNING: Component is configured but not used" unless used
+  end
+
 
   def component_ids
     db.execute("select distinct component_id from component_states join steps on steps.id = component_states.step_id where program_id = ?", program_id).flatten

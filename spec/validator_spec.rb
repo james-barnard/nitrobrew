@@ -27,17 +27,40 @@ RSpec.describe Validator do
     expect(validator.valve_ids).to eq([1, 2])
   end
 
+  context "the program is valid" do
+    it "returns true" do
+      allow(validator).to receive(:component_ids).and_return([1, 2])
+      allow(validator).to receive(:valve_ids).and_return([1, 2])
+      
+      expect(validator.validate!).to be(true)
+    end
+  end
+
   context "the program is not valid" do
     it "raises an exception if any components have states but are not configured" do
       allow(validator).to receive(:component_ids).and_return([1, 2])
       allow(validator).to receive(:valve_ids).and_return([1])
-      expect{validator.validate!}.to raise_error("ERROR: Component has states but is not configured")
+      expect{validator.validate!}.to output(/WARNING: Component has states but is not configured/).to_stdout
     end
 
     it "prints a warning if a component is configured but not referenced in the component states table" do
       allow(validator).to receive(:component_ids).and_return([1])
       allow(validator).to receive(:valve_ids).and_return([1, 2])
       expect {validator.validate!}.to output(/WARNING: Component is configured but not used/).to_stdout
+    end
+
+    it "returns false if any components have states but are not configured" do
+      allow(validator).to receive(:component_ids).and_return([1, 2])
+      allow(validator).to receive(:valve_ids).and_return([1])
+
+      expect(validator.validate!).to be(false)
+    end
+
+    it "returns false if a component is configured but not referenced in the component states table" do
+      allow(validator).to receive(:component_ids).and_return([1])
+      allow(validator).to receive(:valve_ids).and_return([1, 2])
+
+      expect(validator.validate!).to be(false)
     end
   end
 

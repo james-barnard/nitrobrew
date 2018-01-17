@@ -11,6 +11,12 @@ describe Machine do
       :ready_mode => nil,
       :run_mode => nil)
   end
+  let(:validator) { Validator.new(:brew, "machine.db", valves) }
+  let(:valves) do
+    [{"id"=>1, "name"=>"Filter H2O", "type"=>"NC", "open"=>"P8_39", "trigger"=>"high"},
+     {"id"=>2, "name"=>"Filter Backflush", "type"=>"NC", "open"=>"P8_40", "trigger"=>"high"}]
+  end
+  
   context "with activations" do
     before(:each) do
       Machine.any_instance.stub(:wait_for_valves)
@@ -118,6 +124,8 @@ describe Machine do
     end
 
     describe "#check_set_program" do
+      before(:each) { allow(Validator).to receive(:new).and_return(validator) }
+      before(:each) { allow(validator).to receive(:validate!).and_return(true) }
       it "recognizes a program selection" do
         allow(machine).to receive(:run)
         allow(machine).to receive(:program_selector).and_return(:clean)
@@ -157,20 +165,43 @@ describe Machine do
         machine.check_set_program
         expect(machine.program).to eq(:load)
       end
-
-      it "calls the light manager when a program is selected" do
+    end
+    
+    describe "#change_program" do
+      before(:each) { allow(Validator).to receive(:new).and_return(validator) }
+      
+      it "validates the program" do
+        allow(validator).to receive(:validate!)
+        machine.change_program(:brew)
+        expect(validator).to have_received(:validate!)
+      end
+      
+      it "lights up the program light when a valid program is selected" do
         allow(machine).to receive(:light_manager).and_return(light_manager)
+        allow(validator).to receive(:validate!).and_return(true)
         machine.change_program(:load)
         expect(light_manager).to have_received(:on_program_change).with(:load)
+      end
+
+      it "blinks the program light when the program is invalid" do 
+        allow(machine).to receive(:light_manager).and_return(light_manager)
+        allow(validator).to receive(:validate!).and_return(false)
+        allow(light_manager).to receive(:add_blink)
+        machine.change_program(:brew)
+        expect(light_manager).to have_received(:add_blink).with(:brew)
       end
     end
 
     describe "#ready" do
+      before(:each) { allow(Validator).to receive(:new).and_return(validator) }
+      before(:each) { allow(validator).to receive(:validate!).and_return(true) }
+
       it "loops until it gets a run command" do
         allow(machine).to receive(:run)
         allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
         allow(machine).to receive(:check_action).with(:reset).and_return(false)
 
+        machine.change_program(:brew)
         machine.ready
         expect(machine).to have_received(:run)
       end
@@ -201,6 +232,18 @@ describe Machine do
         machine.check_set_program
         machine.check_set_program
         expect(machine.stepper).to_not eq(stepper)
+      end
+
+      it "can only exit the ready loop if the program has been validated" do
+        allow(machine).to receive(:run)
+        allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
+        allow(machine).to receive(:check_action).with(:reset).and_return(false)
+        allow(validator).to receive(:validate!).and_return(false, true)
+        allow(machine).to receive(:program_selector).and_return(:load, :load, :brew)
+        
+        machine.ready
+        
+        expect(machine).to have_received(:run).once
       end
     end
 

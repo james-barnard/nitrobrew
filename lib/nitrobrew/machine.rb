@@ -35,7 +35,7 @@ class Machine
     action = nil
     while !action do
       check_set_program
-      action = :run if check_action(:run)
+      action = :run if check_action(:run) && @valid
       sleep 0.333
     end
     sleep 1
@@ -118,9 +118,15 @@ class Machine
 
   def change_program(program)
     delete_stepper
-    log("machine:change_program", "program selected", program)
-    light_manager.on_program_change(program)
-    @program = program
+    @valid = Validator.new(program, database, @config.valves).validate!
+    if @valid
+      log("machine:change_program", "program selected", program)
+      light_manager.on_program_change(program)
+      @program = program
+    else
+      log("machine:change_program", "program invalid", program)
+      light_manager.add_blink(program)
+    end
   end
 
   def log(method, label, value)
