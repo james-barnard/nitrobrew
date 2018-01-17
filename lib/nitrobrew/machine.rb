@@ -36,6 +36,7 @@ class Machine
     while !action do
       check_set_program
       action = :run if check_action(:run) && @valid
+      light_manager.blink
       sleep 0.333
     end
     sleep 1

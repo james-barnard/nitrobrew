@@ -9,7 +9,8 @@ describe Machine do
     double("light_manager",
       :on_program_change => nil,
       :ready_mode => nil,
-      :run_mode => nil)
+      :run_mode => nil,
+      :blink => nil)
   end
   let(:validator) { Validator.new(:brew, "machine.db", valves) }
   let(:valves) do
