@@ -4,16 +4,6 @@ RSpec.describe Validator do
     [{"id"=>1, "name"=>"Filter H2O", "type"=>"NC", "open"=>"P8_39", "trigger"=>"high"},
      {"id"=>2, "name"=>"Filter Backflush", "type"=>"NC", "open"=>"P8_40", "trigger"=>"high"}]
   end
-  let (:test_manager) { LightManager.new(test_params) }
-  let (:test_params) do
-    [ {"name" => "brew",  "pin_id" => "P8_26"},
-      {"name" => "clean", "pin_id" => "P8_27"},
-      {"name" => "load",  "pin_id" => "P8_28"},
-      {"name" => "ready", "pin_id" => "P8_29"},
-      {"name" => "run",   "pin_id" => "P8_30"},
-      {"name" => "done",  "pin_id" => "P8_31"} ]
-  end
-
 
   before(:all) do
     @db = SQLite3::Database.new("validator.db")
@@ -50,7 +40,6 @@ RSpec.describe Validator do
       expect {validator.validate!}.to output(/WARNING: Component is configured but not used/).to_stdout
     end
   end
-
 
   def clean_database
     @db.execute("delete from programs")
