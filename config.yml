@@ -3,6 +3,15 @@ control:
       name: p8_enable
       pin_id: P9_42
       trigger: low
+i2cs:
+   -  id: A
+      bus: 0
+   -  id: B
+      bus: 0
+   -  id: C
+      bus: 0
+   -  id: D
+      bus: 0
 valves:
    -  id: 1
       name: Decant

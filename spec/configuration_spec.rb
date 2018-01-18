@@ -59,6 +59,10 @@
       expect(config.lights.first).to be_a_kind_of(Hash)
     end
   
+    it "loads i2c definitions into an array" do
+      expect(config.i2cs).to be_a_kind_of(Array)
+    end
+
     it "raises an exception if there are no valves" do
       allow(File).to receive(:open).and_return(invalid_valve_config)
       expect{Configuration.new}.to raise_error("Config file doesn't have valves")

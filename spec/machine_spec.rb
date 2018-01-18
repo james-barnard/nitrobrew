@@ -48,6 +48,10 @@ describe Machine do
       expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
     end
 
+    it "has a hash of i2c devices" do
+      expect(machine.send(:i2cs)["A"]).to be_a_kind_of(I2CDriver)
+    end
+
     let(:timed_out_error) { "Valve Valve 2 has timed out: 3.00033 seconds" }
     it "raises an error if the time elapsed has been too long" do
       allow(valve_2).to receive(:in_position?).and_raise(timed_out_error)

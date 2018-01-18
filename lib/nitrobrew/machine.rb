@@ -1,6 +1,7 @@
-require_relative 'configuration.rb'
-require_relative 'utilities.rb'
-require_relative 'validator.rb'
+require_relative 'configuration'
+require_relative 'utilities'
+require_relative 'validator'
+require_relative 'i2cdriver'
 require 'logger'
 include Utilities
 
@@ -22,6 +23,7 @@ class Machine
     activate_control_pins
     disable_control_pins
 
+    activate_i2cs
     activate_valves
     close_valves
     activate_switches
@@ -162,6 +164,13 @@ class Machine
   end
 
   private
+  def activate_i2cs
+    config.i2cs.each do | driver |
+      i2cs[driver["id"]] = I2CDriver.new()
+    end
+  end
+
+
   def enable_control_pins
     control_pins.each do | name, gpio |
       trigger = gpio[:trigger].upcase.to_sym
@@ -251,6 +260,10 @@ class Machine
 
   def valves
     @valves ||= {}
+  end
+
+  def i2cs
+    @i2cs ||= {}
   end
 
   def logger

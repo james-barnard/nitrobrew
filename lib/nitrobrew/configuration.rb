@@ -4,7 +4,7 @@ require 'set'
 
 
 class Configuration
-	attr_reader :valves, :switches, :lights, :control
+	attr_reader :valves, :switches, :lights, :control, :i2cs
 
 	def initialize
 		begin
@@ -16,6 +16,7 @@ class Configuration
 		@valves   = data['valves'] || raise("Config file doesn't have valves")
 		@switches = data['switches'] || raise("Config file doesn't have switches")
     @lights   = data['lights']
+    @i2cs     = data['i2cs'] || raise("Config file doesn't have i2cs")
     validate_valves
   end
 
