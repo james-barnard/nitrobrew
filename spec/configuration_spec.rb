@@ -8,6 +8,11 @@
          pin_id: P9_42
          trigger: low\n"
     end
+    let(:valid_i2cs) do
+      "i2cs:
+      -  id: A
+         bus: 0\n"
+    end
     let(:valid_valve_setup) do
       "valves:
       -  "
@@ -28,7 +33,7 @@
          pin: P9_29
          pull_down: yes\n"
     end
-    let(:valid_config) { valid_control + valid_switch + valid_valve_setup + valid_valve }
+    let(:valid_config) { valid_control + valid_i2cs + valid_switch + valid_valve_setup + valid_valve }
     let(:duplicate_id) do
       valid_config + "\n      -  id: v2"
     end

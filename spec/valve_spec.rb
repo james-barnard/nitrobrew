@@ -1,27 +1,39 @@
 describe Valve do
 
-  let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high"} }
-  let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low"} }
-  let (:powered_params) { {"name" => "poweredName", "id" => "v2", "type" => "powered", "open" => "P8_7", "close" => "P8_8",
-                           "sense_open" => "P8_9", "sense_closed" => "P8_10", "trigger" => "high"} }
+  let (:i2cdriver_a) { double("i2cdriver_a", i2cpin: double("fake_i2cpin")) }
+  let (:i2cdriver_b) { double("i2cdriver_b", i2cpin: double("fake_i2cpin")) }
+  let (:i2cs) { {"A" => i2cdriver_a, "B" => i2cdriver_b} }
+  let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high", "drivers" => i2cs} }
+  let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low", "drivers" => i2cs} }
+  let (:powered_params) { {"name" => "poweredName", "id" => "v2", "type" => "powered", "open" => "I.B.4", "close" => "P8_8",
+                           "sense_open" => "P8_9", "sense_closed" => "P8_10", "trigger" => "high", "drivers" => i2cs} }
   let (:fake_pin)       { double("GPIOPin") }
+  let (:nc_valve)     { Valve.new(nc_params) }
+  let (:nc_valve_low) { Valve.new(nc_params_low) }
 
   context "is a NC valve" do
-    let (:nc_valve)     { Valve.new(nc_params) }
-    let (:nc_valve_low) { Valve.new(nc_params_low) }
 
     it "validates its parameters" do
       expect {nc_valve}.not_to raise_error
     end
 
     it "verifies its required parameters" do
-      nc_params.keys.each do | param |
+      (Valve::VALID_PINS[nc_params["type"]] + Valve::REQUIRED_PARAMS).each do | param |
         expect {Valve.new(nc_params.merge(param => nil))}.to raise_error("Invalid #{param}")
       end
     end
 
-    it "activates its pin" do
-      expect(nc_valve.send(:pins)["open"]).to be_an_instance_of(GPIOPin)
+    context "it has a GPIOPin" do
+      it "activates its pin" do
+        expect(nc_valve.send(:pins)["open"]).to be_an_instance_of(GPIOPin)
+      end
+    end
+
+    context "it has an I2CPin" do
+      let (:nc_params) { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "I.B.4", "trigger" => "high", "drivers" => i2cs} }
+      it "activates its pin" do
+        expect(nc_valve.send(:pins)["open"]).to_not be_nil
+      end
     end
 
     it "sets its state" do
@@ -68,15 +80,16 @@ describe Valve do
     end
 
     it "verifies its required parameters" do
-      powered_params.keys.each do | param |
+      (Valve::VALID_PINS[powered_params["type"]] + Valve::REQUIRED_PARAMS).each do | param |
         expect {Valve.new(powered_params.merge(param => nil))}.to raise_error("Invalid #{param}")
       end
     end
-
+    
     it "activates its pins" do
-      Valve::VALID_PINS["powered"].each do | pin |
+      Valve::VALID_PINS["powered"][1..2].each do | pin |
         expect(powered_valve.send(:pins)[pin]).to be_an_instance_of(GPIOPin)
       end
+      expect(powered_valve.send(:pins)["open"]).to_not be_nil
     end
 
     context "when checking position" do
@@ -88,6 +101,7 @@ describe Valve do
 
       it "returns true if state is achieved" do
         allow(powered_valve.send(:pins)["sense_closed"]).to receive(:digital_read).and_return(:HIGH)
+        allow(powered_valve).to receive(:neutralize)
         expect(powered_valve.in_position?).to be true
       end
 
@@ -119,6 +133,12 @@ describe Valve do
   context "with invalid type" do
     it "raises an error" do
       expect {Valve.new(nc_params.merge("type" => "wrong"))}.to raise_error("Invalid type")
+    end
+  end
+
+  context "when activating I2CPins" do
+    it "selects the right I2CDriver" do
+      expect(nc_valve.send(:select_driver, "I.B.4")).to eq(i2cdriver_b)
     end
   end
 end

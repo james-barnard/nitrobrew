@@ -166,7 +166,7 @@ class Machine
   private
   def activate_i2cs
     config.i2cs.each do | driver |
-      i2cs[driver["id"]] = I2CDriver.new()
+      i2cs[driver["id"]] = I2CDriver.new(driver["id"], 0)
     end
   end
 

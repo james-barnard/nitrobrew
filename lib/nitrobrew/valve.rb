@@ -1,4 +1,6 @@
 require 'beaglebone'
+require_relative 'i2cpin'
+require_relative 'i2cdriver'
 include Beaglebone
 
 class Valve
@@ -21,6 +23,7 @@ class Valve
     @type    = params["type"]
     @trigger = params["trigger"].to_sym
     @status  = :closed
+    @i2cs    = params["drivers"]
 
     activate_pins(params)
   end
@@ -58,8 +61,22 @@ class Valve
   def activate_pins(params)
     VALID_PINS[type].each do | key |
       mode = pin_mode(key)
-      pins[key] = GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
+      pins[key] = create_pin(params, key, mode)
     end
+  end
+
+  def create_pin(params, key, mode)
+    if params[key][0].upcase == "P"
+      GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
+    else
+      driver = select_driver(params[key])
+      driver.i2cpin(params[key], mode, pullmode(mode))
+    end
+  end
+
+  def select_driver(address)
+    key = address.split('.')[1]
+    @i2cs[key]
   end
 
   def neutralize
