@@ -17,23 +17,31 @@ class Configuration
 		@switches = data['switches'] || raise("Config file doesn't have switches")
     @lights   = data['lights']
     @i2cs     = data['i2cs'] || raise("Config file doesn't have i2cs")
-    validate_valves
+    validate_components
   end
 
   private
-  def validate_valves
+  def validate_components
     ids     = Set.new []
     names   = Set.new []
     pin_set = Set.new []
-
     @valves.each do | valve |
-      raise("Duplicate valve id") unless ids.add?(valve["id"])
-      raise("Duplicate valve name") unless names.add?(valve["name"])
+      raise("Duplicate valve id: #{valve['id']}") unless ids.add?(valve["id"])
+      raise("Duplicate valve name: #{valve['name']}") unless names.add?(valve["name"])
       Valve::VALID_PINS[valve["type"]].each do | pin |
         if valve[pin]
-          raise("Duplicate pin") unless pin_set.add?(valve[pin])
+          raise("Duplicate pin: #{valve[pin]}") unless pin_set.add?(valve[pin]) || valve['duplicate'] == true
         end
       end
+    end
+    check_pins(pin_set, @control)
+    check_pins(pin_set, @switches)
+    check_pins(pin_set, @lights)
+  end
+
+  def check_pins(pin_set, components)
+    components.each do | component |
+      raise("Duplicate pin: #{component['pin_id']}") unless pin_set.add?(component["pin_id"]) || component['duplicate'] == true
     end
   end
 end

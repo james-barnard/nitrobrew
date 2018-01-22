@@ -18,13 +18,13 @@
       -  "
     end
     let(:valid_valve) do
-        "id: v2
+        "id: 2
          name: Brew In
          type: powered
          open: P8_3
          close: P8_4
          sense_open: P8_5
-         sense_closed: P8_6"
+         sense_closed: P8_6\n"
     end
     let(:valid_switch) do
       "switches:
@@ -33,15 +33,49 @@
          pin: P9_29
          pull_down: yes\n"
     end
-    let(:valid_config) { valid_control + valid_i2cs + valid_switch + valid_valve_setup + valid_valve }
+    let(:valid_lights) do
+      "lights:
+   -  name: done
+      pin_id: P8_19
+   -  name: brew
+      pin_id: P8_26\n"
+    end
+    let(:valid_config) { valid_control + valid_i2cs + valid_switch + valid_lights + valid_valve_setup + valid_valve }
     let(:duplicate_id) do
-      valid_config + "\n      -  id: v2"
+      valid_config + "\n      -  id: 2"
     end
     let(:duplicate_pins) do
       valid_config + "\n      -  type: NC\n         open: P8_3"
     end
+    let(:duplicate_i2c_pins) do
+      valid_config + 
+      "      -  id: 3
+         name: Name1
+         type: NC
+         open: I.B.7
+      -  id: 4
+         name: Name2
+         type: NC
+         open: I.B.7"
+    end
     let(:duplicate_name) do
       valid_config + "\n      -  name: Brew In"
+    end
+    let(:duplicate_true) do
+      valid_config + 
+      "      -  id: 3
+         name: Name1
+         type: NC
+         open: I.B.7
+         duplicate: true + 
+      -  id: 4
+         name: Name2
+         type: NC
+         open: I.B.7
+         duplicate: true"
+    end
+    let(:duplicate_pins_across_components) do
+      valid_config + "\n      -  type: NC\n         open: P9_42"
     end
     let(:invalid_valve_config) do
       valid_control + valid_switch +
@@ -79,18 +113,31 @@
 
     it "raises an exception if any valve pins are repeated" do
       allow(File).to receive(:open).and_return(duplicate_pins)
-      expect {Configuration.new}.to raise_error("Duplicate pin")
+      expect {Configuration.new}.to raise_error("Duplicate pin: P8_3")
     end
 
     it "raises an exception if any ids are repeated" do
       allow(File).to receive(:open).and_return(duplicate_id)
-      expect{Configuration.new}.to raise_error("Duplicate valve id")
+      expect{Configuration.new}.to raise_error("Duplicate valve id: 2")
     end
 
     it "raises an exception if any names are repeated" do
       allow(File).to receive(:open).and_return(duplicate_name)
-      expect{Configuration.new}.to raise_error("Duplicate valve name")
+      expect{Configuration.new}.to raise_error("Duplicate valve name: Brew In")
     end
 
-    it "prints a warning if any pin configurations are in conflict"
+    it "raises an exception if any I2C pins are in conflict" do
+      allow(File).to receive(:open).and_return(duplicate_i2c_pins)
+      expect {Configuration.new}.to raise_error("Duplicate pin: I.B.7")
+    end
+  
+    it "raises an exception if more than 1 component uses the same pins" do
+      allow(File).to receive(:open).and_return(duplicate_pins_across_components)
+      expect {Configuration.new}.to raise_error("Duplicate pin: P9_42")
+    end
+
+    it "doesn't raise an exception if the component is specified as having a duplicate pin" do
+      allow(File).to receive(:open).and_return(duplicate_true)
+      expect {Configuration.new}.to_not raise_error
+    end
   end

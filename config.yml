@@ -56,10 +56,12 @@ switches:
       name: run
       pin_id: P9_31
       pull_down: yes
+      duplicate: true
    -  id: 4
       name: halt
       pin_id: P9_31
       pull_down: yes
+      duplicate: true
 lights:
    -  name: done
       pin_id: P8_19

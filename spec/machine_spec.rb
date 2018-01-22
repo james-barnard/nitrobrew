@@ -41,7 +41,7 @@ describe Machine do
     end
 
     it "creates a hash for each switch" do
-      expect(run_switch.keys.sort).to eq( [:id, :name, :pin, :pin_id, :pull_down] )
+      expect(run_switch.keys.sort).to eq( [:duplicate, :id, :name, :pin, :pin_id, :pull_down] )
     end
 
     it "has a pin object that is a GPIOPin" do
