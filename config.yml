@@ -5,13 +5,17 @@ control:
       trigger: low
 i2cs:
    -  id: A
-      bus: 0
+      bus: I2C1
+      addr: 0x20
    -  id: B
-      bus: 0
+      bus: I2C1
+      addr: 0x21
    -  id: C
-      bus: 0
+      bus: I2C1
+      addr: 0x23
    -  id: D
-      bus: 0
+      bus: I2C1
+      addr: 0x24
 valves:
    -  id: 1
       name: Decant

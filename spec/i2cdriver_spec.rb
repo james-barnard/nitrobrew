@@ -1,16 +1,17 @@
 RSpec.describe I2CDriver do
-  let(:driver) { I2CDriver.new("A", 0) }
+  let(:driver_params) { { "id" => "A", "bus" => "I2C1", "addr" => 0x20 } }
+  let(:driver) { I2CDriver.new(driver_params) }
   let(:pin_params) { ["I.A.7", :OUT, nil] }
   let(:device) { double("i2cdevice", write: nil, read: nil) }
-  let(:iodir_address) { 0x4902 }
+  let(:iodir_address) { 0x00 }
 
 
   it "knows its ID" do
     expect(driver.id).to eq("A")
   end
-  
-  it "knows its buss" do
-    expect(driver.buss).to eq(0)
+
+  it "knows its bus" do
+    expect(driver.bus).to eq(:I2C1)
   end
 
   it "knows its IODIR register" do
@@ -33,7 +34,7 @@ RSpec.describe I2CDriver do
   it "sets the proper IODIR values when you initialize a pin" do
     allow(driver).to receive(:i2cdevice).and_return(device)
     driver.pin(*pin_params)
-    expect(device).to have_received(:write).with(iodir_address, 0)
+    expect(device).to have_received(:write).with(driver_params["addr"], [0x00, 0x00].pack("C*"))
   end
 
   it "sets or unsets the appropriate GPIO pin when you write to it" do

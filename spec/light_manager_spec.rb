@@ -14,13 +14,21 @@ describe LightManager do
 
   describe "#initialize" do
     it "uses the config file" do
+      allow(Beaglebone::GPIO).to receive(:pin_mode).and_return(nil)
       expect(real_manager.send(:lights)[:brew][:pin]).to be_an_instance_of(GPIOPin)
       expect(real_manager.send(:lights).keys.sort).to eq([:brew, :clean, :done, :load, :ready, :run])
     end
 
     it "activates the GPIOPins for the lights" do
+      allow(Beaglebone::GPIO).to receive(:pin_mode).and_return(nil)
       expect(test_manager.send(:lights)[:brew][:pin]).to be_an_instance_of(GPIOPin)
     end
+  end
+
+  context "with fake pin" do
+    before(:each) {
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+    }
 
     it "turns on all the lights for testing" do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
@@ -31,11 +39,11 @@ describe LightManager do
 
       test_manager.all_on
 
-      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:HIGH).once
-      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:HIGH).once
-      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:HIGH).once
-      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH).once
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).once
+      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
+      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
+      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
     end
 
     it "can turn off all the lights" do
@@ -47,19 +55,23 @@ describe LightManager do
 
       test_manager.all_off
 
-      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:LOW).once
-      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:LOW).once
-      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:LOW).once
-      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:LOW).once
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW).once
+      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+    end
+
+    it "has a hash containing its lights" do
+      expect(test_manager.send(:lights).keys.sort).to eq([:brew, :clean, :done, :load, :ready, :run])
     end
   end
 
-  it "has a hash containing its lights" do
-    expect(test_manager.send(:lights).keys.sort).to eq([:brew, :clean, :done, :load, :ready, :run])
-  end
-
   describe "#on_program_change" do
+    before(:each) {
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+    }
+
     it "turns all the program lights off" do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
@@ -67,9 +79,9 @@ describe LightManager do
 
       test_manager.program_lights_off
 
-      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:LOW)
-      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:LOW)
-      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:LOW)
+      expect(test_manager.lights[:brew][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:clean][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
     end
 
     it "lights up only the brew light" do
@@ -110,6 +122,10 @@ describe LightManager do
   end
 
   describe "indicates the state of the machine" do
+    before(:each) {
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+    }
+
     it "lights up the ready light when ready" do
       allow(test_manager.lights[:ready][:pin]).to receive(:digital_write)
       allow(test_manager.lights[:run][:pin]).to receive(:digital_write)
@@ -126,8 +142,8 @@ describe LightManager do
 
       test_manager.run_mode
 
-      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:LOW)
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH)
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
     end
 
     it "lights up both run and ready lights when we are paused" do
@@ -136,13 +152,13 @@ describe LightManager do
 
       test_manager.ready_mode(:paused)
 
-      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH)
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH)
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
     end
 
     it "can blink a light" do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
-    
+
       test_manager.blink
       test_manager.add_blink(:brew)
       test_manager.blink
