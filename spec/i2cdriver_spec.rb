@@ -1,5 +1,5 @@
 RSpec.describe I2CDriver do
-  let(:driver_params) { { "id" => "A", "bus" => "I2C1", "addr" => 0x20 } }
+  let(:driver_params) { { "id" => "A", "bus" => "I2C1", "addr" => 0x20, "gpio_default" => 0xff } }
   let(:driver) { I2CDriver.new(driver_params) }
   let(:pin_params) { ["I.A.7", :OUT, nil] }
   let(:device) { double("i2cdevice", write: nil, read: nil) }
@@ -22,8 +22,8 @@ RSpec.describe I2CDriver do
     expect(driver.gppu).to eq(0)
   end
 
-  it "knows the values in the GPIO register" do
-    expect(driver.gpio).to eq(0)
+  it "sets the value of the GPIO register to a default value from the config" do
+    expect(driver.gpio).to eq(255)
   end
 
   it "returns a pin when you initialize a pin" do
@@ -39,22 +39,22 @@ RSpec.describe I2CDriver do
 
   it "sets or unsets the appropriate GPIO pin when you write to it" do
     allow(driver).to receive(:i2cdevice).and_return(device)
-    expect(driver.gpio).to eq(0)
-    driver.write(7, 1)
-    expect(driver.gpio).to eq(128)
+    expect(driver.gpio).to eq(255)
     driver.write(7, 0)
-    expect(driver.gpio).to eq(0)
+    expect(driver.gpio).to eq(127)
+    driver.write(7, 1)
+    expect(driver.gpio).to eq(255)
   end
 
   it "only changes the written pin"  do
     allow(driver).to receive(:i2cdevice).and_return(device)
-    expect(driver.gpio).to eq(0)
-    driver.write(7, 1)
-    expect(driver.gpio).to eq(128)
-    driver.write(6, 1)
-    expect(driver.gpio).to eq(192)
+    expect(driver.gpio).to eq(255)
     driver.write(7, 0)
-    expect(driver.gpio).to eq(64)
+    expect(driver.gpio).to eq(127)
+    driver.write(6, 0)
+    expect(driver.gpio).to eq(0x3f)
+    driver.write(7, 1)
+    expect(driver.gpio).to eq(0xbf)
   end
 
 end

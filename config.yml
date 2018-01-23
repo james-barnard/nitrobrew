@@ -7,15 +7,19 @@ i2cs:
    -  id: A
       bus: I2C1
       addr: 0x20
+      gpio_default: 0xff
    -  id: B
       bus: I2C1
       addr: 0x21
+      gpio_default: 0x00
    -  id: C
       bus: I2C1
       addr: 0x23
+      gpio_default: 0xff
    -  id: D
       bus: I2C1
       addr: 0x24
+      gpio_default: 0x00
 valves:
    -  id: 1
       name: Decant

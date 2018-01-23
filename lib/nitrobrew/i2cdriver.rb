@@ -8,9 +8,9 @@ class I2CDriver
     @id    = params["id"]
     @bus   = params["bus"].to_sym
     @addr  = params["addr"]
+    @gpio  = params["gpio_default"]
     @iodir = 0
     @gppu  = 0
-    @gpio  = 0
   end
 
   def pin(address, mode, pullmode)
