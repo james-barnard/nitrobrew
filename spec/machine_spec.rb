@@ -1,7 +1,7 @@
 describe Machine do
 
   let(:machine) { Machine.new }
-  let(:run_switch) { machine.send(:switches)[:run] }
+  let(:run_switch) { machine2.send(:switches)[:run] }
   let(:valve_2) { machine.send(:valves)[2] }
   let(:fake_stepper) { double("fs1") }
   let(:fake_stepper2) { double("fs2", :step => "2:done") }
@@ -10,7 +10,9 @@ describe Machine do
       :on_program_change => nil,
       :ready_mode => nil,
       :run_mode => nil,
-      :blink => nil)
+      :blink => nil,
+      :all_on => nil,
+      :all_off => nil)
   end
   let(:validator) { Validator.new(:brew, "machine.db", valves) }
   let(:valves) do
@@ -19,41 +21,46 @@ describe Machine do
   end
   
   context "with activations" do
+    let(:machine2) { Machine.new }
+    let(:run_switch) { machine2.send(:switches)[:run] }
     before(:each) do
       Machine.any_instance.stub(:wait_for_valves)
     end
 
     it "configures itself" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect(machine.config).to be_a_kind_of(Configuration)
     end
 
     it "knows its ID" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect(machine.id).to_not be_nil
     end
 
     it "creates a hash of valve objects" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       key = machine.send(:valves).keys.first
       expect(machine.send(:valves)[key]).to be_a_kind_of(Valve)
     end
 
     it "creates a hash of switches" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect(machine.send(:switches)[:run]).to be_a_kind_of(Hash)
     end
 
     it "creates a hash for each switch" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect(run_switch.keys.sort).to eq( [:duplicate, :id, :name, :pin, :pin_id, :pull_down] )
     end
 
-    it "has a pin object that is a GPIOPin" do
-      expect(run_switch[:pin]).to be_a_kind_of(GPIOPin)
-    end
-
     it "has a hash of i2c devices" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect(machine.send(:i2cs)["A"]).to be_a_kind_of(I2CDriver)
     end
 
     let(:timed_out_error) { "Valve Valve 2 has timed out: 3.00033 seconds" }
     it "raises an error if the time elapsed has been too long" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       allow(valve_2).to receive(:in_position?).and_raise(timed_out_error)
       allow(machine).to receive(:log)
       expect { machine.check_component_state(2) }.to raise_error(timed_out_error)
@@ -62,6 +69,7 @@ describe Machine do
 
     describe "#set_component_state" do
       it "calls open on the valve" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(valve_2).to receive(:open)
         machine.set_component_state(2, "open")
 
@@ -79,12 +87,14 @@ describe Machine do
 
     describe "#debounce" do
       it "doesn't call the block the first time" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         @count = 0
         machine.debounce(:key, "value") { @count += 1 }
         expect(@count).to eq(0)
       end
 
       it "calls the block the second time" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         @count = 0
         machine.debounce(:key, "value") { @count += 1 }
         machine.debounce(:key, "value") { @count += 1 }
@@ -92,6 +102,7 @@ describe Machine do
       end
 
       it "doesn't call the block the third time" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         @count = 0
         machine.debounce(:key, "value") { @count += 1 }
         machine.debounce(:key, "value") { @count += 1 }
@@ -100,8 +111,11 @@ describe Machine do
       end
     end
 
+    describe "#activate_pins"
+
     describe "#on_change" do
       it "logs the step status when it changes" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:log)
         allow(machine).to receive(:done)
         allow(machine).to receive(:stepper).and_return(fake_stepper)
@@ -117,12 +131,14 @@ describe Machine do
 
     describe "#check_action" do
       it "recognizes a button push" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:check_button).with(:halt).and_return(:halt)
         machine.send(:check_action, :halt)
         expect(machine.send(:check_action, :halt)).to be_truthy
       end
 
       it "ignores the first button press" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:check_button).with(:run).and_return(:run)
         expect(machine.send(:check_action, :run)).to be_falsey
       end
@@ -132,6 +148,7 @@ describe Machine do
       before(:each) { allow(Validator).to receive(:new).and_return(validator) }
       before(:each) { allow(validator).to receive(:validate!).and_return(true) }
       it "recognizes a program selection" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:run)
         allow(machine).to receive(:program_selector).and_return(:clean)
         allow(machine).to receive(:check_action).and_return(false, true)
@@ -139,6 +156,7 @@ describe Machine do
       end
 
       it "recognizes a clean program selection" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:check_button).with(:clean).and_return(:clean)
         allow(machine).to receive(:check_button).with(:brew).and_return(false)
         machine.program = nil
@@ -150,6 +168,7 @@ describe Machine do
       end
 
       it "recognizes a brew program selection" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:check_button).with(:clean).and_return(false)
         allow(machine).to receive(:check_button).with(:brew).and_return(:brew)
         machine.program = nil
@@ -161,6 +180,7 @@ describe Machine do
       end
 
       it "recognizes a load program selection" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:check_button).with(:clean).and_return(false)
         allow(machine).to receive(:check_button).with(:brew).and_return(false)
         machine.program = nil
@@ -176,19 +196,22 @@ describe Machine do
       before(:each) { allow(Validator).to receive(:new).and_return(validator) }
       
       it "validates the program" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(validator).to receive(:validate!)
         machine.change_program(:brew)
         expect(validator).to have_received(:validate!)
       end
       
       it "lights up the program light when a valid program is selected" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:light_manager).and_return(light_manager)
         allow(validator).to receive(:validate!).and_return(true)
         machine.change_program(:load)
         expect(light_manager).to have_received(:on_program_change).with(:load)
       end
 
-      it "blinks the program light when the program is invalid" do 
+      it "blinks the program light when the program is invalid" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:light_manager).and_return(light_manager)
         allow(validator).to receive(:validate!).and_return(false)
         allow(light_manager).to receive(:add_blink)
@@ -202,6 +225,7 @@ describe Machine do
       before(:each) { allow(validator).to receive(:validate!).and_return(true) }
 
       it "loops until it gets a run command" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:run)
         allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
         allow(machine).to receive(:check_action).with(:reset).and_return(false)
@@ -212,6 +236,7 @@ describe Machine do
       end
 
       it "tells the light manager we are in ready mode" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:run)
         allow(machine).to receive(:light_manager).and_return(light_manager)
         allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
@@ -221,6 +246,7 @@ describe Machine do
       end
 
       it "tells the light manager we are paused" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:run)
         allow(machine).to receive(:light_manager).and_return(light_manager)
         allow(machine).to receive(:check_action).with(:run).and_return(true)
@@ -229,6 +255,7 @@ describe Machine do
       end
 
       it "deletes the stepper when a new program is selected" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
         allow(machine).to receive(:ready)
         allow(machine).to receive(:program_selector).and_return(:brew)
@@ -240,6 +267,7 @@ describe Machine do
       end
 
       it "can only exit the ready loop if the program has been validated" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:run)
         allow(machine).to receive(:check_action).with(:run).and_return(nil, true)
         allow(machine).to receive(:check_action).with(:reset).and_return(false)
@@ -254,6 +282,7 @@ describe Machine do
 
     describe "#run" do
       it "loops until it gets a halt command" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:halt)
         allow(machine).to receive(:stepper).and_return(fake_stepper)
         allow(fake_stepper).to receive(:step).and_return(:started)
@@ -264,6 +293,7 @@ describe Machine do
       end
 
       it "loops until it finishes its program" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:done)
         allow(machine).to receive(:stepper).and_return(fake_stepper)
         allow(fake_stepper).to receive(:step).and_return(:soaking, :done)
@@ -273,6 +303,7 @@ describe Machine do
       end
 
       it "lights up the run light when it is running" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:ready)
         allow(machine).to receive(:light_manager).and_return(light_manager)
         allow(machine).to receive(:stepper).and_return(fake_stepper2)
@@ -285,6 +316,7 @@ describe Machine do
 
     describe "#done" do
       it "deletes the stepper when it finishes the program" do
+        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(Stepper).to receive(:new).and_return(fake_stepper, fake_stepper2)
         allow(machine).to receive(:ready)
         stepper = machine.stepper

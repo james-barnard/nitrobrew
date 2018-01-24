@@ -20,8 +20,8 @@ class Machine
     light_manager.all_on
     sleep 1
 
-    activate_control_pins
-    disable_control_pins
+    # activate_control_pins
+    # disable_control_pins
 
     activate_i2cs
     activate_valves
@@ -50,7 +50,7 @@ class Machine
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
-    enable_control_pins
+    # enable_control_pins
 
     action = nil
     while !action do
@@ -60,7 +60,7 @@ class Machine
       sleep 0.333
       action = :halt if check_action(:halt)
     end
-    disable_control_pins
+    # disable_control_pins
     send action
   end
 
