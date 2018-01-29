@@ -25,7 +25,7 @@ class Machine
 
     activate_i2cs
     activate_valves
-    close_valves
+    #close_valves
     activate_switches
   end
 
@@ -46,7 +46,7 @@ class Machine
   end
 
   def run
-    close_valves
+    #close_valves
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
