@@ -140,8 +140,12 @@ describe Machine do
     end
 
     describe "#check_set_program" do
-      before(:each) { allow(Validator).to receive(:new).and_return(validator) }
-      before(:each) { allow(validator).to receive(:validate!).and_return(true) }
+      before(:each) do
+        allow(Validator).to receive(:new).and_return(validator)
+        allow(validator).to receive(:validate!).and_return(true)
+        allow(I2CDevice).to receive(:new).and_return(double("fake_i2cdevice", write: nil, read: 1))
+      end
+
       it "recognizes a program selection" do
         allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:run)
@@ -188,7 +192,10 @@ describe Machine do
     end
 
     describe "#change_program" do
-      before(:each) { allow(Validator).to receive(:new).and_return(validator) }
+      before(:each) do
+        allow(Validator).to receive(:new).and_return(validator)
+        allow(I2CDevice).to receive(:new).and_return(double("fake_i2cdevice", write: nil, read: 1))
+      end
 
       it "validates the program" do
         allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
@@ -216,8 +223,11 @@ describe Machine do
     end
 
     describe "#ready" do
-      before(:each) { allow(Validator).to receive(:new).and_return(validator) }
-      before(:each) { allow(validator).to receive(:validate!).and_return(true) }
+      before(:each) do
+        allow(Validator).to receive(:new).and_return(validator)
+        allow(validator).to receive(:validate!).and_return(true)
+        allow(I2CDevice).to receive(:new).and_return(double("fake_i2cdevice", write: nil, read: 1))
+      end
 
       it "loops until it gets a run command" do
         allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
@@ -276,8 +286,11 @@ describe Machine do
     end
 
     describe "#run" do
-      it "loops until it gets a halt command" do
+      before :each do
         allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+      end
+
+      it "loops until it gets a halt command" do
         allow(machine).to receive(:halt)
         allow(machine).to receive(:stepper).and_return(fake_stepper)
         allow(fake_stepper).to receive(:step).and_return(:started)
@@ -288,7 +301,6 @@ describe Machine do
       end
 
       it "loops until it finishes its program" do
-        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:done)
         allow(machine).to receive(:stepper).and_return(fake_stepper)
         allow(fake_stepper).to receive(:step).and_return(:soaking, :done)
@@ -298,7 +310,6 @@ describe Machine do
       end
 
       it "lights up the run light when it is running" do
-        allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(machine).to receive(:ready)
         allow(machine).to receive(:light_manager).and_return(light_manager)
         allow(machine).to receive(:stepper).and_return(fake_stepper2)

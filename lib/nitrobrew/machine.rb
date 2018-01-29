@@ -121,6 +121,8 @@ class Machine
 
   def change_program(program)
     delete_stepper
+    reset_i2cs
+
     @valid = Validator.new(program, database, @config.valves).validate!
     if @valid
       log("machine:change_program", "program selected", program)

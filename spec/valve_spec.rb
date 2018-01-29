@@ -1,7 +1,9 @@
 describe Valve do
+  GPIOPin = Beaglebone::GPIOPin
+  I2CDevice = Beaglebone::I2CDevice
 
-  let (:i2cdriver_a) { double("i2cdriver_a", i2cpin: double("fake_i2cpin1")) }
-  let (:i2cdriver_b) { double("i2cdriver_b", i2cpin: double("fake_i2cpin2", :digital_write => nil)) }
+  let (:i2cdriver_a) { double("i2cdriver_a", pin: double("fake_i2cpin1")) }
+  let (:i2cdriver_b) { double("i2cdriver_b", pin: double("fake_i2cpin2", :digital_write => nil)) }
   let (:i2cs) { {"A" => i2cdriver_a, "B" => i2cdriver_b} }
   let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high", "drivers" => i2cs} }
   let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low", "drivers" => i2cs} }
