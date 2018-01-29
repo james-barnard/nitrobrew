@@ -1,3 +1,4 @@
+require 'beaglebone'
 require_relative 'utilities.rb'
 include Utilities
 
@@ -20,7 +21,7 @@ class LightManager
   end
 
   def activate_light_pin(light)
-    GPIOPin.new(light["pin_id"].to_sym, :OUT)
+    Beaglebone::GPIOPin.new(light["pin_id"].to_sym, :OUT)
   end
 
   def all_off

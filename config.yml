@@ -12,14 +12,6 @@ i2cs:
       bus: I2C1
       addr: 0x21
       gpio_default: 0x00
-   -  id: C
-      bus: I2C1
-      addr: 0x23
-      gpio_default: 0xff
-   -  id: D
-      bus: I2C1
-      addr: 0x24
-      gpio_default: 0x00
 valves:
    -  id: 1
       name: Decant
@@ -32,21 +24,11 @@ valves:
    -  id: 2
       name: Bright Out
       type: powered
-      open: P8_33
-      close: P8_34
+      open: I.A.0
+      close: I.A.1
       sense_open: P9_25
       sense_closed: P9_26
       trigger: low
-   -  id: 8
-      name: Filter H2O
-      type: NC
-      open: P8_39
-      trigger: high
-   -  id: 9
-      name: Filter Backflush
-      type: NC
-      open: P8_40
-      trigger: high
 switches:
    -  id: 1
       name: clean
