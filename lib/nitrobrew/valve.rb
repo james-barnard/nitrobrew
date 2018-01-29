@@ -11,8 +11,8 @@ class Valve
                      "powered" => ["open", "close", "sense_open", "sense_closed"] }
   REQUIRED_PARAMS = ["name", "id", "trigger"]
   TIMEOUT = 10 # seconds
-  TRIGGER = {:high => {:open => :HIGH, :close => :LOW},
-             :low  => {:open => :LOW,  :close => :HIGH}}
+  TRIGGER = {:high => {:on => :HIGH, :off => :LOW},
+             :low  => {:on => :LOW,  :off => :HIGH}}
 
   def initialize(params)
     validate!(params)
@@ -87,8 +87,8 @@ class Valve
   end
 
   def neutralize
-    set_pin("close", trigger_value(:close))
-    set_pin("open", trigger_value(:close))
+    set_pin("close", trigger_value(:off))
+    set_pin("open", trigger_value(:off))
   end
 
   def timed_out!
@@ -105,19 +105,21 @@ class Valve
   end
 
   def nc_open
-    set_pin("open", trigger_value(:open))
+    set_pin("open", trigger_value(:on))
   end
 
   def nc_close
-    set_pin("open", trigger_value(:close))
+    set_pin("open", trigger_value(:off))
   end
 
   def powered_open
-    set_pin("open", trigger_value(:open))
+    set_pin("close", trigger_value(:off))
+    set_pin("open", trigger_value(:on))
   end
 
   def powered_close
-    set_pin("close", trigger_value(:close))
+    set_pin("open", trigger_value(:off))
+    set_pin("close", trigger_value(:on))
   end
 
   def set_pin(key, value)
