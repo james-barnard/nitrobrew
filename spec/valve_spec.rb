@@ -143,8 +143,8 @@ describe Valve do
     end
 
     it "can write to an output pin" do
-      allow(Beaglebone::GPIO).to receive(:pin_mode).and_return(nil)
-      expect(powered_valve.send(:pins)["open"]).to receive(:digital_write).with(:HIGH)
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+      expect(powered_valve.send(:pins)["open"]).to receive(:digital_write)
       powered_valve.set_state("open")
     end
   end
