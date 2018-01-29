@@ -1,7 +1,9 @@
 describe Valve do
+  GPIOPin = Beaglebone::GPIOPin
+  I2CDevice = Beaglebone::I2CDevice
 
-  let (:i2cdriver_a) { double("i2cdriver_a", i2cpin: double("fake_i2cpin1")) }
-  let (:i2cdriver_b) { double("i2cdriver_b", i2cpin: double("fake_i2cpin2", :digital_write => nil)) }
+  let (:i2cdriver_a) { double("i2cdriver_a", pin: double("fake_i2cpin1")) }
+  let (:i2cdriver_b) { double("i2cdriver_b", pin: double("fake_i2cpin2", :digital_write => nil)) }
   let (:i2cs) { {"A" => i2cdriver_a, "B" => i2cdriver_b} }
   let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high", "drivers" => i2cs} }
   let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low", "drivers" => i2cs} }
@@ -12,7 +14,6 @@ describe Valve do
   let (:nc_valve_low) { Valve.new(nc_params_low) }
 
   context "is a NC valve" do
-    
     it "validates its parameters" do
       allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect {nc_valve}.not_to raise_error
@@ -76,10 +77,10 @@ describe Valve do
     end
   end
 
-  context "it is a powered valve" do
+  context "powered valve" do
     let (:powered_valve) { Valve.new(powered_params) }
 
-    it "it validates its parameters" do
+    it "validates its parameters" do
       allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       expect {powered_valve}.not_to raise_error
     end
@@ -90,7 +91,12 @@ describe Valve do
         expect {Valve.new(powered_params.merge(param => nil))}.to raise_error("Invalid #{param}")
       end
     end
-    
+
+    it "must have i2c drivers if it has i2c pins" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+      expect {Valve.new(powered_params.tap { |h| h.delete("drivers") })}.to raise_error("Missing i2c drivers: valve id: #{powered_params['id']}")
+    end
+
     it "activates its pins" do
       allow(Beaglebone::GPIO).to receive(:pin_mode).and_return(nil)
       Valve::VALID_PINS["powered"][1..2].each do | pin |

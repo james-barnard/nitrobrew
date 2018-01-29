@@ -121,6 +121,8 @@ class Machine
 
   def change_program(program)
     delete_stepper
+    reset_i2cs
+
     @valid = Validator.new(program, database, @config.valves).validate!
     if @valid
       log("machine:change_program", "program selected", program)
@@ -170,6 +172,9 @@ class Machine
     end
   end
 
+  def reset_i2cs
+    i2cs.values.each { |driver| driver.reset }
+  end
 
   def enable_control_pins
     control_pins.each do | name, gpio |
@@ -202,7 +207,7 @@ class Machine
   def activate_control_pins
     config.control.each do | gpio |
       puts "activating gpio pin: #{gpio['name']}: #{gpio['pin_id']}"
-      gpio["pin"] = GPIOPin.new(gpio["pin_id"].to_sym, :OUT, nil)
+      gpio["pin"] = Beaglebone::GPIOPin.new(gpio["pin_id"].to_sym, :OUT, nil)
       control_pins[gpio["name"].to_sym] = symbolize_keys(gpio)
     end
   end
@@ -210,7 +215,7 @@ class Machine
   def activate_valves
     config.valves.each do | valve |
       id = valve["id"]
-      valves[id] = Valve.new(valve)
+      valves[id] = Valve.new(valve.merge("drivers" => i2cs))
     end
   end
 
@@ -247,7 +252,7 @@ class Machine
       end
     end
     #puts "activating switch: #{switch['pin_id']}"
-    GPIOPin.new(switch["pin_id"].to_sym, :IN, :PULLDOWN)
+    Beaglebone::GPIOPin.new(switch["pin_id"].to_sym, :IN, :PULLDOWN)
   end
 
   def control_pins

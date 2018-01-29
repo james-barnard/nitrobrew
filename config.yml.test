@@ -3,6 +3,15 @@ control:
       name: p8_enable
       pin_id: P9_42
       trigger: low
+i2cs:
+   -  id: A
+      bus: I2C1
+      addr: 0x20
+      gpio_default: 0xff
+   -  id: B
+      bus: I2C1
+      addr: 0x21
+      gpio_default: 0x00
 valves:
    -  id: 1
       name: Decant
@@ -15,21 +24,11 @@ valves:
    -  id: 2
       name: Bright Out
       type: powered
-      open: P8_33
-      close: P8_34
+      open: I.A.0
+      close: I.A.1
       sense_open: P9_25
       sense_closed: P9_26
       trigger: low
-   -  id: 8
-      name: Filter H2O
-      type: NC
-      open: P8_39
-      trigger: high
-   -  id: 9
-      name: Filter Backflush
-      type: NC
-      open: P8_40
-      trigger: high
 switches:
    -  id: 1
       name: clean
@@ -43,10 +42,12 @@ switches:
       name: run
       pin_id: P9_31
       pull_down: yes
+      duplicate: true
    -  id: 4
       name: halt
       pin_id: P9_31
       pull_down: yes
+      duplicate: true
 lights:
    -  name: done
       pin_id: P8_19

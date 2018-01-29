@@ -1,7 +1,6 @@
 require 'beaglebone'
 require_relative 'i2cpin'
 require_relative 'i2cdriver'
-include Beaglebone
 
 class Valve
   attr_accessor :status, :set_time
@@ -55,7 +54,15 @@ class Valve
       raise("Invalid #{param}") if params[param].nil?
     end
 
+    if i2c_pins?(params) && !params["drivers"]
+      raise("Missing i2c drivers: valve id: #{params['id']}")
+    end
+
     return true
+  end
+
+  def i2c_pins?(params)
+    VALID_PINS[params["type"]].any? { |pin| params[pin][0].upcase == "I" }
   end
 
   def activate_pins(params)
@@ -67,10 +74,10 @@ class Valve
 
   def create_pin(params, key, mode)
     if params[key][0].upcase == "P"
-      GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
+      Beaglebone::GPIOPin.new(params[key].to_sym, mode, pullmode(mode))
     else
       driver = select_driver(params[key])
-      driver.i2cpin(params[key], mode, pullmode(mode))
+      driver.pin(params[key], mode, pullmode(mode))
     end
   end
 
