@@ -40,9 +40,12 @@ class Valve
 
   def in_position?
     return true if nc?
-    if (get_pin("sense_#{current_status}") == :HIGH) or timed_out!
+    if (get_pin("sense_#{current_status}") == :HIGH)
       neutralize
       true
+    elsif timed_out
+      neutralize
+      false
     end
   end
 
@@ -91,12 +94,11 @@ class Valve
     set_pin("open", trigger_value(:close))
   end
 
-  def timed_out!
+  def timed_out
     if (Time.now - set_time) > TIMEOUT
-      neutralize
       puts("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds")
+      return true
     end
-
     false
   end
 

@@ -56,12 +56,13 @@ describe Machine do
       expect(machine.send(:i2cs)["A"]).to be_a_kind_of(I2CDriver)
     end
 
-    let(:timed_out_error) { "Valve Valve 2 has timed out: 3.00033 seconds" }
-    it "raises an error if the time elapsed has been too long" do
-      allow(valve_2).to receive(:in_position?).and_raise(timed_out_error)
+    it "writes to the log if the time elapsed has been too long" do
+      allow(valve_2).to receive(:in_position?).and_return(false)
       allow(machine).to receive(:log)
-      expect { machine.check_component_state(2) }.to raise_error(timed_out_error)
-      expect(machine).to have_received(:log).once
+
+      machine.check_component_state(2)
+      
+      expect(machine).to have_received(:log).with("machine:check_component_state", "component_id: 2", "has timed out while closed").once
     end
 
     describe "#set_component_state" do
