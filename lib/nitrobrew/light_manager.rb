@@ -43,11 +43,18 @@ class LightManager
   end
 
   def ready_mode(status)
-    status == :paused ? light_on(:run) : light_off(:run)
-    if status == :done
+    if status == :start
+      all_off
+      light_on(:ready)
+    elsif status == :done
+      light_off(:run)
+      light_on(:ready)
       light_on(:done)
+    elsif status == :paused
+      light_on(:ready)
+    else
+      puts "LightManager: ready_mode: unknown status: #{status}"
     end
-    light_on(:ready)
   end
 
   def run_mode
