@@ -1,4 +1,5 @@
 describe LightManager do
+  GPIOPin = Beaglebone::GPIOPin
 
   let (:real_config) { Configuration.new }
   let (:real_manager) { LightManager.new(real_config.lights) }
@@ -132,8 +133,8 @@ describe LightManager do
 
       test_manager.ready_mode(:start)
 
-      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH)
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW)
+      expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH).once
+      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:LOW).at_least(:once)
     end
 
     it "lights up the run light when running" do
