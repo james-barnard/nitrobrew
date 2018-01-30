@@ -6,24 +6,20 @@ class Validator
     @program = program
     @database = database
     @valves = valves
+    @messages = []
   end
 
   def validate!
-    configured = ids_match?(component_ids, valve_ids)
-    used = ids_match?(valve_ids, component_ids)
-    if configured && used
-      true
-    else
-      print_messages(configured, used)
-      false
-    end
+    configured = ids_match?(component_ids, valve_ids) { |id| "ERROR: Component #{id} is not included in config file" }
+    ids_match?(valve_ids, component_ids) { |id| "WARNING: Component #{id} is not used in the #{@program} program" }
+    print_messages
+
+    configured
   end
 
-  def print_messages(configured = false, used = false)
-    print "WARNING: Component has states but is not configured" unless configured
-    print "WARNING: Component is configured but not used" unless used
+  def print_messages
+    @messages.each { |message| puts "Validator: " + message }
   end
-
 
   def component_ids
     db.execute("select distinct component_id from component_states join steps on steps.id = component_states.step_id where program_id = ?", program_id).flatten
@@ -48,6 +44,13 @@ class Validator
   end
 
   def ids_match?(a, b)
-    a.all? { |id| b.include?(id) }
+    a.all? do |id|
+      if b.include?(id)
+        true
+      else
+        @messages << yield(id)
+        false
+      end
+    end
   end
 end
