@@ -8,10 +8,11 @@ class I2CPin
   end
 
   def digital_write(value)
-    driver.write(pin, value)
+    driver.write(pin, value == :HIGH ? 1 : 0)
   end
 
   def digital_read
-    driver.read(pin)
+   puts "I2CPin does not implement digital read"
+   # driver.read(pin) == 1 ? :HIGH : :LOW
   end
 end
