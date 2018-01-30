@@ -44,13 +44,13 @@ class Validator
   end
 
   def ids_match?(a, b)
-    a.all? do |id|
+    (a.map do |id|
       if b.include?(id)
         true
       else
         @messages << yield(id)
         false
       end
-    end
+    end).all?
   end
 end
