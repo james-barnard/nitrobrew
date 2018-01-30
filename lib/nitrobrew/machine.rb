@@ -154,15 +154,13 @@ class Machine
 
   def check_component_state(id)
     return false if valves[id].nil?
-
-    begin
-      rtn_value = valves[id].in_position?
+    rtn_value = valves[id].in_position?
+    if rtn_value == nil
       log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value)
-      rtn_value
-    rescue RuntimeError => e
-      log("machine:check_component_state", "#{e.message}", nil)
-      raise
+    elsif rtn_value == false
+      log("machine:check_component_state", "component_id: #{id.to_s}", "has timed out while #{valves[id].current_status}")
     end
+    rtn_value
   end
 
   private
