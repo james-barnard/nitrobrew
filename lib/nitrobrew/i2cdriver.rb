@@ -46,6 +46,7 @@ class I2CDriver
 
   def write(bit, value)
     @gpio = twiddle_bit(gpio, bit, value)
+    puts "i2cdriver: write: #{bit}, #{value}: register: #{gpio}"
     i2cdevice.write(addr, [GPIO, gpio].pack("C*"))
   end
 end
