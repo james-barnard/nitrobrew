@@ -156,9 +156,9 @@ class Machine
     return false if valves[id].nil?
     rtn_value = valves[id].in_position?
     if rtn_value == nil
-      log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value)
+      on_change("component_#{id}".to_sym, rtn_value) { log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value) }
     elsif rtn_value == false
-      log("machine:check_component_state", "component_id: #{id.to_s}", "has timed out while #{valves[id].current_status}")
+      on_change("component_#{id}".to_sym, rtn_value) { log("machine:check_component_state", "component_id: #{id.to_s}", "has timed out while #{valves[id].current_status}") }
     end
     rtn_value
   end
