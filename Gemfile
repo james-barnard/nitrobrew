@@ -7,6 +7,6 @@ gem 'beaglebone', :git => 'https://github.com/james-barnard/beaglebone.git'
 gem 'sqlite3'
 
 group :development do
-  # gem 'rspec'
-  # gem 'byebug'
+  #gem 'rspec'
+  #gem 'byebug'
 end
