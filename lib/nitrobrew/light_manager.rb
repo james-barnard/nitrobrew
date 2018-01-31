@@ -64,7 +64,7 @@ class LightManager
   end
 
   def blink
-    return unless @toggle[:light] && (Time.now.to_i - @toggle[:time] > 1)
+    return unless @toggle[:light] && (Time.now.to_i - @toggle[:time] > 0.5)
     @toggle[:status] = !@toggle[:status]
     @toggle[:time] = Time.now.to_i
     @toggle[:status] ? light_on(@toggle[:light]) : light_off(@toggle[:light])

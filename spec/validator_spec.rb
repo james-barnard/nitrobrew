@@ -32,7 +32,7 @@ RSpec.describe Validator do
       allow(validator).to receive(:component_ids).and_return([1, 2])
       allow(validator).to receive(:valve_ids).and_return([1, 2])
       
-      expect(validator.validate!).to be(true)
+      expect(validator.validate).to be(true)
     end
   end
 
@@ -40,27 +40,34 @@ RSpec.describe Validator do
     it "prints a warning if any components have states but are not configured" do
       allow(validator).to receive(:component_ids).and_return([1, 2])
       allow(validator).to receive(:valve_ids).and_return([1])
-      expect{validator.validate!}.to output(/Validator: ERROR: Component 2 is not included in config file/).to_stdout
+      expect{validator.validate}.to output(/Validator: ERROR: Component 2 is not included in config file/).to_stdout
     end
 
     it "prints a warning if a component is configured but not referenced in the component states table" do
       allow(validator).to receive(:component_ids).and_return([1])
       allow(validator).to receive(:valve_ids).and_return([1, 2])
-      expect {validator.validate!}.to output(/Validator: WARNING: Component 2 is not used in the clean program/).to_stdout
+      expect {validator.validate}.to output(/Validator: WARNING: Component 2 is not used in the clean program/).to_stdout
     end
 
     it "returns false if any components have states but are not configured" do
       allow(validator).to receive(:component_ids).and_return([1, 2])
       allow(validator).to receive(:valve_ids).and_return([1])
 
-      expect(validator.validate!).to be(false)
+      expect(validator.validate).to be(false)
     end
 
     it "returns true if a component is configured but not referenced in the component states table" do
       allow(validator).to receive(:component_ids).and_return([1])
       allow(validator).to receive(:valve_ids).and_return([1, 2])
 
-      expect(validator.validate!).to be(true)
+      expect(validator.validate).to be(true)
+    end
+
+    it "returns false if there is no program" do
+      allow(validator).to receive(:program_id).and_return(nil)
+
+      expect {validator.validate}.to output(/Validator: WARNING: no clean program exists/).to_stdout
+      expect(validator.validate).to be(false)
     end
   end
 
