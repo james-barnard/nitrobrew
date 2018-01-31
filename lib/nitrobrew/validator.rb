@@ -9,10 +9,15 @@ class Validator
     @messages = []
   end
 
-  def validate!
-    configured = ids_match?(component_ids, valve_ids) { |id| "ERROR: Component #{id} is not included in config file" }
-    ids_match?(valve_ids, component_ids) { |id| "WARNING: Component #{id} is not used in the #{@program} program" }
-    print_messages
+  def validate
+    if program_id == nil
+      puts "Validator: WARNING: no #{program} program exists"
+      return false
+    else   
+      configured = ids_match?(component_ids, valve_ids) { |id| "ERROR: Component #{id} is not included in config file" }
+      ids_match?(valve_ids, component_ids) { |id| "WARNING: Component #{id} is not used in the #{@program} program" }
+      print_messages
+    end
 
     configured
   end
