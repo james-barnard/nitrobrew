@@ -123,8 +123,8 @@ class Machine
     delete_stepper
     reset_i2cs
 
-    @valid = Validator.new(program, database, @config.valves).validate!
-    if @valid
+    @valid = Validator.new(program, database, @config.valves).validate
+    if @valid == true
       log("machine:change_program", "program selected", program)
       light_manager.on_program_change(program)
       @program = program
