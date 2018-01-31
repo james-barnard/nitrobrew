@@ -336,6 +336,21 @@ describe Machine do
 
         expect(light_manager).to have_received(:run_mode)
       end
+
+      it "blinks the run light when it is pending" do
+        allow(machine).to receive(:ready)
+        allow(machine).to receive(:light_manager).and_return(light_manager)
+        allow(machine).to receive(:stepper).and_return(fake_stepper2)
+        allow(machine).to receive(:check_action).with(:halt).and_return(nil, nil, true)
+        allow(fake_stepper2).to receive(:step).and_return(:pending, :soaking)
+        allow(light_manager).to receive(:add_blink)
+        allow(light_manager).to receive(:remove_blink)
+
+        machine.run
+
+        expect(light_manager).to have_received(:add_blink).with(:run)
+        expect(light_manager).to have_received(:remove_blink).at_least(:once)
+      end
     end
 
     describe "#done" do
