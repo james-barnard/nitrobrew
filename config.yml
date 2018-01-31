@@ -12,23 +12,106 @@ i2cs:
       bus: I2C1
       addr: 0x21
       gpio_default: 0x00
+   -  id: C
+      bus: I2C1
+      addr: 0x22
+      gpio_default: 0xff
+   -  id: D
+      bus: I2C1
+      addr: 0x24
+      gpio_default: 0x00
 valves:
    -  id: 1
       name: Decant
       type: powered
-      open: P8_35
-      close: P8_36
-      sense_closed: P9_27
-      sense_open: P9_28
+      open: I.C.3
+      close: I.C.2
+      sense_closed: P9_12
+      sense_open: P9_11
       trigger: low
    -  id: 2
       name: Bright Out
       type: powered
-      open: I.A.0
-      close: I.A.1
+      open: I.C.5
+      close: I.C.4
+      sense_open: P9_13
+      sense_closed: P9_14
+      trigger: low
+   -  id: 3
+      name: Bright In
+      type: powered
+      open: I.C.7
+      close: I.C.6
+      sense_open: P9_17
+      sense_closed: P9_18
+      trigger: low
+   -  id: 4
+      name: Filter purge Out
+      type: powered
+      open: I.A.1
+      close: I.A.0
+      sense_open: P9_21
+      sense_closed: P9_22
+      trigger: low
+   -  id: 5
+      name: Brew Out
+      type: powered
+      open: I.A.3
+      close: I.A.2
+      sense_open: P9_23
+      sense_closed: P9_24
+      trigger: low
+   -  id: 6
+      name: Brew In
+      type: powered
+      open: I.A.5
+      close: I.A.4
       sense_open: P9_25
       sense_closed: P9_26
       trigger: low
+   -  id: 7
+      name: Brew Vacuum
+      type: powered
+      open: I.A.7
+      close: I.A.6
+      sense_open: P9_27
+      sense_closed: P9_28
+      trigger: low
+   -  id: 8
+      name: Filter H2O
+      type: NC
+      open: I.D.0
+      trigger: high
+   -  id: 9
+      name: Filter Backflush
+      type: NC
+      open: I.D.1
+      trigger: high
+   -  id: 10
+      name: Brew H2O
+      type: NC
+      open: I.D.2
+      trigger: high
+   -  id: 11
+      name: process H2O
+      type: NC
+      open: I.D.3
+      trigger: high
+   -  id: 12
+      name: Brew N2
+      type: NC
+      open: I.D.4
+      trigger: high
+   -  id: 13
+      name: Bright N2
+      type: NC
+      open: I.D.5
+      trigger: high
+   -  id: 14
+      name: Condition N2
+      type: NC
+      open: I.D.6
+      trigger: high
 switches:
    -  id: 1
       name: clean
