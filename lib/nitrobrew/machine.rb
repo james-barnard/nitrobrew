@@ -56,15 +56,19 @@ class Machine
     while !action do
       step_status = stepper.step
       on_change(:step_status, step_status) { log("machine:run", "status", step_status) }
-      light_manager.add_blink(:run) if step_status == :pending
-      light_manager.remove_blink if step_status == :soaking 
+      blink(step_status)
       action = :done if step_status =~ /done$/
-      light_manager.blink
       sleep 0.333
       action = :halt if check_action(:halt)
     end
     # disable_control_pins
     send action
+  end
+
+  def blink(step_status)
+    light_manager.add_blink(:run) if step_status == :pending
+    light_manager.remove_blink if step_status == :soaking     
+    light_manager.blink
   end
 
   def id
@@ -82,6 +86,7 @@ class Machine
 
   def done
     log("machine:done", "done", nil)
+    light_manager.add_blink(:done)
     delete_stepper
     ready(:done)
   end

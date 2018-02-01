@@ -120,6 +120,19 @@ describe LightManager do
       expect(test_manager).to have_received(:program_lights_off)
       expect(test_manager.lights[:load][:pin]).to have_received(:digital_write).with(:HIGH).once
     end
+
+    it "stops program selection lights from blinking" do
+      allow(test_manager).to receive(:program_lights_off)
+      allow(test_manager).to receive(:remove_blink)
+      allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:clean][:pin]).to receive(:digital_write)
+      allow(test_manager.lights[:load][:pin]).to receive(:digital_write)
+      
+
+      test_manager.on_program_change(:brew)
+
+      expect(test_manager).to have_received(:remove_blink)
+    end
   end
 
   describe "indicates the state of the machine" do
@@ -147,16 +160,22 @@ describe LightManager do
       expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
     end
 
-    it "lights up both run and ready lights when we are paused" do
+    it "lights up the ready light when we are paused" do
       allow(test_manager.lights[:ready][:pin]).to receive(:digital_write)
-      allow(test_manager.lights[:run][:pin]).to receive(:digital_write)
-
+      
       test_manager.ready_mode(:paused)
 
       expect(test_manager.lights[:ready][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
-      expect(test_manager.lights[:run][:pin]).to have_received(:digital_write).with(:HIGH).at_least(:once)
     end
 
+    it "blinks the run light when we are paused" do
+        allow(test_manager).to receive(:add_blink).with(:run)
+
+        test_manager.ready_mode(:paused)
+
+        expect(test_manager).to have_received(:add_blink).with(:run)
+      end
+    
     it "can blink a light" do
       allow(test_manager.lights[:brew][:pin]).to receive(:digital_write)
 
