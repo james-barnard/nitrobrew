@@ -22,10 +22,6 @@ class I2CDriver
     I2CPin.new(bit, self)
   end
 
-  def reset
-    i2cdevice.write(addr, [GPIO, @gpio_default].pack("C*"))
-  end
-
   def set_iodir(bit, mode)
     value = mode == :IN ? 1 : 0
     @iodir = twiddle_bit(iodir, bit, value)

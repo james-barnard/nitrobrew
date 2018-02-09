@@ -132,7 +132,6 @@ class Machine
 
   def change_program(program)
     delete_stepper
-    reset_i2cs
     neutralize_valves
 
     @valid = Validator.new(program, database, @config.valves).validate
@@ -180,10 +179,6 @@ class Machine
     config.i2cs.each do | driver |
       i2cs[driver["id"]] = I2CDriver.new(driver)
     end
-  end
-
-  def reset_i2cs
-    i2cs.values.each { |driver| driver.reset }
   end
 
   def enable_control_pins
