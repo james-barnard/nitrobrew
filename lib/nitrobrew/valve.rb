@@ -47,6 +47,12 @@ class Valve
     end
   end
 
+  def neutralize
+    pins.each do |key, pin|
+      set_pin(key, trigger_value(:off)) if pin_mode(key) == :OUT
+    end
+  end
+
   private
   def validate!(params)
     raise("Invalid type") unless VALID_TYPES.include?(params["type"])
@@ -152,7 +158,7 @@ class Valve
 
   def pin_mode(pin)
     case pin
-    when "open", "close"
+    when "open", "activate"
       :OUT
     when "sense_open", "sense_closed"
       :IN

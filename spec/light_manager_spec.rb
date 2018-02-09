@@ -1,7 +1,7 @@
 describe LightManager do
   GPIOPin = Beaglebone::GPIOPin
 
-  let (:real_config) { Configuration.new }
+  let (:real_config) { Configuration.new("config.yml.test") }
   let (:real_manager) { LightManager.new(real_config.lights) }
   let (:test_manager) { LightManager.new(test_params) }
   let (:test_params) do

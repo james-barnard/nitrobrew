@@ -6,9 +6,9 @@ require 'set'
 class Configuration
 	attr_reader :valves, :switches, :lights, :control, :i2cs
 
-	def initialize
+	def initialize(config_file)
 		begin
-			data = YAML.load(File.open("config.yml"))
+			data = YAML.load(File.open(config_file))
 		rescue ArgumentError => e
 			puts "Could not parse YAML: #{e.message}"
 		end

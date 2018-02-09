@@ -2,7 +2,7 @@ describe Machine do
   GPIOPin = Beaglebone::GPIOPin
   I2CDevice = Beaglebone::I2CDevice
 
-  let(:machine) { Machine.new }
+  let(:machine) { Machine.new("config.yml.test") }
   let(:run_switch) { machine2.send(:switches)[:run] }
   let(:valve_2) { machine.send(:valves)[2] }
   let(:fake_stepper) { double("fs1") }
@@ -72,6 +72,15 @@ describe Machine do
 
         expect(valve_2).to have_received(:open)
       end
+    end
+
+    it "neutralizes all the valves when the program ends" do
+      allow(machine).to receive(:ready)
+      machine.send(:valves).each { |id, valve| allow(valve).to receive(:neutralize) }
+
+      machine.done
+
+      machine.send(:valves).each { |id, valve| expect(valve).to have_received(:neutralize).once }
     end
   end
 

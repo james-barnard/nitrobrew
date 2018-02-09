@@ -1,6 +1,6 @@
   RSpec.describe Configuration do
 
-    let(:config) {Configuration.new}
+    let(:config) {Configuration.new("config.yml.test")}
     let(:valid_control) do
       "control:
       -  id: 1
@@ -114,40 +114,40 @@
 
     it "raises an exception if there are no valves" do
       allow(File).to receive(:open).and_return(invalid_valve_config)
-      expect{Configuration.new}.to raise_error("Config file doesn't have valves")
+      expect{Configuration.new("config.yml.test")}.to raise_error("Config file doesn't have valves")
     end
 
     it "validates valve parameters" do
-      expect {Configuration.new}.to_not raise_error
+      expect {Configuration.new("config.yml.test")}.to_not raise_error
     end
 
     it "raises an exception if any valve pins are repeated" do
       allow(File).to receive(:open).and_return(duplicate_pins)
-      expect {Configuration.new}.to raise_error("Duplicate pin: P8_3")
+      expect {Configuration.new("config.yml.test")}.to raise_error("Duplicate pin: P8_3")
     end
 
     it "raises an exception if any ids are repeated" do
       allow(File).to receive(:open).and_return(duplicate_id)
-      expect{Configuration.new}.to raise_error("Duplicate valve id: 2")
+      expect{Configuration.new("config.yml.test")}.to raise_error("Duplicate valve id: 2")
     end
 
     it "raises an exception if any names are repeated" do
       allow(File).to receive(:open).and_return(duplicate_name)
-      expect{Configuration.new}.to raise_error("Duplicate valve name: Brew In")
+      expect{Configuration.new("config.yml.test")}.to raise_error("Duplicate valve name: Brew In")
     end
 
     it "raises an exception if any I2C pins are in conflict" do
       allow(File).to receive(:open).and_return(duplicate_i2c_pins)
-      expect {Configuration.new}.to raise_error("Duplicate pin: I.B.7")
+      expect {Configuration.new("config.yml.test")}.to raise_error("Duplicate pin: I.B.7")
     end
 
     it "raises an exception if more than 1 component uses the same pins" do
       allow(File).to receive(:open).and_return(duplicate_pins_across_components)
-      expect {Configuration.new}.to raise_error("Duplicate pin: P9_42")
+      expect {Configuration.new("config.yml.test")}.to raise_error("Duplicate pin: P9_42")
     end
 
     it "doesn't raise an exception if the component is specified as having a duplicate pin" do
       allow(File).to receive(:open).and_return(duplicate_true)
-      expect {Configuration.new}.to_not raise_error
+      expect {Configuration.new("config.yml.test")}.to_not raise_error
     end
   end

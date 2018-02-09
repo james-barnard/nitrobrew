@@ -75,6 +75,14 @@ describe Valve do
       Valve.new(nc_params_low)
       expect(GPIOPin).to have_received(:new).with(:P8_7, :OUT, nil)
     end
+
+    it "can neutralize itself" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+      
+      nc_valve.neutralize
+
+      nc_valve.send(:pins).each { |id, pin| expect(pin).to have_received(:digital_write).with(:LOW) }
+    end
   end
 
   context "powered valve" do
@@ -103,6 +111,14 @@ describe Valve do
         expect(powered_valve.send(:pins)[pin]).to be_an_instance_of(GPIOPin)
       end
       expect(powered_valve.send(:pins)["open"]).to_not be_nil
+    end
+
+    it "can neutralize itself" do
+      allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
+      
+      powered_valve.neutralize
+
+      powered_valve.send(:pins).each { |id, pin| expect(pin).to have_received(:digital_write).with(:LOW) }
     end
 
     context "when checking position" do

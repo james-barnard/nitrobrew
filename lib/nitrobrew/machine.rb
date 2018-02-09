@@ -11,10 +11,10 @@ class Machine
   attr_reader :config, :program
   attr_writer :program
 
-  def initialize
+  def initialize(config_file = "config.yml")
     log("machine:initialize", "start", nil)
     logger.level = Logger::DEBUG
-    @config = Configuration.new
+    @config = Configuration.new(config_file)
     light_manager.all_off
     sleep 1
     light_manager.all_on
@@ -86,7 +86,12 @@ class Machine
     log("machine:done", "done", nil)
     light_manager.add_blink(:done)
     delete_stepper
+    neutralize_valves
     ready(:done)
+  end
+
+  def neutralize_valves
+    valves.each { |id, valve| valve.neutralize }
   end
 
   def delete_stepper
