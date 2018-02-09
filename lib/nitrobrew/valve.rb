@@ -8,7 +8,7 @@ class Valve
 
   VALID_TYPES     = ["NC", "powered"]
   VALID_PINS      = { "NC"     => ["open"],
-                     "powered" => ["open", "close", "sense_open", "sense_closed"] }
+                     "powered" => ["open", "activate", "sense_open", "sense_closed"] }
   REQUIRED_PARAMS = ["name", "id", "trigger"]
   TIMEOUT = 24 # seconds
   TRIGGER = {:high => {:on => :HIGH, :off => :LOW},
@@ -41,10 +41,8 @@ class Valve
   def in_position?
     return true if nc?
     if (get_pin("sense_#{current_status}") == :HIGH)
-      neutralize
       true
     elsif timed_out
-      neutralize
       false
     end
   end
@@ -89,11 +87,6 @@ class Valve
     @i2cs[key]
   end
 
-  def neutralize
-    set_pin("close", trigger_value(:off))
-    set_pin("open", trigger_value(:off))
-  end
-
   def timed_out
     if (Time.now - set_time) > TIMEOUT
       puts("Valve (#{@name}) has timed out: #{Time.now - set_time} seconds")
@@ -115,13 +108,13 @@ class Valve
   end
 
   def powered_open
-    set_pin("close", trigger_value(:off))
     set_pin("open", trigger_value(:on))
+    set_pin("activate", trigger_value(:on))
   end
 
   def powered_close
     set_pin("open", trigger_value(:off))
-    set_pin("close", trigger_value(:on))
+    set_pin("activate", trigger_value(:on))
   end
 
   def set_pin(key, value)
@@ -167,7 +160,6 @@ class Valve
   end
 
   def pullmode(mode)
-    puts "mode: #{mode}"
     mode == :IN ? :PULLDOWN : nil
   end
 end

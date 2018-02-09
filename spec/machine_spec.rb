@@ -26,7 +26,6 @@ describe Machine do
     let(:machine2) { Machine.new }
     let(:run_switch) { machine2.send(:switches)[:run] }
     before(:each) do
-      Machine.any_instance.stub(:wait_for_valves)
       allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
       allow(I2CDevice).to receive(:new).and_return(double("fake_i2cdevice", write: nil, read: 1))
     end
@@ -78,7 +77,6 @@ describe Machine do
 
   context "without activations" do
     before(:each) do
-      Machine.any_instance.stub(:wait_for_valves)
       Machine.any_instance.stub(:activate_valves)
       Machine.any_instance.stub(:activate_control_pins)
       allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))

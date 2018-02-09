@@ -24,7 +24,7 @@
          name: Brew In
          type: powered
          open: P8_3
-         close: P8_4
+         activate: P8_4
          sense_open: P8_5
          sense_closed: P8_6\n"
     end

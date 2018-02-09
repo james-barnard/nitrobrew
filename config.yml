@@ -11,7 +11,7 @@ i2cs:
    -  id: B
       bus: I2C1
       addr: 0x21
-      gpio_default: 0x00
+      gpio_default: 0xff
    -  id: C
       bus: I2C1
       addr: 0x22
@@ -19,13 +19,13 @@ i2cs:
    -  id: D
       bus: I2C1
       addr: 0x24
-      gpio_default: 0x00
+      gpio_default: 0xff
 valves:
    -  id: 1
       name: Decant
       type: powered
       open: I.C.3
-      close: I.C.2
+      activate: I.C.2
       sense_closed: P9_12
       sense_open: P9_11
       trigger: low
@@ -33,7 +33,7 @@ valves:
       name: Bright Out
       type: powered
       open: I.C.5
-      close: I.C.4
+      activate: I.C.4
       sense_open: P9_13
       sense_closed: P9_14
       trigger: low
@@ -41,7 +41,7 @@ valves:
       name: Bright In
       type: powered
       open: I.C.7
-      close: I.C.6
+      activate: I.C.6
       sense_open: P9_17
       sense_closed: P9_18
       trigger: low
@@ -49,7 +49,7 @@ valves:
       name: Filter purge Out
       type: powered
       open: I.A.1
-      close: I.A.0
+      activate: I.A.0
       sense_open: P9_21
       sense_closed: P9_22
       trigger: low
@@ -57,7 +57,7 @@ valves:
       name: Brew Out
       type: powered
       open: I.A.3
-      close: I.A.2
+      activate: I.A.2
       sense_open: P9_23
       sense_closed: P9_24
       trigger: low
@@ -65,7 +65,7 @@ valves:
       name: Brew In
       type: powered
       open: I.A.5
-      close: I.A.4
+      activate: I.A.4
       sense_open: P9_25
       sense_closed: P9_26
       trigger: low
@@ -73,7 +73,7 @@ valves:
       name: Brew Vacuum
       type: powered
       open: I.A.7
-      close: I.A.6
+      activate: I.A.6
       sense_open: P9_27
       sense_closed: P9_28
       trigger: low

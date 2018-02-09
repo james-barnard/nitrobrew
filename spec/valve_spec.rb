@@ -7,7 +7,7 @@ describe Valve do
   let (:i2cs) { {"A" => i2cdriver_a, "B" => i2cdriver_b} }
   let (:nc_params) {    {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "high", "drivers" => i2cs} }
   let (:nc_params_low)  { {"name" => "ncName", "id" => "v1", "type" => "NC", "open" => "P8_7", "trigger" => "low", "drivers" => i2cs} }
-  let (:powered_params) { {"name" => "poweredName", "id" => "v2", "type" => "powered", "open" => "I.B.4", "close" => "P8_8",
+  let (:powered_params) { {"name" => "poweredName", "id" => "v2", "type" => "powered", "open" => "I.B.4", "activate" => "P8_8",
                            "sense_open" => "P8_9", "sense_closed" => "P8_10", "trigger" => "high", "drivers" => i2cs} }
   let (:fake_pin)       { double("GPIOPin") }
   let (:nc_valve)     { Valve.new(nc_params) }
@@ -116,7 +116,6 @@ describe Valve do
       it "returns true if state is achieved" do
         allow(GPIOPin).to receive(:new).and_return(double("fake_gpio_pin", digital_write: nil, digital_read: 1))
         allow(powered_valve.send(:pins)["sense_closed"]).to receive(:digital_read).and_return(:HIGH)
-        allow(powered_valve).to receive(:neutralize)
         expect(powered_valve.in_position?).to be true
       end
 
