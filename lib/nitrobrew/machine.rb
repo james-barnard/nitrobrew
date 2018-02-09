@@ -11,10 +11,10 @@ class Machine
   attr_reader :config, :program
   attr_writer :program
 
-  def initialize
+  def initialize(config_file = "config.yml")
     log("machine:initialize", "start", nil)
     logger.level = Logger::DEBUG
-    @config = Configuration.new
+    @config = Configuration.new(config_file)
     light_manager.all_off
     sleep 1
     light_manager.all_on
@@ -25,7 +25,6 @@ class Machine
 
     activate_i2cs
     activate_valves
-    #close_valves
     activate_switches
   end
 
@@ -46,7 +45,6 @@ class Machine
   end
 
   def run
-    #close_valves
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
@@ -56,12 +54,19 @@ class Machine
     while !action do
       step_status = stepper.step
       on_change(:step_status, step_status) { log("machine:run", "status", step_status) }
+      blink(step_status)
       action = :done if step_status =~ /done$/
       sleep 0.333
       action = :halt if check_action(:halt)
     end
     # disable_control_pins
     send action
+  end
+
+  def blink(step_status)
+    light_manager.add_blink(:run) if step_status == :pending
+    light_manager.remove_blink if step_status == :soaking     
+    light_manager.blink
   end
 
   def id
@@ -79,8 +84,14 @@ class Machine
 
   def done
     log("machine:done", "done", nil)
+    light_manager.add_blink(:done)
     delete_stepper
+    neutralize_valves
     ready(:done)
+  end
+
+  def neutralize_valves
+    valves.each { |id, valve| valve.neutralize }
   end
 
   def delete_stepper
@@ -121,10 +132,10 @@ class Machine
 
   def change_program(program)
     delete_stepper
-    reset_i2cs
+    neutralize_valves
 
-    @valid = Validator.new(program, database, @config.valves).validate!
-    if @valid
+    @valid = Validator.new(program, database, @config.valves).validate
+    if @valid == true
       log("machine:change_program", "program selected", program)
       light_manager.on_program_change(program)
       @program = program
@@ -156,9 +167,9 @@ class Machine
     return false if valves[id].nil?
     rtn_value = valves[id].in_position?
     if rtn_value == nil
-      log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value)
+      on_change("component_#{id}".to_sym, rtn_value) { log("machine:check_component_state", "component_id: #{id.to_s}", rtn_value) }
     elsif rtn_value == false
-      log("machine:check_component_state", "component_id: #{id.to_s}", "has timed out while #{valves[id].current_status}")
+      on_change("component_#{id}".to_sym, rtn_value) { log("machine:check_component_state", "component_id: #{id.to_s}", "has timed out while #{valves[id].current_status}") }
     end
     rtn_value
   end
@@ -168,10 +179,6 @@ class Machine
     config.i2cs.each do | driver |
       i2cs[driver["id"]] = I2CDriver.new(driver)
     end
-  end
-
-  def reset_i2cs
-    i2cs.values.each { |driver| driver.reset }
   end
 
   def enable_control_pins
@@ -214,25 +221,6 @@ class Machine
     config.valves.each do | valve |
       id = valve["id"]
       valves[id] = Valve.new(valve.merge("drivers" => i2cs))
-    end
-  end
-
-  def close_valves
-    config.valves.each do | valve |
-      id = valve["id"]
-      set_component_state(id, :closed)
-    end
-    wait_for_valves
-  end
-
-  def wait_for_valves
-    while true
-      count = 0
-      config.valves.each do | valve |
-        count += 1 unless valves[valve['id']].in_position?
-      end
-      break if count == 0
-      sleep 5
     end
   end
 

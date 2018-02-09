@@ -38,6 +38,7 @@ class LightManager
 
   def on_program_change(program)
     program_lights_off
+    remove_blink
     light_off(:done)
     light_on(program)
   end
@@ -51,6 +52,7 @@ class LightManager
       light_on(:ready)
       light_on(:done)
     elsif status == :paused
+      add_blink(:run)
       light_on(:ready)
     else
       puts "LightManager: ready_mode: unknown status: #{status}"
@@ -58,13 +60,14 @@ class LightManager
   end
 
   def run_mode
+    remove_blink
     light_off(:ready)
     light_off(:done)
     light_on(:run)
   end
 
   def blink
-    return unless @toggle[:light] && (Time.now.to_i - @toggle[:time] > 1)
+    return unless @toggle[:light] && (Time.now.to_i - @toggle[:time] > 0.5)
     @toggle[:status] = !@toggle[:status]
     @toggle[:time] = Time.now.to_i
     @toggle[:status] ? light_on(@toggle[:light]) : light_off(@toggle[:light])
