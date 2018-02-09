@@ -25,7 +25,6 @@ class Machine
 
     activate_i2cs
     activate_valves
-    #close_valves
     activate_switches
   end
 
@@ -46,7 +45,6 @@ class Machine
   end
 
   def run
-    #close_valves
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
     light_manager.run_mode
@@ -214,25 +212,6 @@ class Machine
     config.valves.each do | valve |
       id = valve["id"]
       valves[id] = Valve.new(valve.merge("drivers" => i2cs))
-    end
-  end
-
-  def close_valves
-    config.valves.each do | valve |
-      id = valve["id"]
-      set_component_state(id, :closed)
-    end
-    wait_for_valves
-  end
-
-  def wait_for_valves
-    while true
-      count = 0
-      config.valves.each do | valve |
-        count += 1 unless valves[valve['id']].in_position?
-      end
-      break if count == 0
-      sleep 5
     end
   end
 
