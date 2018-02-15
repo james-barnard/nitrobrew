@@ -47,6 +47,7 @@ class Machine
   def run
     on_change(:halt, nil) {}
     log("machine:run", "program starting", program)
+    puts "STARTING"
     light_manager.run_mode
     # enable_control_pins
 
@@ -65,7 +66,7 @@ class Machine
 
   def blink(step_status)
     light_manager.add_blink(:run) if step_status == :pending
-    light_manager.remove_blink if step_status == :soaking     
+    light_manager.remove_blink if step_status == :soaking
     light_manager.blink
   end
 
@@ -84,6 +85,7 @@ class Machine
 
   def done
     log("machine:done", "done", nil)
+    puts "DONE\n\n"
     light_manager.add_blink(:done)
     delete_stepper
     neutralize_valves
