@@ -260,7 +260,7 @@ class Machine
   end
 
   def logger
-    @logger ||= Logger.new('log/run.log', 10, 10240)
+    @logger ||= Logger.new('log/run.log', 5, 50240)
   end
 
   def light_manager
