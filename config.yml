@@ -112,6 +112,16 @@ valves:
       type: NC
       open: I.D.6
       trigger: low
+   -  id: 15
+      name: Circulator
+      type: NC
+      open: I.C.0
+      trigger: low
+   -  id: 16
+      name: Vacuum Pump
+      type: NC
+      open: I.C.1
+      trigger: low
 switches:
    -  id: 1
       name: clean
