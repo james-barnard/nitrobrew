@@ -59,9 +59,17 @@ RSpec.describe I2CDriver do
 
   it "retries 3 times if it times out when writing to the i2cdevice and then raise an error" do
     allow(driver).to receive(:i2cdevice).and_return(device)
+    allow(device).to receive(:write).and_raise(Errno::EAGAIN)
+
+    expect { driver.write(0, 1) }.to raise_error("I2CDriver write error")
+    expect(device).to have_received(:write).exactly(3).times
+  end
+
+  it "retries 3 times if it times out when writing to the i2cdevice and then raise an error" do
+    allow(driver).to receive(:i2cdevice).and_return(device)
     allow(device).to receive(:write).and_raise(Errno::ETIMEDOUT)
 
-    expect { driver.write(0, 1) }.to raise_error("I2CDriver write timed out")
+    expect { driver.write(0, 1) }.to raise_error("I2CDriver write error")
     expect(device).to have_received(:write).exactly(3).times
   end
 end

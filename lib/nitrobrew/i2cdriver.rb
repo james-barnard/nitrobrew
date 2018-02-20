@@ -43,10 +43,10 @@ class I2CDriver
   def write(bit, value)
     tries ||= 3
     @gpio = twiddle_bit(gpio, bit, value)
-    # puts "i2cdriver: write: #{bit}, #{value}: register: #{gpio}, tries left: #{tries}"
     i2cdevice.write(addr, [GPIO, gpio].pack("C*"))
-  rescue Errno::ETIMEDOUT => e
+  rescue Errno::EAGAIN, Errno::ETIMEDOUT => e
+    puts "I2CDriver: write: ERROR: #e.message"
     retry unless (tries -= 1).zero?
-    raise "I2CDriver write timed out"
+    raise "I2CDriver write error"
   end
 end
