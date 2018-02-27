@@ -45,7 +45,7 @@ class I2CDriver
     @gpio = twiddle_bit(gpio, bit, value)
     i2cdevice.write(addr, [GPIO, gpio].pack("C*"))
   rescue Errno::EREMOTEIO, Errno::EAGAIN, Errno::ETIMEDOUT => e
-    puts "I2CDriver: write: ERROR: #{e.message}"
+    puts "I2CDriver: write: ERROR: #{e.inspect}"
     retry unless (tries -= 1).zero?
     raise "I2CDriver write error"
   end
