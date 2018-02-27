@@ -17,7 +17,7 @@ valves:
       name: Decant
       type: powered
       open: P8_35
-      close: P8_36
+      activate: P8_36
       sense_closed: P9_27
       sense_open: P9_28
       trigger: low
@@ -25,7 +25,7 @@ valves:
       name: Bright Out
       type: powered
       open: I.A.0
-      close: I.A.1
+      activate: I.A.1
       sense_open: P9_25
       sense_closed: P9_26
       trigger: low

@@ -8,7 +8,7 @@
 8,1,drain,10,8
 9,1,purge,10,9
 10,1,pre-vac,0,10
-11,1,vacuum,30,11
+11,1,vacuum,60,11
 13,1,ingest CIP,10,13
 14,1,pre-circ,0,14
 15,1,circulate lower,5,15
@@ -19,7 +19,7 @@
 20,1,circulate,10,20
 21,1,fill off,5,21
 22,1,flush,10,22
-23,1,drain,5,23
+23,1,drain,15,23
 24,1,purge,10,24
 25,1,pre-vac,0,25
 26,1,vacuum,25,26

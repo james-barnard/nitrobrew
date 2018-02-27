@@ -123,7 +123,7 @@ describe Stepper do
         stepper.save_step_status(10, 1, :soaking)
         allow(stepper).to receive(:check_soak_time).and_return(:soaking)
 
-        expect(stepper.step).to eq("10:soaking")
+        expect(stepper.step).to include("10:soaking")
       end
 
       context "has finished soaking" do
@@ -131,14 +131,14 @@ describe Stepper do
           stepper.save_step_status(10, 1, :soaking)
           allow(stepper).to receive(:check_soak_time).and_return(:completed)
 
-          expect(stepper.step).to eq("10:completed")
+          expect(stepper.step).to include("10:completed")
         end
 
         it "moves to the next step when the duration has ended" do
           stepper.save_step_status(10, 1, :soaking)
           allow(stepper).to receive(:check_soak_time).and_return(:completed)
 
-          expect(stepper.step).to eq("10:completed")
+          expect(stepper.step).to include("10:completed")
         end
 
         it "returns done when it finishes the last step" do
