@@ -76,6 +76,7 @@ class Stepper
 
   def step
     @current_step = nil
+    remainder = nil
     last_reported_status = current_status
     case last_reported_status
     when nil
@@ -85,23 +86,24 @@ class Stepper
       status = check_component_states
     when :soaking
       status = check_soak_time
+      remainder = "|#{remaining_soak_time}"
     when :completed
       status = :done
     else
       raise("Unknown current status in step: #{last_reported_status}")
     end
     set_current_status(status) if last_reported_status != status
-    "#{current_step}:#{status}"
+    "#{current_step}:#{status}#{remainder}"
+  end
+
+  def remaining_soak_time
+    started_at = single_value { db.execute STARTED_AT_SQL, step_id(current_step), test_run_id }
+    soak_duration = single_value { db.execute DURATION_SQL, step_id(current_step) }
+    soak_duration - (Time.now.to_i - started_at)
   end
 
   def check_soak_time
-    started_at = single_value { db.execute STARTED_AT_SQL, step_id(current_step), test_run_id }
-    soak_duration = single_value { db.execute DURATION_SQL, step_id(current_step) }
-    if Time.now.to_i - started_at < soak_duration
-      :soaking
-    else
-      :completed
-    end
+    remaining_soak_time > 0 ? :soaking : :completed
   end
 
   def set_current_status(status)

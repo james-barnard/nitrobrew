@@ -64,6 +64,10 @@ class Machine
     send action
   end
 
+  def base_status(status)
+    status.split('|').first
+  end
+
   def blink(step_status)
     light_manager.add_blink(:run) if step_status == :pending
     light_manager.remove_blink if step_status == :soaking
