@@ -5,36 +5,36 @@
 5,1,circulate,5,5
 6,1,fill off,0,6
 7,1,flush,5,7
-8,1,drain,10,8
+8,1,drain,15,8
 9,1,purge,10,9
 10,1,pre-vac,0,10
 11,1,vacuum,60,11
-13,1,ingest CIP,10,13
-14,1,pre-circ,0,14
-15,1,circulate lower,5,15
-16,1,circulate upper,5,16
-17,1,flush,5,17
-18,1,drain,5,18
-19,1,fill,10,19
-20,1,circulate,10,20
-21,1,fill off,5,21
-22,1,flush,10,22
-23,1,drain,15,23
-24,1,purge,10,24
-25,1,pre-vac,0,25
-26,1,vacuum,25,26
-27,1,done,0,27
-25,2,N2 PreFill,0,1
-26,2,N2 Fill,60,2
-27,2,purge,5,3
-28,2,done,0,4
-29,3,pre-vacuum,0,1
-30,3,vacuum,5,2
-31,3,isolate,0,3
-32,3,ingest,15,4
-33,3,infuse,300,5
-34,3,migrate,60,6
-35,3,drip,120,7
-36,3,infuse+eject,300,8
-37,3,decant,120,9
-38,3,done,0,10
+12,1,ingest CIP,20,12
+13,1,pre-circ,0,13
+14,1,circulate lower,5,14
+15,1,circulate upper,5,15
+16,1,flush,5,16
+17,1,drain,15,17
+18,1,fill,10,18
+19,1,circulate,10,19
+20,1,fill off,5,20
+21,1,flush,10,21
+22,1,drain,15,22
+23,1,purge,15,23
+24,1,pre-vac,0,24
+25,1,vacuum,25,25
+26,1,done,0,26
+27,2,N2 PreFill,0,1
+28,2,N2 Fill,30,2
+29,2,drain,15,3
+30,2,done,0,4
+31,3,pre-vacuum,0,1
+32,3,vacuum,5,2
+33,3,isolate,0,3
+34,3,ingest,30,4
+35,3,infuse,300,5
+36,3,migrate,60,6
+37,3,drip,120,7
+38,3,infuse+eject,15,8
+39,3,decant,120,9
+40,3,done,0,10
