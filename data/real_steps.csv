@@ -1,10 +1,10 @@
 1,1,pre-vac,0,1
 2,1,vacuum,60,2
 3,1,pre-fill,0,3
-4,1,fill,15,4
-5,1,circulate,15,5
+4,1,fill,10,4
+5,1,circulate,5,5
 6,1,fill off,0,6
-7,1,flush,10,7
+7,1,flush,5,7
 8,1,drain,10,8
 9,1,purge,10,9
 10,1,pre-vac,0,10
@@ -15,14 +15,14 @@
 16,1,circulate upper,5,16
 17,1,flush,5,17
 18,1,drain,5,18
-19,1,fill,30,19
-20,1,circulate,30,20
+19,1,fill,10,19
+20,1,circulate,10,20
 21,1,fill off,5,21
 22,1,flush,10,22
 23,1,drain,5,23
 24,1,purge,10,24
 25,1,pre-vac,0,25
-26,1,vacuum,100,26
+26,1,vacuum,25,26
 27,1,done,0,27
 25,2,N2 PreFill,0,1
 26,2,N2 Fill,60,2
