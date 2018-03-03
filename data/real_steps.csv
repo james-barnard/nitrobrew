@@ -29,9 +29,9 @@
 29,2,drain tanks,10,3
 30,2,drain riser,10,4
 31,2,done,0,5
-32,3,pre-vacuum,0,1
+32,3,pre-vacuum,10,1
 33,3,vacuum,60,2
-34,3,ingest,30,3
+34,3,ingest,90,3
 35,3,isolate,0,4
 36,3,infuse,60,5
 37,3,migrate,60,6
