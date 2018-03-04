@@ -25,17 +25,19 @@
 25,1,vacuum,25,25
 26,1,done,0,26
 27,2,N2 PreFill,0,1
-28,2,N2 Fill,30,2
+28,2,N2 Fill,10,2
 29,2,drain tanks,10,3
 30,2,drain riser,10,4
 31,2,done,0,5
-32,3,pre-vacuum,10,1
-33,3,vacuum,60,2
-34,3,ingest,90,3
+32,3,pre-vacuum,60,1
+33,3,vacuum,90,2
+34,3,ingest,180,3
 35,3,isolate,0,4
-36,3,infuse,60,5
+36,3,infuse,120,5
 37,3,migrate,60,6
-38,3,drip,120,7
-39,3,infuse+eject,30,8
-40,3,decant,60,9
-41,3,done,0,10
+38,3,steep,120,7
+39,3,agitate,60,8
+40,3,drip,120,9
+41,3,infuse+eject,30,10
+42,3,decant,60,11
+43,3,done,0,12
