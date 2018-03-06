@@ -38,7 +38,8 @@
 38,3,migrate,60,7
 39,3,steep,120,8
 40,3,agitate,60,9
-41,3,drip,120,10
-42,3,infuse+eject,30,11
-43,3,decant,90,12
-44,3,done,0,13
+41,3,drip,60,10
+42,3,infuse,0,11
+43,3,eject,30,12
+44,3,decant,90,13
+45,3,done,0,14
