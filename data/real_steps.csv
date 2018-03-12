@@ -25,21 +25,21 @@
 25,1,vacuum,25,25
 26,1,done,0,26
 27,2,N2 PreFill,0,1
-28,2,N2 Fill,10,2
+28,2,N2 Fill,5,2
 29,2,drain tanks,10,3
 30,2,drain riser,10,4
 31,2,done,0,5
 32,3,pre-vacuum,60,1
 33,3,vacuum,90,2
-34,3,ingest,180,3
-35,3,pre-vacuum,0,4
-36,3,brew-vacuum,240,5
+34,3,ingest,130,3
+35,3,brew-vacuum,240,4
+36,3,pre-infuse,0,5
 37,3,infuse,120,6
 38,3,migrate,60,7
-39,3,steep,120,8
+39,3,steep,240,8
 40,3,agitate,60,9
 41,3,drip,60,10
-42,3,infuse,0,11
-43,3,eject,30,12
+42,3,pre-infuse,0,11
+43,3,infuse/eject,30,12
 44,3,decant,90,13
 45,3,done,0,14
