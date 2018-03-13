@@ -1,0 +1,14 @@
+insert into components values( 1, 1, 'Decant');
+insert into components values( 2, 1, 'Bright Out');
+insert into components values( 3, 1, 'Bright In');
+insert into components values( 4, 1, 'Brew Out');
+insert into components values( 5, 1, 'Filter Purge Out');
+insert into components values( 6, 1, 'Brew In');
+insert into components values( 7, 1, 'Brew Vacuum');
+insert into components values( 8, 1, 'Brew H2O');
+insert into components values( 9, 1, 'Filter H2O');
+insert into components values( 10, 1, 'Process H2O');
+insert into components values( 11, 1, 'Filter Backflush');
+insert into components values( 12, 1, 'Brew N2');
+insert into components values( 13, 1, 'Bright N2');
+insert into components values( 14, 1, 'Condition N2');
