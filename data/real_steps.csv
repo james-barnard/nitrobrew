@@ -35,7 +35,7 @@
 35,3,brew-vacuum,240,4
 36,3,pre-infuse,0,5
 37,3,infuse,120,6
-38,3,migrate,60,7
+38,3,migrate,30,7
 39,3,post-migrate,0,8
 40,3,steep,240,9
 41,3,agitate,60,10
@@ -47,7 +47,7 @@
 47,3,brew-vacuum,240,16
 48,3,pre-infuse,0,17
 49,3,infuse,120,18
-50,3,migrate,60,19
+50,3,migrate,30,19
 51,3,post-migrate,5,20
 52,3,steep,240,21
 53,3,agitate,30,22
