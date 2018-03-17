@@ -8,6 +8,7 @@ class I2CPin
   end
 
   def digital_write(value)
+    puts "i2cpin: b4 driver.write"
     driver.write(pin, value == :HIGH ? 1 : 0)
   end
 
