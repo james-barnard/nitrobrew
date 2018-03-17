@@ -42,7 +42,7 @@ class I2CDriver
   end
 
   def write(bit, value)
-    tries ||= 16
+    tries ||= 6
     @gpio = twiddle_bit(gpio, bit, value)
     puts "I2CDriver:write: b4 i2cdevice.write"
     i2cdevice.write(addr, [GPIO, gpio].pack("C*"))
