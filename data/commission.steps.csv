@@ -1,28 +1,35 @@
-50,5,open v1,1,1
-51,5,close v1,1,2
-52,5,open v2,1,3
-53,5,close v2,1,4
-54,5,open v3,1,5
-55,5,close v3,1,6
-56,5,open v4,1,7
-57,5,close v4,1,8
-58,5,open v5,1,9
-59,5,close v5,1,10
-60,5,open v6,1,11
-61,5,close v6,1,12
-62,5,open v7,1,13
-63,5,close v7,1,14
-64,5,open v8,5,15
-65,5,close v8,5,16
-66,5,open v9,5,17
-67,5,close v9,5,18
-68,5,open v10,5,19
-69,5,close v10,5,20
-70,5,open v11,5,21
-71,5,close v11,5,22
-72,5,open v12,5,23
-73,5,close v12,5,24
-74,5,open v13,5,25
-75,5,close v13,5,26
-76,5,open v14,5,27
-77,5,close v14,5,28
+1,1,Brew H2O,5,1
+2,1,Feed H2O,5,2
+3,1,Purge Out,0,3
+4,1,Filter H2O,5,4
+5,1,Brew N2,5,5
+6,1,Bright N2,5,6
+7,1,Condition N2,5,7
+8,1,Decant,0,8
+9,1,Bright Out,0,9
+10,1,Bright In,0,10
+11,1,Brew Out,0,11
+12,1,Brew In,0,12
+13,1,Vacuum,0,13
+14,1,Vacuum Pump,5,14
+15,1,Circulation Pump,5,15
+1001,4,open,5,1
+1002,4,close,5,2
+1003,4,open,5,3
+1004,4,close,5,4
+32,3,pre-vacuum,2,1
+33,3,vacuum,2,2
+34,3,ingest,2,3
+35,3,pre-vacuum,2,4
+36,3,brew-vacuum,2,5
+37,3,infuse,2,6
+38,3,migrate,2,7
+39,3,steep,2,8
+40,3,agitate,2,9
+41,3,drip,2,10
+42,3,infuse,2,11
+43,3,eject,2,12
+44,3,decant,2,13
+45,3,done,2,14
+46,3,done,2,15
+47,3,done,2,16
