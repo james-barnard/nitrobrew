@@ -12,3 +12,5 @@ insert into components values( 11, 1, 'Filter Backflush');
 insert into components values( 12, 1, 'Brew N2');
 insert into components values( 13, 1, 'Bright N2');
 insert into components values( 14, 1, 'Condition N2');
+insert into components values( 15, 1, 'Circulate');
+insert into components values( 16, 1, 'Vacuum Pump');
