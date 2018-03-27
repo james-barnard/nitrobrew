@@ -8,13 +8,9 @@ i2cs:
       bus: I2C1
       addr: 0x20
       gpio_default: 0xff
-   -  id: B
-      bus: I2C1
-      addr: 0x21
-      gpio_default: 0xff
    -  id: C
       bus: I2C1
-      addr: 0x22
+      addr: 0x21
       gpio_default: 0xff
    -  id: D
       bus: I2C1
