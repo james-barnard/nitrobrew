@@ -27,6 +27,11 @@ class I2CDriver
     @iodir = twiddle_bit(iodir, bit, value)
     puts "set_iodir: b4 i2cdevice.write"
     i2cdevice.write(addr, [IODIR, iodir].pack("C*"))
+  rescue Errno::EREMOTEIO, Errno::EAGAIN, Errno::ETIMEDOUT => e
+    puts "I2CDriver: set_iodir: retry: ERROR: #{e.inspect}"
+    sleep(0.2); print('.')
+    retry unless (tries -= 1).zero?
+    raise "I2CDriver write error"
   end
 
   def i2cdevice
@@ -47,7 +52,8 @@ class I2CDriver
     puts "I2CDriver:write: b4 i2cdevice.write"
     i2cdevice.write(addr, [GPIO, gpio].pack("C*"))
   rescue Errno::EREMOTEIO, Errno::EAGAIN, Errno::ETIMEDOUT => e
-    puts "I2CDriver: write: ERROR: #{e.inspect}"
+    puts "I2CDriver: retry: write: ERROR: #{e.inspect}"
+    sleep(0.2); print('.')
     retry unless (tries -= 1).zero?
     raise "I2CDriver write error"
   end

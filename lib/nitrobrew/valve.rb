@@ -74,6 +74,7 @@ class Valve
 
   def activate_pins(params)
     VALID_PINS[type].each do | key |
+      sleep(0.2); print('.')
       mode = pin_mode(key)
       pins[key] = create_pin(params, key, mode)
     end
