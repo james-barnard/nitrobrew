@@ -14,6 +14,12 @@ class I2CDriver
     @gpio  = @gpio_default = params["gpio_default"]
     @iodir = 0
     @gppu  = 0
+    set_defaults
+  end
+
+  def set_defaults(dir: 0x00, gpio: 0xff)
+    i2cdevice.write(addr, [IODIR, 0x00].pack("C*"))
+    i2cdevice.write(addr, [GPIO, 0xff].pack("C*"))
   end
 
   def pin(address, mode, pullmode)
