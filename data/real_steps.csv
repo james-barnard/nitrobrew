@@ -3,31 +3,31 @@
 3,1,pre-fill,0,3
 4,1,fill,30,4
 5,1,circulate,40,5
-6,1,fill off,15,6
+6,1,fill off,5,6
 7,1,flush,5,7
-8,1,drain,15,8
+8,1,drain,5,8
 9,1,purge,5,9
 10,1,pre-vac,0,10
-11,1,vacuum,60,11
+11,1,vacuum,90,11
 12,1,ingest CIP,20,12
 13,1,pre-circ,0,13
 14,1,circulate lower,20,14
 15,1,circulate upper,20,15
 16,1,flush,5,16
-17,1,drain,10,17
+17,1,drain,0,17
 18,1,fill,5,18
 19,1,circulate,5,19
 20,1,fill off,5,20
-21,1,flush,10,21
-22,1,drain,10,22
-23,1,purge,10,23
+21,1,flush,0,21
+22,1,drain,5,22
+23,1,purge,0,23
 24,1,pre-vac,0,24
 25,1,vacuum,5,25
 26,1,done,0,26
 27,2,N2 PreFill,0,1
-28,2,N2 Fill,5,2
-29,2,drain tanks,5,3
-30,2,drain riser,5,4
+28,2,N2 Fill,0,2
+29,2,drain riser,5,3
+30,2,drain tanks,5,4
 31,2,done,0,5
 32,3,pre-vacuum,30,1
 33,3,vacuum,120,2
@@ -38,10 +38,10 @@
 38,3,migrate,45,7
 39,3,post-migrate,10,8
 40,3,steep,360,9
-41,3,agitate,30,10
+41,3,agitate,20,10
 42,3,settle,10,11
 43,3,vent bright,10,12
-44,3,pre-drip,0,13
+44,3,pre-drip,10,13
 45,3,drip,60,14
 46,3,post-drip,60,15
 47,3,brew-vacuum,360,16
@@ -50,19 +50,19 @@
 50,3,migrate,45,19
 51,3,post-migrate,10,20
 52,3,steep,360,21
-53,3,agitate,30,22
+53,3,agitate,20,22
 54,3,settle,10,23
 55,3,vent bright,5,24
-56,3,pre-drip,0,25
+56,3,pre-drip,10,25
 57,3,drip,60,26
 58,3,pre-infuse,0,27
 59,3,infuse,120,28
 60,3,decant,120,29
-61,3,pre-decake,30,30
+61,3,pre-decake,10,30
 62,3,decake,5,31
 63,3,pre-eject,0,32
 64,3,pre-eject-fill,10,33
-65,3,eject-on,30,34
-66,3,eject-off,31,35
-67,3,eject-on,32,36
+65,3,eject-on,10,34
+66,3,eject-off,10,35
+67,3,eject-on,5,36
 68,3,done,0,37
