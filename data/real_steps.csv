@@ -39,7 +39,7 @@
 39,3,post-migrate,10,8
 40,3,steep,360,9
 41,3,agitate,20,10
-42,3,settle,10,11
+42,3,settle,5,11
 43,3,vent bright,10,12
 44,3,pre-drip,5,13
 45,3,drip,60,14
@@ -51,13 +51,13 @@
 51,3,post-migrate,10,20
 52,3,steep,360,21
 53,3,agitate,20,22
-54,3,settle,10,23
-55,3,vent bright,5,24
+54,3,settle,5,23
+55,3,vent bright,10,24
 56,3,pre-drip,5,25
 57,3,drip,60,26
 58,3,pre-infuse,0,27
 59,3,infuse,120,28
-60,3,decant,120,29
+60,3,decant,60,29
 61,3,pre-decake,10,30
 62,3,decake,5,31
 63,3,pre-eject,0,32
