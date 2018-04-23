@@ -19,11 +19,9 @@
 19,1,circulate,5,19
 20,1,fill off,5,20
 21,1,flush,0,21
-22,1,drain,5,22
-23,1,purge,0,23
-24,1,pre-vac,0,24
-25,1,vacuum,5,25
-26,1,done,0,26
+22,1,drain,10,22
+23,1,purge,5,23
+24,1,done,0,24
 27,2,N2 PreFill,0,1
 28,2,N2 Fill,0,2
 29,2,drain riser,5,3
