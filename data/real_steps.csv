@@ -8,7 +8,7 @@
 8,1,drain,5,8
 9,1,purge,5,9
 10,1,pre-vac,0,10
-11,1,vacuum,90,11
+11,1,vacuum,20,11
 12,1,ingest CIP,20,12
 13,1,pre-circ,0,13
 14,1,circulate lower,20,14
@@ -24,7 +24,7 @@
 24,1,done,0,24
 27,2,N2 PreFill,0,1
 28,2,N2 Fill,0,2
-29,2,drain riser,5,3
+29,2,drain riser,2,3
 30,2,drain tanks,5,4
 31,2,done,0,5
 32,3,pre-vacuum,30,1
@@ -34,27 +34,26 @@
 36,3,pre-infuse,0,5
 37,3,infuse,120,6
 38,3,migrate,45,7
-40,3,steep,360,9
-42,3,pressure-bright,5,11
-43,3,vent bright,30,12
-45,3,drip,120,14
-46,3,post-drip,30,15
-47,3,brew-vacuum,120,16
-48,3,pre-infuse,0,17
-49,3,infuse,240,18
-50,3,migrate,45,19
-52,3,steep,360,21
-54,3,pressure-bright,5,23
-55,3,vent bright,20,24
-57,3,drip,120,26
-58,3,pre-infuse,0,27
-59,3,infuse,120,28
-60,3,decant,75,29
-61,3,pre-decake,10,30
-62,3,decake,5,31
-63,3,pre-eject,0,32
-64,3,pre-eject-fill,10,33
-65,3,eject-on,10,34
-66,3,eject-off,5,35
-67,3,eject-on,5,36
-68,3,done,0,374
+39,3,steep,360,8
+40,3,drip,120,9
+41,3,post-drip,30,10
+42,3,brew-vacuum,120,11
+43,3,pre-infuse,0,12
+44,3,infuse,240,13
+45,3,migrate,45,14
+46,3,steep,180,15
+47,3,drip,120,16
+48,3,brew-vacuum,60,17
+49,3,migrate,45,18
+50,3,steep,180,19
+51,3,drip,120,20
+52,3,pre-infuse,0,21
+53,3,infuse,120,22
+54,3,decant,75,23
+55,3,decake,5,24
+56,3,pre-eject,0,25
+57,3,pre-eject-fill,10,26
+58,3,eject-on,10,27
+59,3,eject-off,5,28
+60,3,eject-on,5,29
+61,3,done,0,30
