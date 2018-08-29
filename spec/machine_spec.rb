@@ -60,7 +60,7 @@ describe Machine do
       allow(machine).to receive(:log)
 
       machine.check_component_state(2)
-      
+
       expect(machine).to have_received(:log).with("machine:check_component_state", "component_id: 2", "has timed out while closed").once
     end
 
