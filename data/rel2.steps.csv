@@ -10,29 +10,29 @@
 10,2,drain,30,2
 11,2,done,0,3
 12,3,pre-vacuum,30,1
-13,3,vacuum-infuse,12,2
+13,3,vacuum-infuse,120,2
 14,3,pre-migrate,5,3
-15,3,migrate,15,4
-16,3,steep under vacuum,30,5
+15,3,migrate,20,4
+16,3,steep under vacuum,300,5
 17,3,pre-drip,15,6
-18,3,drip,20,7
+18,3,drip,30,7
 19,3,post drip,0,8
-20,3,vacuum-infuse,20,9
+20,3,vacuum-infuse,120,9
 21,3,pre-migrate,15,10
-22,3,migrate,10,11
-23,3,steep,30,12
+22,3,migrate,30,11
+23,3,steep,300,12
 24,3,pre-drip,15,13
-25,3,drip,20,14
+25,3,drip,30,14
 26,3,post drip,0,15
-27,3,vacuum-infuse,20,16
+27,3,vacuum-infuse,120,16
 28,3,pre-migrate,0,17
-29,3,migrate,15,18
-30,3,steep,30,19
+29,3,migrate,30,18
+30,3,steep,300,19
 31,3,pre-drip,15,20
-32,3,drip,20,21
+32,3,drip,30,21
 33,3,pre-infuse/pre-eject,0,22
 34,3,infuse/eject,30,23
 35,3,nitrogenate/eject,15,24
-36,3,nitrogenate,36,25
+36,3,nitrogenate,360,25
 37,3,decant,60,26
 38,3,done,0,27
