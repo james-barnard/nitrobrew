@@ -29,10 +29,12 @@
 29,3,migrate,30,18
 30,3,steep,300,19
 31,3,pre-drip,15,20
-32,3,drip,30,21
+32,3,drip,45,21
 33,3,pre-infuse/pre-eject,0,22
-34,3,infuse/eject,30,23
-35,3,nitrogenate/eject,15,24
-36,3,nitrogenate,360,25
-37,3,decant,60,26
-38,3,done,0,27
+34,3,inject pre fill,5,23
+35,3,infuse/eject,30,24
+36,3,inject prefill,10,25
+37,3,nitrogenate/eject,15,26
+38,3,nitrogenate,360,27
+39,3,decant,60,28
+40,3,done,0,29
