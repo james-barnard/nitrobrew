@@ -1,0 +1,114 @@
+1,1,vacuum chamber,30,1
+2,1,open intake,15,2
+3,1,close intake,0,3
+4,1,pressurize chamber,15,4
+5,1,pump outlet,15,5
+6,1,close outlet and repeat,0,6
+7,1,vacuum chamber,30,7
+8,1,open intake,15,8
+9,1,close intake,0,9
+10,1,pressurize chamber,15,10
+11,1,pump outlet,15,11
+12,1,close outlet and repeat,0,12
+13,1,vacuum chamber,30,13
+14,1,open intake,15,14
+15,1,close intake,0,15
+16,1,pressurize chamber,15,16
+17,1,keg outlet,15,17
+18,1,close outlet and repeat,0,18
+19,1,vacuum chamber,30,19
+20,1,open intake,15,20
+21,1,close intake,0,21
+22,1,pressurize chamber,15,22
+23,1,pump outlet,15,23
+24,1,close outlet and repeat,0,24
+25,1,vacuum chamber,30,25
+26,1,open intake,15,26
+27,1,close intake,0,27
+28,1,pressurize chamber,15,28
+29,1,pump outlet,15,29
+30,1,close outlet and repeat,0,30
+9,2,open,0,1
+10,2,purge,5,2
+11,2,done,0,3
+12,3,pre-vacuum,30,1
+13,3,vacuum,30,2
+14,3,vacuum keg,60,3
+15,3,stop vacuum,0,4
+16,3,N2 purge,30,5
+17,3,all close,0,6
+18,3,vacuum chamber,60,7
+19,3,open intake,30,8
+20,3,close intake,0,9
+21,3,deaerate,90,10
+22,3,stop vacuum,0,11
+23,3,pressurize chamber,15,12
+24,3,pump outlet,15,13
+25,3,close outlet and repeat,0,14
+26,3,vacuum chamber,60,15
+27,3,open intake,30,16
+28,3,close intake,0,17
+29,3,deaerate,90,18
+30,3,stop vacuum,0,19
+31,3,pressurize chamber,15,20
+32,3,pump outlet,15,21
+33,3,close outlet and repeat,0,22
+34,3,vacuum chamber,60,23
+35,3,open intake,30,24
+36,3,close intake,0,25
+37,3,deaerate,90,26
+38,3,stop vacuum,0,27
+39,3,pressurize chamber,15,28
+40,3,pump outlet,15,29
+41,3,close outlet and repeat,0,30
+42,3,vacuum chamber,60,31
+43,3,open intake,30,32
+44,3,close intake,0,33
+45,3,deaerate,90,34
+46,3,stop vacuum,0,35
+47,3,pressurize chamber,15,36
+48,3,pump outlet,15,37
+49,3,close outlet and repeat,0,38
+50,3,vacuum chamber,60,39
+51,3,open intake,30,40
+52,3,close intake,0,41
+53,3,deaerate,90,42
+54,3,stop vacuum,0,43
+55,3,pressurize chamber,15,44
+56,3,pump outlet,15,45
+57,3,close outlet and repeat,0,46
+58,3,vacuum chamber,60,47
+59,3,open intake,30,48
+60,3,close intake,0,49
+61,3,nitrogenate,90,50
+62,3,pressurize chamber,15,51
+63,3,keg outlet,20,52
+64,3,close outlet and repeat,0,53
+65,3,vacuum chamber,60,54
+66,3,open intake,30,55
+67,3,close intake,0,56
+68,3,nitrogenate,90,57
+69,3,pressurize chamber,15,58
+70,3,keg outlet,20,59
+71,3,close outlet and repeat,0,60
+72,3,vacuum chamber,60,61
+73,3,open intake,30,62
+74,3,close intake,0,63
+75,3,nitrogenate,90,64
+76,3,pressurize chamber,15,65
+77,3,keg outlet,20,66
+78,3,close outlet and repeat,0,67
+79,3,vacuum chamber,60,68
+80,3,open intake,30,69
+81,3,close intake,0,70
+82,3,nitrogenate,90,71
+83,3,pressurize chamber,15,72
+84,3,keg outlet,20,73
+85,3,close outlet and repeat,0,74
+86,3,vacuum chamber,60,75
+87,3,open intake,30,76
+88,3,close intake,0,77
+89,3,nitrogenate,90,78
+90,3,pressurize chamber,15,79
+91,3,keg outlet,20,80
+92,3,close outlet and repeat,0,81
