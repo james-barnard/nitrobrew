@@ -101,17 +101,7 @@
 101,3,pressurize chamber,10,65
 102,3,keg outlet,10,66
 103,3,close outlet and repeat,0,67
-104,3,vacuum chamber,0,68
-105,3,open intake,0,69
-106,3,close intake,0,70
-107,3,nitrogenate,30,71
-108,3,pressurize chamber,10,72
-109,3,keg outlet,10,73
-110,3,close outlet and repeat,0,74
-111,3,vacuum chamber,0,75
-112,3,open intake,0,76
-113,3,close intake,0,77
-114,3,nitrogenate,30,78
-115,3,pressurize chamber,10,79
-116,3,keg outlet,10,80
-117,3,close outlet and repeat,0,81
+104,3,open eject,30,68
+105,3,flush ,20,69
+106,3,drain,10,70
+107,3,done,0,71
